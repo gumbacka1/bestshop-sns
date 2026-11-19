@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하이프라자 297개 지점 SNS 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+:root{--font-anthropic-sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;--font-anthropic-serif:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+--color-fg:#1f1f1f;--color-fg-muted:#6b6b6b;--color-bg:#fff;--color-panel:#f7f7f5;--color-border-line:#e2e2df;--color-ok:#1e8e3e;--color-bad:#d93025;
+--cds-font-size-title:26px;--cds-font-size-body:14px;--cds-font-size-caption:12.5px;--cds-font-size-heading:17px;--cds-font-weight-medium:600;
+--cds-gap-xs:4px;--cds-gap-sm:10px;--cds-gap-md:16px;--cds-gap-lg:28px;--cds-pad-md:14px;--cds-radius:8px;
+--cds-text-secondary:#6b6b6b;--cds-surface-popover:#fff;--cds-border:#ddd;--cds-shadow-popover:0 2px 8px rgba(0,0,0,.15);--cds-chart-axis:#bbb;--cds-chart-grid:#eee}
+body{margin:0;padding:20px;background:var(--color-bg)} .ig{max-width:1200px;margin:0 auto}
+</style>
+<script>
+/* 작은 대시보드 엔진: data/daily.json, data/latest.json 을 읽어 계산·그리기 */
+window.dash=(function(){const calcs={},order=[],draws={},cbs=[];let P={team:''},res={};const raw={};
+const q=new URLSearchParams(location.search);if(q.get('team'))P.team=q.get('team');
+function compute(){res={};res.daily={status:'ok',data:raw.daily||[]};res.latest={status:'ok',data:raw.latest||[]};
+for(const id of order){const c=calcs[id];try{res[id]={status:'ok',data:c.fn(...c.inputs.map(i=>(res[i]||{}).data||[]))||[]}}catch(e){console.error(id,e);res[id]={status:'error',data:[]}}}}
+function drawAll(){for(const id in draws)drawOne(id);cbs.forEach(f=>f())}
+function drawOne(id){document.querySelectorAll('[data-draw="'+id+'"]').forEach(el=>{try{draws[id](el)}catch(e){console.error(id,e)}})}
+return{calc:(id,c)=>{calcs[id]=c;order.push(id)},draw:(id,f)=>{if(f){draws[id]=f;if(Object.keys(res).length)drawOne(id)}else if(draws[id])drawOne(id)},
+data:id=>res[id]||{status:'loading',data:[]},params:()=>P,setParams:p=>{P={...P,...p};compute();drawAll()},onData:f=>cbs.push(f),colors:['#2E6BE6','#E3893A'],
+_load:async()=>{const t='?v='+Date.now();const [d,l]=await Promise.all(['daily','latest'].map(n=>fetch('data/'+n+'.json'+t).then(r=>r.json())));raw.daily=d;raw.latest=l;compute();drawAll()}}})();
+window.addEventListener('load',()=>dash._load());
+</script>
+</head><body>
+<style>
+.ig { font-family: "LG스마트체2.0 Regular", "LG스마트체", var(--font-anthropic-sans); color: var(--color-fg); }
+.ig-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+.ig-sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); margin: 0 0 var(--cds-gap-md); }
+.ig-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); margin: 0 0 var(--cds-gap-md); }
+.ig-tab { border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: var(--cds-font-size-caption); cursor: pointer; }
+.ig-tab.is-on { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.ig-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--cds-gap-sm); margin: 0 0 var(--cds-gap-sm); }
+.ig-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); }
+.ig-card-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.ig-card-num { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 28px; font-variant-numeric: tabular-nums; margin: 2px 0; }
+.ig-card-chg { font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ig-up { color: var(--color-ok); } .ig-down { color: var(--color-bad); } .ig-flat { color: var(--color-fg-muted); }
+.ig-h { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-lg) 0 var(--cds-gap-xs); }
+.ig-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); }
+.ig-wrap { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.ig-table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ig-table th { background: #EDEDED; color: #222; font-weight: var(--cds-font-weight-medium); padding: 6px 8px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--color-border-line); }
+.ig-table th.ig-grp { border-left: 1px solid #D0D0D0; }
+.ig-table th.ig-sort { cursor: pointer; }
+.ig-table th[aria-sort="descending"]::after { content: " ▼"; font-size: 9px; }
+.ig-table th[aria-sort="ascending"]::after { content: " ▲"; font-size: 9px; }
+.ig-table td { padding: 5px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--color-border-line); }
+.ig-table td.ig-l { text-align: left; }
+.ig-table td.ig-c { text-align: center; }
+.ig-table td.ig-bad { color: var(--color-bad); font-weight: var(--cds-font-weight-medium); }
+.ig-table tr.ig-total td { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); }
+.ig-table a { color: inherit; text-decoration: none; }
+.ig-table a:hover { text-decoration: underline; }
+.ig-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; margin: 0 0 var(--cds-gap-sm); }
+.ig-search { font: inherit; font-size: var(--cds-font-size-caption); padding: 5px 10px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 180px; }
+.ig-chart { position: relative; min-height: 210px; }
+.ig-chart svg text { fill: var(--cds-text-secondary); font-size: 11px; }
+.ig-legend { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0 0 4px; }
+.ig-legend i { display: inline-block; width: 10px; height: 3px; vertical-align: middle; margin-right: 4px; }
+.ig-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: 6px; padding: 4px 8px; font-size: 12px; white-space: nowrap; }
+.ig-comment { margin-top: var(--cds-gap-sm); font-size: var(--cds-font-size-body); line-height: 1.6; }
+.ig-comment p { margin: 2px 0; }
+</style>
+
+<div class="ig">
+  <h1 class="ig-title" id="title">하이프라자 297개 지점 SNS 현황</h1>
+  <p class="ig-sub" id="takeaway" data-draw="takeaway">—</p>
+
+  <div class="ig-tabs" id="tabs" role="tablist" aria-label="담당 선택">
+    <button class="ig-tab" role="tab" data-team="">전체</button>
+    <button class="ig-tab" role="tab" data-team="경인담당">경인담당</button>
+    <button class="ig-tab" role="tab" data-team="강남담당">강남담당</button>
+    <button class="ig-tab" role="tab" data-team="경원담당">경원담당</button>
+    <button class="ig-tab" role="tab" data-team="경북담당">경북담당</button>
+    <button class="ig-tab" role="tab" data-team="경남담당">경남담당</button>
+    <button class="ig-tab" role="tab" data-team="중부담당">중부담당</button>
+    <button class="ig-tab" role="tab" data-team="서부담당">서부담당</button>
+    <button class="ig-tab" role="tab" data-team="백화점담당">백화점담당</button>
+  </div>
+
+  <div class="ig-cards" id="cards">
+    <div class="ig-card" id="card-fol">
+      <div class="ig-card-label">인스타 팔로워</div>
+      <div class="ig-card-num" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</div>
+      <div class="ig-card-chg">전주비 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span> · 신장률 <span data-draw="k-folr" data-source="kpi" data-field="f_rate" data-row="0">—</span></div>
+    </div>
+    <div class="ig-card" id="card-kakao">
+      <div class="ig-card-label">카톡 친구</div>
+      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
+      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span></div>
+    </div>
+    <div class="ig-card" id="card-week">
+      <div class="ig-card-label">이번 주 팔로워 (월요일 이후)</div>
+      <div class="ig-card-num" data-draw="k-wk" data-source="kpi" data-field="f_week" data-row="0">—</div>
+      <div class="ig-card-chg ig-flat">카톡 <span data-draw="k-wkk" data-source="kpi" data-field="k_week" data-row="0">—</span></div>
+    </div>
+    <div class="ig-card" id="card-stale">
+      <div class="ig-card-label">30일 넘게 게시 없음</div>
+      <div class="ig-card-num" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</div>
+      <div class="ig-card-chg ig-flat"><span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>개 지점 중</div>
+    </div>
+  </div>
+  <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
+
+  <h2 class="ig-h" id="h-team">담당별 현황</h2>
+  <div class="ig-wrap">
+    <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
+      <thead><tr>
+        <th data-field="team">담당</th>
+        <th data-field="accounts">지점</th>
+        <th class="ig-grp" data-field="followers">팔로워</th>
+        <th data-field="f_diff">전주비</th>
+        <th data-field="f_rate">신장률</th>
+        <th class="ig-grp" data-field="kakao">카톡 친구</th>
+        <th data-field="k_diff">전주비</th>
+        <th data-field="k_rate">신장률</th>
+        <th class="ig-grp" data-field="posts">게시물</th>
+        <th data-field="stale">30일 미게시</th>
+      </tr></thead>
+      <tbody data-draw="team-body"></tbody>
+    </table>
+  </div>
+
+  <h2 class="ig-h" id="h-trend">일별 추이 <span class="ig-note" data-draw="trend-label">—</span></h2>
+  <div class="ig-legend" id="trend-legend"><span><i style="background: var(--dash-color-1, #2E6BE6)" data-draw="leg1"></i>인스타 팔로워(왼쪽)</span><span><i style="background: var(--dash-color-2, #E3893A)" data-draw="leg2"></i>카톡 친구(오른쪽)</span></div>
+  <div class="ig-chart" id="trend-chart" data-draw="trend" data-source="trend">—</div>
+
+  <h2 class="ig-h" id="h-store">지점별 현황 <span class="ig-note" data-draw="store-count">—</span></h2>
+  <div class="ig-tools">
+    <input class="ig-search" id="store-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
+    <span class="ig-note">표 머리를 누르면 정렬돼요 · 지점명을 누르면 인스타로 가요</span>
+  </div>
+  <div class="ig-wrap">
+    <table class="ig-table" id="store-table" data-source="snap" data-row-key="handle">
+      <thead><tr>
+        <th class="ig-sort" data-field="team" data-k="team">담당</th>
+        <th class="ig-sort" data-field="store" data-k="store">지점</th>
+        <th class="ig-sort ig-grp" data-field="followers" data-k="followers" aria-sort="descending">팔로워</th>
+        <th class="ig-sort" data-field="f_diff" data-k="f_diff">전주비</th>
+        <th class="ig-sort" data-field="f_rate" data-k="f_rate">신장률</th>
+        <th class="ig-sort" data-field="f_week" data-k="f_week">이번 주</th>
+        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
+        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
+        <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
+        <th class="ig-sort" data-field="days" data-k="days">최근 게시</th>
+        <th class="ig-sort" data-field="reelsMax" data-k="reelsMax">릴스 최다 조회</th>
+      </tr></thead>
+      <tbody data-draw="store-body"></tbody>
+    </table>
+  </div>
+
+  <h2 class="ig-h" id="h-comment">▶ 코멘트</h2>
+  <div class="ig-comment" id="comment" data-draw="comment">—</div>
+
+  <details class="ig-note" id="defs" style="margin-top: var(--cds-gap-lg)">
+    <summary>숫자 기준 보기</summary>
+    <p>· 인스타 숫자는 메타 공식 Instagram API, 카톡 친구 수는 카카오톡 채널 공개 정보에서 직접 모아요. 매일 8·9·10·11·18시에 갱신돼요(11/19까지 기록은 경인담당 대시보드 값).</p><p>· 최근 게시는 그 계정이 직접 올린 글 기준이에요. 다른 계정이 올리고 공동 작성자(콜라보)로 넣은 글은 들어가지 않아요.</p>
+    <p>· 전주비 = 가장 최근 월요일 수치 − 그보다 7일 전 수치. 7일 전 기록이 없으면 그 이전 가장 가까운 날과 비교해요(위 기준 줄에 날짜가 나와요).</p>
+    <p>· 신장률 = 전주비 ÷ 비교일 수치. 이번 주 = 최신 수치 − 기준 월요일 수치.</p>
+    <p>· 최근 게시가 30일을 넘으면 빨간색으로 표시해요. 릴스 최다 조회는 그 지점 릴스 중 조회수가 가장 많은 것이고, 누르면 그 릴스로 가요.</p>
+  </details>
+</div>
+
+<script>
+window.IG = window.IG || {};
+IG.fmt = (v) => (v === null || v === undefined || Number.isNaN(v)) ? '—' : d3.format(',')(v);
+IG.sfmt = (v) => (v === null || v === undefined || Number.isNaN(v)) ? '—' : (v > 0 ? '+' : '') + d3.format(',')(v);
+IG.pfmt = (v) => (v === null || v === undefined || !isFinite(v)) ? '—' : (v > 0 ? '+' : '') + d3.format('.1f')(v * 100) + '%';
+IG.cls = (v) => (v === null || v === undefined || !isFinite(v) || v === 0) ? 'ig-flat' : (v > 0 ? 'ig-up' : 'ig-down');
+IG.rateColor = d3.scaleLinear().domain([-0.05, 0, 0.05]).range(['#F8696B', '#FFEB84', '#63BE7B']).clamp(true);
+IG.dow = (s) => '일월화수목금토'[new Date(s + 'T00:00:00Z').getUTCDay()];
+IG.md = (s) => s ? (+s.slice(5, 7)) + '/' + (+s.slice(8, 10)) + '(' + IG.dow(s) + ')' : '—';
+IG.STALE = 30;
+
+dash.calc('period', {
+  inputs: ['daily', 'latest'],
+  title: '비교 날짜',
+  description: '최신 기록일, 기준 월요일, 비교일(기준 7일 전 또는 그 이전 가장 가까운 기록일), 원본 갱신 시각',
+  fn: (daily, latest) => {
+    const dates = [...new Set(daily.map((r) => r.date))].sort();
+    if (!dates.length) return [];
+    const last = dates[dates.length - 1];
+    const mondays = dates.filter((d) => new Date(d + 'T00:00:00Z').getUTCDay() === 1);
+    const base = mondays.length ? mondays[mondays.length - 1] : last;
+    const t = new Date(base + 'T00:00:00Z'); t.setUTCDate(t.getUTCDate() - 7);
+    const target = t.toISOString().slice(0, 10);
+    const earlier = dates.filter((d) => d <= target);
+    const before = dates.filter((d) => d < base);
+    const prev = earlier.length ? earlier[earlier.length - 1] : (before.length ? before[0] : null);
+    const upd = latest.map((r) => r.updated).filter(Boolean).sort();
+    return [{ last, base, prev, updated: upd.length ? upd[upd.length - 1] : '' }];
+  }
+});
+
+dash.calc('snap', {
+  inputs: ['latest', 'daily', 'period'],
+  title: '지점별 최신값과 전주비',
+  description: '지점마다 최신 팔로워·카톡 친구·게시물, 기준 월요일 대비 비교일 차이(전주비), 신장률, 이번 주 변화, 최근 게시 후 지난 날수',
+  fn: (latest, daily, period) => {
+    if (!period || !period.length) return [];
+    const { last, base, prev } = period[0];
+    const at = (d) => { const m = new Map(); if (d) daily.filter((r) => r.date === d).forEach((r) => m.set(r.handle, r)); return m; };
+    const B = at(base), P = at(prev);
+    const num = (v) => (v === null || v === undefined || v === '') ? null : +v;
+    const diff = (a, b) => (a === null || b === null) ? null : a - b;
+    const rate = (d, b) => (d === null || !b) ? null : Math.round(d / b * 10000) / 10000;
+    const today = new Date(last + 'T00:00:00Z');
+    return latest.map((r) => {
+      const b = B.get(r.handle), p = P.get(r.handle);
+      const bf = b ? num(b.followers) : null, pf = p ? num(p.followers) : null;
+      const bk = b ? num(b.kakao) : null, pk = p ? num(p.kakao) : null;
+      const fd = prev ? diff(bf, pf) : null, kd = prev ? diff(bk, pk) : null;
+      const days = r.lastPost ? Math.round((today - new Date(r.lastPost + 'T00:00:00Z')) / 86400000) : null;
+      return {
+        team: r.team, store: r.store, handle: r.handle,
+        followers: num(r.followers), f_diff: fd, f_rate: rate(fd, pf), f_week: diff(num(r.followers), bf),
+        kakao: num(r.kakao), k_diff: kd, k_rate: rate(kd, pk), k_week: diff(num(r.kakao), bk),
+        posts: num(r.posts), lastPost: r.lastPost, days: days === null ? null : Math.max(0, days),
+        reelsMax: num(r.reelsMax), reelsUrl: r.reelsUrl || '',
+      };
+    });
+  }
+});
+
+dash.calc('teams', {
+  inputs: ['snap', 'daily', 'period'],
+  title: '담당별 합계',
+  description: '담당별 지점 수, 팔로워·카톡 친구·게시물 합계와 전주비·신장률, 30일 미게시 지점 수 (맨 위는 전체)',
+  fn: (snap, daily, period) => {
+    if (!snap || !snap.length || !period || !period.length) return [];
+    const { prev } = period[0];
+    const sumAt = (d, team, k) => d3.sum(daily.filter((r) => r.date === d && (!team || r.team === team)), (r) => +r[k] || 0);
+    const order = ['경인담당', '강남담당', '경원담당', '경북담당', '경남담당', '중부담당', '서부담당', '백화점담당'];
+    const agg = (team) => {
+      const rs = snap.filter((r) => !team || r.team === team);
+      const s = (k) => rs.some((r) => r[k] !== null) ? d3.sum(rs, (r) => r[k] || 0) : null;
+      const fd = s('f_diff'), kd = s('k_diff');
+      const pf = prev ? sumAt(prev, team, 'followers') : 0, pk = prev ? sumAt(prev, team, 'kakao') : 0;
+      return {
+        team: team || '전체', accounts: rs.length,
+        followers: s('followers'), f_diff: fd, f_rate: fd === null || !pf ? null : Math.round(fd / pf * 10000) / 10000, f_week: s('f_week'),
+        kakao: s('kakao'), k_diff: kd, k_rate: kd === null || !pk ? null : Math.round(kd / pk * 10000) / 10000, k_week: s('k_week'),
+        posts: s('posts'), stale: rs.filter((r) => r.days !== null && r.days > IG.STALE).length,
+      };
+    };
+    return [agg(''), ...order.map(agg)];
+  }
+});
+
+dash.calc('kpi', {
+  inputs: ['teams'],
+  title: '선택한 담당 요약',
+  description: '위 탭에서 고른 담당(또는 전체)의 합계 한 줄',
+  fn: (teams) => {
+    if (!teams || !teams.length) return [];
+    const t = dash.params().team || '전체';
+    return teams.filter((r) => r.team === t).slice(0, 1);
+  }
+});
+
+dash.calc('trend', {
+  inputs: ['daily'],
+  title: '날짜별 합계',
+  description: '고른 담당(또는 전체)의 날짜별 팔로워·카톡 친구 합계',
+  fn: (daily) => {
+    const t = dash.params().team || '';
+    const rs = daily.filter((r) => !t || r.team === t);
+    return d3.rollups(rs, (v) => ({ followers: d3.sum(v, (r) => +r.followers || 0), kakao: d3.sum(v, (r) => +r.kakao || 0) }), (r) => r.date)
+      .sort((a, b) => d3.ascending(a[0], b[0])).map(([date, v]) => ({ date, followers: v.followers, kakao: v.kakao }));
+  }
+});
+</script>
+
+<script>
+(() => {
+  const sync = () => {
+    const t = dash.params().team || '';
+    document.querySelectorAll('.ig-tab').forEach((b) => {
+      const on = (b.getAttribute('data-team') || '') === t;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  };
+  document.querySelectorAll('.ig-tab').forEach((b) => {
+    b.addEventListener('click', () => { dash.setParams({ team: b.getAttribute('data-team') || '' }); });
+  });
+  dash.onData(sync);
+
+  window.IG.sort = { k: 'followers', dir: -1 };
+  window.IG.q = '';
+  document.querySelectorAll('#store-table th.ig-sort').forEach((th) => {
+    th.addEventListener('click', () => {
+      const k = th.getAttribute('data-k');
+      if (IG.sort.k === k) IG.sort.dir *= -1; else IG.sort = { k, dir: (k === 'team' || k === 'store') ? 1 : -1 };
+      document.querySelectorAll('#store-table th.ig-sort').forEach((h) => {
+        h.setAttribute('aria-sort', h.getAttribute('data-k') === IG.sort.k ? (IG.sort.dir < 0 ? 'descending' : 'ascending') : 'none');
+      });
+      dash.draw('store-body');
+    });
+  });
+  document.querySelectorAll('#store-search').forEach((inp) => {
+    inp.addEventListener('input', () => { IG.q = inp.value.trim().toLowerCase(); dash.draw('store-body'); dash.draw('store-count'); });
+  });
+})();
+</script>
+
+<script>
+const ok = (id) => dash.data(id).status === 'ok' && dash.data(id).data && dash.data(id).data.length;
+const kpiRow = () => ok('kpi') ? dash.data('kpi').data[0] : null;
+const setNum = (key, f, colored) => (el) => {
+  const r = kpiRow();
+  el.textContent = r ? f(r[key]) : '—';
+  if (colored) el.className = r ? IG.cls(r[key]) : '';
+};
+dash.draw('k-fol', setNum('followers', IG.fmt));
+dash.draw('k-fold', setNum('f_diff', IG.sfmt, true));
+dash.draw('k-folr', setNum('f_rate', IG.pfmt, true));
+dash.draw('k-kak', setNum('kakao', IG.fmt));
+dash.draw('k-kakd', setNum('k_diff', IG.sfmt, true));
+dash.draw('k-kakr', setNum('k_rate', IG.pfmt, true));
+dash.draw('k-wk', setNum('f_week', IG.sfmt));
+dash.draw('k-wkk', setNum('k_week', IG.sfmt, true));
+dash.draw('k-stale', setNum('stale', IG.fmt));
+dash.draw('k-acct', setNum('accounts', IG.fmt));
+
+dash.draw('period', (el) => {
+  if (!ok('period')) { el.textContent = '—'; return; }
+  const p = dash.data('period').data[0];
+  el.textContent = p.prev ? (IG.md(p.base) + ' vs ' + IG.md(p.prev)) : (IG.md(p.base) + ' — 비교할 이전 기록이 아직 없어요');
+});
+dash.draw('lastrun', (el) => {
+  if (!ok('period')) { el.textContent = '—'; return; }
+  const p = dash.data('period').data[0];
+  el.textContent = p.updated || '—';
+});
+
+dash.draw('takeaway', (el) => {
+  if (!ok('kpi') || !ok('period')) { el.textContent = '—'; return; }
+  const r = kpiRow(), p = dash.data('period').data[0];
+  const who = r.team === '전체' ? '전국 ' + r.accounts + '개 지점' : r.team + ' ' + r.accounts + '개 지점';
+  let s = who + ' 인스타 팔로워 ' + IG.fmt(r.followers) + '명, 카톡 친구 ' + IG.fmt(r.kakao) + '명이에요.';
+  if (p.prev && r.f_diff !== null) s += ' 팔로워 전주비 ' + IG.sfmt(r.f_diff) + '명(' + IG.pfmt(r.f_rate) + '), 카톡 ' + IG.sfmt(r.k_diff) + '명(' + IG.pfmt(r.k_rate) + ')이에요.';
+  el.textContent = s;
+});
+
+const td = (tr, txt, cls, bg) => { const c = document.createElement('td'); c.textContent = txt; if (cls) c.className = cls; if (bg) { c.style.background = bg; c.style.color = '#222'; } tr.appendChild(c); return c; };
+const rateCell = (tr, v) => td(tr, IG.pfmt(v), '', (v === null || v === undefined) ? null : IG.rateColor(v));
+
+dash.draw('team-body', (tb) => {
+  tb.replaceChildren();
+  if (!ok('teams')) return;
+  const t = dash.params().team || '전체';
+  dash.data('teams').data.forEach((r) => {
+    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.team);
+    if (r.team === '전체') tr.className = 'ig-total';
+    if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
+    td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
+    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
+    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); rateCell(tr, r.k_rate);
+    td(tr, IG.fmt(r.posts)); td(tr, IG.fmt(r.stale), r.stale > 0 ? 'ig-bad' : '');
+    tb.appendChild(tr);
+  });
+});
+
+const storeRows = () => {
+  if (!ok('snap')) return [];
+  const t = dash.params().team || '';
+  const q = IG.q || '';
+  const rs = dash.data('snap').data.filter((r) => (!t || r.team === t) && (!q || (r.store || '').toLowerCase().includes(q) || r.handle.toLowerCase().includes(q)));
+  const { k, dir } = IG.sort;
+  return rs.slice().sort((a, b) => {
+    const x = a[k], y = b[k];
+    if (x === null || x === undefined) return 1; if (y === null || y === undefined) return -1;
+    return (typeof x === 'string' ? x.localeCompare(y, 'ko') : x - y) * dir;
+  });
+};
+dash.draw('store-body', (tb) => {
+  tb.replaceChildren();
+  storeRows().forEach((r) => {
+    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle);
+    td(tr, r.team, 'ig-c');
+    const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; c.appendChild(a);
+    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.sfmt(r.f_week), IG.cls(r.f_week));
+    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
+    td(tr, IG.fmt(r.posts));
+    td(tr, r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'), r.days !== null && r.days > IG.STALE ? 'ig-bad' : '');
+    const rc = td(tr, '');
+    if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
+    tb.appendChild(tr);
+  });
+});
+dash.draw('store-count', (el) => { el.textContent = ok('snap') ? storeRows().length + '개' : '—'; });
+
+dash.draw('trend-label', (el) => { const t = dash.params().team; el.textContent = '(' + (t || '전체') + ')'; });
+dash.draw('leg1', (el) => { el.style.background = dash.colors[0]; });
+dash.draw('leg2', (el) => { el.style.background = dash.colors[1]; });
+dash.draw('trend', (el) => {
+  const d = dash.data('trend');
+  if (d.status !== 'ok' || !d.data.length) { el.textContent = d.status === 'error' ? '불러오지 못했어요' : '—'; return; }
+  el.replaceChildren();
+  const rows = d.data;
+  const W = el.clientWidth || 600, H = 210, m = { t: 14, r: 64, b: 26, l: 64 };
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', '날짜별 인스타 팔로워와 카톡 친구 합계 추이');
+  const x = d3.scalePoint().domain(rows.map((r) => r.date)).range([m.l, W - m.r]).padding(0.1);
+  const yr = (k) => { const e = d3.extent(rows, (r) => r[k]); const pad = Math.max(1, (e[1] - e[0]) * 0.15 || e[1] * 0.01); return d3.scaleLinear().domain([e[0] - pad, e[1] + pad]).nice().range([H - m.b, m.t]); };
+  const yf = yr('followers'), yk = yr('kakao');
+  const every = Math.max(1, Math.ceil(rows.length / Math.max(2, Math.floor(W / 70))));
+  svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat(IG.md).tickValues(x.domain().filter((_, i) => i % every === 0))).call((g) => g.select('.domain').style('stroke', 'var(--cds-chart-axis)')).call((g) => g.selectAll('line').style('stroke', 'var(--cds-chart-axis)'));
+  svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(yf).ticks(4).tickFormat(d3.format(','))).call((g) => g.select('.domain').remove()).call((g) => g.selectAll('line').style('stroke', 'var(--cds-chart-grid)'));
+  svg.append('g').attr('transform', `translate(${W - m.r},0)`).call(d3.axisRight(yk).ticks(4).tickFormat(d3.format(','))).call((g) => g.select('.domain').remove()).call((g) => g.selectAll('line').style('stroke', 'var(--cds-chart-grid)'));
+  const draw = (k, y, color) => {
+    svg.append('path').datum(rows).attr('fill', 'none').style('stroke', color).attr('stroke-width', 2).attr('d', d3.line().x((r) => x(r.date)).y((r) => y(r[k])));
+    svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.date)).attr('cy', (r) => y(r[k])).attr('r', 3).style('fill', color);
+  };
+  draw('followers', yf, dash.colors[0]); draw('kakao', yk, dash.colors[1]);
+  const tip = document.createElement('div'); tip.className = 'ig-tip'; tip.hidden = true; el.appendChild(tip);
+  const step = rows.length > 1 ? (x(rows[1].date) - x(rows[0].date)) : W;
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.date) - step / 2).attr('y', m.t).attr('width', step).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+    .on('mouseenter', (ev, r) => { tip.hidden = false; tip.textContent = IG.md(r.date) + ' · 팔로워 ' + IG.fmt(r.followers) + ' · 카톡 ' + IG.fmt(r.kakao); const bx = el.getBoundingClientRect(); tip.style.left = Math.max(0, Math.min(x(r.date) / W * bx.width - 90, bx.width - 230)) + 'px'; tip.style.top = '0px'; })
+    .on('mouseleave', () => { tip.hidden = true; });
+});
+
+dash.draw('comment', (el) => {
+  el.replaceChildren();
+  if (!ok('snap') || !ok('period')) { el.textContent = '—'; return; }
+  const t = dash.params().team || '';
+  const p = dash.data('period').data[0];
+  const rs = dash.data('snap').data.filter((r) => !t || r.team === t);
+  const line = (s) => { const q = document.createElement('p'); q.textContent = s; el.appendChild(q); };
+  const top = (k, n, f) => rs.filter((r) => r[k] !== null).sort((a, b) => b[k] - a[k]).slice(0, n).map((r) => r.store + ' ' + f(r[k])).join(', ');
+  if (p.prev) {
+    line('· 팔로워 전주비 상위: ' + top('f_diff', 3, IG.sfmt));
+    const fdown = rs.filter((r) => r.f_diff !== null && r.f_diff < 0);
+    line('· 팔로워가 줄어든 지점 ' + fdown.length + '개' + (fdown.length ? ' (' + fdown.sort((a, b) => a.f_diff - b.f_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.f_diff)).join(', ') + ')' : ''));
+    const kdown = rs.filter((r) => r.k_diff !== null && r.k_diff < 0);
+    line('· 카톡 친구가 줄어든 지점 ' + kdown.length + '개 / ' + rs.length + '개' + (kdown.length ? ' (많이 준 곳: ' + kdown.sort((a, b) => a.k_diff - b.k_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.k_diff)).join(', ') + ')' : ''));
+  }
+  const stale = rs.filter((r) => r.days !== null && r.days > IG.STALE).sort((a, b) => b.days - a.days);
+  line('· 30일 넘게 게시 없음 ' + stale.length + '개' + (stale.length ? ' (' + stale.slice(0, 6).map((r) => r.store + ' ' + r.days + '일').join(', ') + (stale.length > 6 ? ' 외' : '') + ')' : ''));
+  line('· 이번 주(월요일 이후) 팔로워가 가장 많이 는 곳: ' + top('f_week', 3, IG.sfmt));
+});
+</script>
+
+</body></html>
