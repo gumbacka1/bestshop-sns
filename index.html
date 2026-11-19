@@ -88,11 +88,6 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-num" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</div>
       <div class="ig-card-chg">전주비 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span> · 신장률 <span data-draw="k-folr" data-source="kpi" data-field="f_rate" data-row="0">—</span></div>
     </div>
-    <div class="ig-card" id="card-kakao">
-      <div class="ig-card-label">카톡 친구</div>
-      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
-      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span></div>
-    </div>
     <div class="ig-card" id="card-week">
       <div class="ig-card-label">이번 주 팔로워 (월요일 이후)</div>
       <div class="ig-card-num" data-draw="k-wk" data-source="kpi" data-field="f_week" data-row="0">—</div>
@@ -102,6 +97,11 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-label">30일 넘게 게시 없음</div>
       <div class="ig-card-num" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</div>
       <div class="ig-card-chg ig-flat"><span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>개 지점 중</div>
+    </div>
+    <div class="ig-card" id="card-kakao">
+      <div class="ig-card-label">카톡 친구</div>
+      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
+      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span></div>
     </div>
   </div>
   <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
@@ -115,12 +115,14 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-grp" data-field="followers">팔로워</th>
         <th data-field="f_diff">전주비</th>
         <th data-field="f_rate">신장률</th>
-        <th data-field="following">팔로잉</th>
+        <th class="ig-grp" data-field="following">팔로잉</th>
+        <th data-field="fl_diff">전주비</th>
+        <th data-field="fl_rate">신장률</th>
+        <th class="ig-grp" data-field="posts">게시물</th>
+        <th data-field="stale">30일 미게시</th>
         <th class="ig-grp" data-field="kakao">카톡 친구</th>
         <th data-field="k_diff">전주비</th>
         <th data-field="k_rate">신장률</th>
-        <th class="ig-grp" data-field="posts">게시물</th>
-        <th data-field="stale">30일 미게시</th>
       </tr></thead>
       <tbody data-draw="team-body"></tbody>
     </table>
@@ -140,12 +142,13 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort" data-field="f_diff" data-k="f_diff">전주비</th>
         <th class="ig-sort" data-field="f_rate" data-k="f_rate">신장률</th>
         <th class="ig-sort" data-field="f_week" data-k="f_week">이번 주</th>
-        <th class="ig-sort" data-field="following" data-k="following">팔로잉</th>
-        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
-        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
+        <th class="ig-sort ig-grp" data-field="following" data-k="following">팔로잉</th>
+        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">전주비</th>
         <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
         <th class="ig-sort" data-field="days" data-k="days">최근 게시</th>
         <th class="ig-sort" data-field="reelsMax" data-k="reelsMax">릴스 최다 조회</th>
+        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
+        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
       </tr></thead>
       <tbody data-draw="store-body"></tbody>
     </table>
@@ -211,11 +214,12 @@ dash.calc('snap', {
       const b = B.get(r.handle), p = P.get(r.handle);
       const bf = b ? num(b.followers) : null, pf = p ? num(p.followers) : null;
       const bk = b ? num(b.kakao) : null, pk = p ? num(p.kakao) : null;
-      const fd = prev ? diff(bf, pf) : null, kd = prev ? diff(bk, pk) : null;
+      const bl = b ? num(b.following) : null, pl = p ? num(p.following) : null;
+      const fd = prev ? diff(bf, pf) : null, kd = prev ? diff(bk, pk) : null, ld = prev ? diff(bl, pl) : null;
       const days = r.lastPost ? Math.round((today - new Date(r.lastPost + 'T00:00:00Z')) / 86400000) : null;
       return {
         team: r.team, store: r.store, handle: r.handle,
-        followers: num(r.followers), following: num(r.following), f_diff: fd, f_rate: rate(fd, pf), f_week: diff(num(r.followers), bf),
+        followers: num(r.followers), following: num(r.following), fl_diff: ld, fl_rate: rate(ld, pl), f_diff: fd, f_rate: rate(fd, pf), f_week: diff(num(r.followers), bf),
         kakao: num(r.kakao), k_diff: kd, k_rate: rate(kd, pk), k_week: diff(num(r.kakao), bk),
         posts: num(r.posts), lastPost: r.lastPost, days: days === null ? null : Math.max(0, days),
         reelsMax: num(r.reelsMax), reelsUrl: r.reelsUrl || '',
@@ -236,11 +240,12 @@ dash.calc('teams', {
     const agg = (team) => {
       const rs = snap.filter((r) => !team || r.team === team);
       const s = (k) => rs.some((r) => r[k] !== null) ? d3.sum(rs, (r) => r[k] || 0) : null;
-      const fd = s('f_diff'), kd = s('k_diff');
+      const fd = s('f_diff'), kd = s('k_diff'), ld = s('fl_diff');
+      const pl = prev ? sumAt(prev, team, 'following') : 0;
       const pf = prev ? sumAt(prev, team, 'followers') : 0, pk = prev ? sumAt(prev, team, 'kakao') : 0;
       return {
         team: team || '전체', accounts: rs.length,
-        followers: s('followers'), following: s('following'), f_diff: fd, f_rate: fd === null || !pf ? null : Math.round(fd / pf * 10000) / 10000, f_week: s('f_week'),
+        followers: s('followers'), following: s('following'), fl_diff: ld, fl_rate: ld === null || !pl ? null : Math.round(ld / pl * 10000) / 10000, f_diff: fd, f_rate: fd === null || !pf ? null : Math.round(fd / pf * 10000) / 10000, f_week: s('f_week'),
         kakao: s('kakao'), k_diff: kd, k_rate: kd === null || !pk ? null : Math.round(kd / pk * 10000) / 10000, k_week: s('k_week'),
         posts: s('posts'), stale: rs.filter((r) => r.days !== null && r.days > IG.STALE).length,
       };
@@ -357,9 +362,10 @@ dash.draw('team-body', (tb) => {
     if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
     if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
     td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
-    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.fmt(r.following));
-    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); rateCell(tr, r.k_rate);
+    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
+    td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff)); rateCell(tr, r.fl_rate);
     td(tr, IG.fmt(r.posts)); td(tr, IG.fmt(r.stale), r.stale > 0 ? 'ig-bad' : '');
+    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); rateCell(tr, r.k_rate);
     tb.appendChild(tr);
   });
 });
@@ -383,12 +389,13 @@ dash.draw('store-body', (tb) => {
     const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb';
     td(tr, r.team, 'ig-c');
     const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; c.appendChild(a);
-    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.sfmt(r.f_week), IG.cls(r.f_week)); td(tr, IG.fmt(r.following));
-    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
+    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.sfmt(r.f_week), IG.cls(r.f_week));
+    td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff));
     td(tr, IG.fmt(r.posts));
     td(tr, r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'), r.days !== null && r.days > IG.STALE ? 'ig-bad' : '');
     const rc = td(tr, '');
     if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
+    td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
     tb.appendChild(tr);
   });
 });
