@@ -8,7 +8,7 @@
 --cds-font-size-title:26px;--cds-font-size-body:14px;--cds-font-size-caption:12.5px;--cds-font-size-heading:17px;--cds-font-weight-medium:600;
 --cds-gap-xs:4px;--cds-gap-sm:10px;--cds-gap-md:16px;--cds-gap-lg:28px;--cds-pad-md:14px;--cds-radius:8px;
 --cds-text-secondary:#6b6b6b;--cds-surface-popover:#fff;--cds-border:#ddd;--cds-shadow-popover:0 2px 8px rgba(0,0,0,.15);--cds-chart-axis:#bbb;--cds-chart-grid:#eee}
-body{margin:0;padding:20px;background:var(--color-bg)} .ig{max-width:1200px;margin:0 auto}
+body{margin:0;padding:20px;background:var(--color-bg)} @media (max-width:640px){body{padding:10px}} .ig{max-width:1200px;margin:0 auto}
 </style>
 <script>
 /* 작은 대시보드 엔진: data/daily.json, data/latest.json 을 읽어 계산·그리기 */
@@ -64,6 +64,27 @@ window.addEventListener('load',()=>dash._load());
 .ig-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: 6px; padding: 4px 8px; font-size: 12px; white-space: nowrap; }
 .ig-comment { margin-top: var(--cds-gap-sm); font-size: var(--cds-font-size-body); line-height: 1.6; }
 .ig-comment p { margin: 2px 0; }
+.ig-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 4px 10px; border: 1px solid var(--color-border-line); border-radius: 999px; background: var(--color-panel); color: var(--color-fg); cursor: pointer; margin-left: 6px; vertical-align: middle; }
+#team-table td:first-child, #team-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-bg); }
+#team-table th:first-child { background: #EDEDED; }
+#team-table tr.ig-total td:first-child { background: var(--color-panel); }
+#team-table tr.ig-gb td:first-child { background: #FFF4D6; }
+@media (max-width: 640px) {
+  .ig-title { font-size: 20px; }
+  .ig-sub { font-size: 13px; }
+  .ig-tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .ig-tab { flex: 0 0 auto; }
+  .ig-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ig-card { padding: 10px; }
+  .ig-card-num { font-size: 22px; }
+  .ig-table { font-size: 11.5px; }
+  .ig-table th, .ig-table td { padding: 4px 6px; }
+  #store-table th:first-child, #store-table td:first-child { display: none; }
+  #store-table td:nth-child(2), #store-table th:nth-child(2) { position: sticky; left: 0; z-index: 1; background: var(--color-bg); }
+  #store-table th:nth-child(2) { background: #EDEDED; }
+  #store-table tr.ig-gb td:nth-child(2) { background: #FFF4D6; }
+  .ig-search { min-width: 0; flex: 1; }
+}
 </style>
 
 <div class="ig">
@@ -106,7 +127,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span></h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 원래 순서</button></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
@@ -131,6 +152,7 @@ window.addEventListener('load',()=>dash._load());
   <h2 class="ig-h" id="h-store">지점별 현황 <span class="ig-note" data-draw="store-count">—</span></h2>
   <div class="ig-tools">
     <input class="ig-search" id="store-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
+    <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button>
     <span class="ig-note">표 머리를 누르면 정렬돼요 · 지점명을 누르면 인스타로 가요</span>
   </div>
   <div class="ig-wrap">
@@ -304,6 +326,17 @@ dash.calc('trend', {
       dash.draw('team-body');
     });
   });
+  document.querySelectorAll('#team-reset').forEach((b) => b.addEventListener('click', () => {
+    IG.tsort = { k: null, dir: -1 };
+    document.querySelectorAll('#team-table th.ig-sort').forEach((h) => h.setAttribute('aria-sort', 'none'));
+    dash.draw('team-body');
+  }));
+  document.querySelectorAll('#store-reset').forEach((b) => b.addEventListener('click', () => {
+    IG.sort = { k: 'followers', dir: -1 };
+    document.querySelectorAll('#store-table th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === 'followers' ? 'descending' : 'none'));
+    document.querySelectorAll('#store-search').forEach((i) => { i.value = ''; }); IG.q = '';
+    dash.draw('store-body'); dash.draw('store-count');
+  }));
   window.IG.sort = { k: 'followers', dir: -1 };
   window.IG.q = '';
   document.querySelectorAll('#store-table th.ig-sort').forEach((th) => {
