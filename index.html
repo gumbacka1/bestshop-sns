@@ -106,23 +106,23 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황</h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
-        <th data-field="team">담당</th>
-        <th data-field="accounts">지점</th>
-        <th class="ig-grp" data-field="followers">팔로워</th>
-        <th data-field="f_diff">전주비</th>
-        <th data-field="f_rate">신장률</th>
-        <th class="ig-grp" data-field="following">팔로잉</th>
-        <th data-field="fl_diff">전주비</th>
-        <th data-field="fl_rate">신장률</th>
-        <th class="ig-grp" data-field="posts">게시물</th>
-        <th data-field="stale">30일 미게시</th>
-        <th class="ig-grp" data-field="kakao">카톡 친구</th>
-        <th data-field="k_diff">전주비</th>
-        <th data-field="k_rate">신장률</th>
+        <th class="ig-sort" data-field="team" data-k="team">담당</th>
+        <th class="ig-sort" data-field="accounts" data-k="accounts">지점</th>
+        <th class="ig-sort ig-grp" data-field="followers" data-k="followers">팔로워</th>
+        <th class="ig-sort" data-field="f_diff" data-k="f_diff">전주비</th>
+        <th class="ig-sort" data-field="f_rate" data-k="f_rate">신장률</th>
+        <th class="ig-sort ig-grp" data-field="following" data-k="following">팔로잉</th>
+        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">전주비</th>
+        <th class="ig-sort" data-field="fl_rate" data-k="fl_rate">신장률</th>
+        <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
+        <th class="ig-sort" data-field="stale" data-k="stale">30일 미게시</th>
+        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
+        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
+        <th class="ig-sort" data-field="k_rate" data-k="k_rate">신장률</th>
       </tr></thead>
       <tbody data-draw="team-body"></tbody>
     </table>
@@ -293,6 +293,17 @@ dash.calc('trend', {
   });
   dash.onData(sync);
 
+  window.IG.tsort = { k: null, dir: -1 };
+  document.querySelectorAll('#team-table th.ig-sort').forEach((th) => {
+    th.addEventListener('click', () => {
+      const k = th.getAttribute('data-k');
+      if (IG.tsort.k === k) IG.tsort.dir *= -1; else IG.tsort = { k, dir: k === 'team' ? 1 : -1 };
+      document.querySelectorAll('#team-table th.ig-sort').forEach((h) => {
+        h.setAttribute('aria-sort', h.getAttribute('data-k') === IG.tsort.k ? (IG.tsort.dir < 0 ? 'descending' : 'ascending') : 'none');
+      });
+      dash.draw('team-body');
+    });
+  });
   window.IG.sort = { k: 'followers', dir: -1 };
   window.IG.q = '';
   document.querySelectorAll('#store-table th.ig-sort').forEach((th) => {
@@ -357,7 +368,14 @@ dash.draw('team-body', (tb) => {
   tb.replaceChildren();
   if (!ok('teams')) return;
   const t = dash.params().team || '전체';
-  dash.data('teams').data.forEach((r) => {
+  const all = dash.data('teams').data, ts = IG.tsort || {};
+  const rows = [all[0], ...all.slice(1).sort((a, b) => {
+    if (!ts.k) return 0;
+    const x = a[ts.k], y = b[ts.k];
+    if (x === null || x === undefined) return 1; if (y === null || y === undefined) return -1;
+    return (typeof x === 'string' ? x.localeCompare(y, 'ko') : x - y) * ts.dir;
+  })];
+  rows.forEach((r) => {
     const tr = document.createElement('tr'); tr.setAttribute('data-key', r.team);
     if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
     if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
