@@ -10,9 +10,16 @@ body{font-family:"LG스마트체2.0 Regular","LG스마트체","Pretendard","Malg
 h2{font-size:16px;margin:22px 0 8px} table{border-collapse:collapse;width:100%;font-size:12.5px}
 th{background:#EDEDED;padding:6px 8px;border-bottom:1px solid #ddd;white-space:nowrap} td{padding:5px 8px;border-bottom:1px solid #eee;white-space:nowrap}
 a{color:#2E6BE6} ul{margin:4px 0 0 18px;padding:0;font-size:13.5px;line-height:1.8}
+.memo{width:100%;box-sizing:border-box;min-height:260px;font:inherit;font-size:14.5px;line-height:1.7;padding:12px;border:1px solid #d6d6d2;border-radius:8px;background:#FFFDF5;resize:vertical}
+.mbar{display:flex;gap:8px;align-items:center;margin:6px 0 0;font-size:12.5px;color:#6b6b6b;flex-wrap:wrap}
+.mbtn{font:inherit;font-size:12.5px;padding:4px 12px;border:1px solid #d6d6d2;border-radius:999px;background:#f7f7f5;cursor:pointer}
 </style></head><body><div class="w">
 <h1>🔧 관리자 화면</h1><p class="sub">이 주소는 회원님만 알고 계세요. 숫자를 바꾸는 기능은 없고, 수집 상태만 보여 줘요. <a href="./">← 대시보드로</a></p>
 <div class="cards" id="cards"></div>
+<h2>📝 메모</h2>
+<textarea class="memo" id="memo" placeholder="여기에 자유롭게 메모하세요. 쓰는 대로 자동 저장돼요."></textarea>
+<div class="mbar"><span id="mstat">—</span><button class="mbtn" id="mcopy" type="button">복사</button><button class="mbtn" id="msave" type="button">파일로 저장</button></div>
+<p class="sub" style="margin-top:6px">※ 메모는 지금 쓰는 이 기기·이 브라우저에만 저장돼요(휴대폰과 PC는 따로). 다른 사람에게는 보이지 않아요.</p>
 <h2>인스타 키 만료</h2><div id="key"></div>
 <h2>바로가기</h2>
 <ul>
@@ -55,5 +62,13 @@ const KEY_END=new Date('2027-02-18T02:16:00+09:00');
  document.getElementById('watch').innerHTML=wr.length?wr.map(x=>`<tr><td>${x.store}</td><td>${x.t}</td><td>${ty[x.type]||x.type||''}</td><td><a href="${x.url}" target="_blank">열기 ↗</a></td></tr>`).join(''):'<tr><td colspan="4">직접 수집이 시작되면(오늘 아침부터) 여기에 최근 글이 나와요.</td></tr>';
  const T=['경인담당','강남담당','경원담당','경북담당','경남담당','중부담당','서부담당','백화점담당'];
  document.getElementById('teams').innerHTML=T.map(t=>{const rs=L.filter(r=>r.team===t);return `<tr><td>${t}</td><td>${rs.length}</td><td>${hasIgDate?rs.filter(r=>r.igDate===today).length:'—'}</td><td>${rs.filter(r=>r.kakao!=null).length}</td></tr>`}).join('');
+})();
+</script><script>
+(()=>{const K='bestshop_admin_memo',ta=document.getElementById('memo'),st=document.getElementById('mstat');
+ const show=t=>{st.textContent=t};
+ try{const v=localStorage.getItem(K);if(v){ta.value=v;const t=localStorage.getItem(K+'_at');show(t?'마지막 저장 '+t:'저장됨')}else show('아직 메모 없음')}catch(e){show('이 브라우저에서는 자동 저장이 안 돼요 — "파일로 저장"을 써 주세요')}
+ let tm;ta.addEventListener('input',()=>{show('저장 중…');clearTimeout(tm);tm=setTimeout(()=>{try{const now=new Date().toLocaleString('ko-KR',{hour12:false});localStorage.setItem(K,ta.value);localStorage.setItem(K+'_at',now);show('마지막 저장 '+now)}catch(e){show('저장 실패 — "파일로 저장"을 써 주세요')}},500)});
+ document.getElementById('mcopy').onclick=async()=>{try{await navigator.clipboard.writeText(ta.value);show('복사했어요')}catch(e){ta.select();document.execCommand('copy');show('복사했어요')}};
+ document.getElementById('msave').onclick=()=>{const d=new Date(),y=String(d.getFullYear()).slice(2),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ta.value],{type:'text/plain;charset=utf-8'}));a.download='SNS대시보드_메모_'+y+m+dd+'_v1.txt';a.click()};
 })();
 </script></body></html>
