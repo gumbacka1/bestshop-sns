@@ -35,10 +35,15 @@ jobs:
       - run: pip install playwright openpyxl
       - uses: actions/download-artifact@v4
         with: { path: parts }
-      - run: python scripts/review_gh.py merge
-      - run: |
+      - run: |   # 261120: 저장 충돌 방지 — 매번 최신 데이터를 받아 그 위에서 다시 합치고 올림
           git config user.name "review-bot"; git config user.email "review-bot@users.noreply.github.com"
-          git add data/review_hist.json data/reviews.json
-          git diff --cached --quiet && exit 0
-          git commit -m "리뷰 수집 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python scripts/review_gh.py merge
+            git add data/review_hist.json data/reviews.json
+            git diff --cached --quiet && exit 0
+            git commit -q -m "리뷰 수집 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+            git push -q origin HEAD:main && exit 0
+            sleep 7
+          done
+          exit 1

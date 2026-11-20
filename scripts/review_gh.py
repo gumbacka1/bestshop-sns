@@ -47,11 +47,13 @@ def collect(part, parts):
         for k, s in enumerate(ss, 1):
             r = {}
             if s["nv"].isdigit():
-                since = nv_t if (s["name"] in h.get("nv", {}) and not full) else rc.LG_START
+                # 블로그 날짜 수정(261120) 전에 센 지점은 한 번 11/1부터 다시 셈
+                redo = full or s["name"] not in h.get("blog_v2", [])
+                since = nv_t if (s["name"] in h.get("nv", {}) and not redo) else rc.LG_START
                 for _ in range(2):
                     try:
                         d, vt, bt = rc.read_nv_dates(nvp, s["nv"], since, debug=(debug and k <= 3))
-                        r.update(nv=d, nv_since=since, visit=vt, blog=bt)
+                        r.update(nv=d, nv_since=since, visit=vt, blog=bt, blog_v2=True)
                         break
                     except Exception as e:
                         print("   네이버 다시 시도:", s["name"], str(e)[:120]); time.sleep(5)
@@ -92,6 +94,8 @@ def merge():
                 days = h[key].setdefault(n, {})
                 for d in set(r[key]) | {x for x in days if x >= r[key + "_since"]}:
                     days[d] = r[key].get(d, [0, 0])
+        if r.get("blog_v2") and n not in h.setdefault("blog_v2", []):
+            h["blog_v2"].append(n)
         cum = h["cum"].setdefault(n, {})
         if r.get("visit") is not None or r.get("blog") is not None:
             cum[today] = [r.get("visit"), r.get("blog")]
