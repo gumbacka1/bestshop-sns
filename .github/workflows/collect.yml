@@ -2,10 +2,11 @@ name: SNS 수집
 
 on:
   schedule:
-    # 한국 시각 8·9·10·15·17·18·20시 (깃허브는 UTC 기준, 몇 분~수십 분 늦게 돌 수 있어요)
+    # 한국 시각 6·7·8·9·15·17·18·20시 (깃허브는 UTC 기준, 몇 분~수십 분 늦게 돌 수 있어요)
+    - cron: '3 21 * * *'
+    - cron: '3 22 * * *'
     - cron: '3 23 * * *'
     - cron: '3 0 * * *'
-    - cron: '3 1 * * *'
     - cron: '3 6 * * *'
     - cron: '3 8 * * *'
     - cron: '3 9 * * *'
@@ -35,14 +36,14 @@ jobs:
         run: |
           H=$(TZ=Asia/Seoul date +%-H)
           if [ -n "${{ github.event.inputs.hour }}" ]; then H=${{ github.event.inputs.hour }}; fi
-          # 표: 시 | 카톡 | 인스타 일반 | 내 권역
-          if   [ $H -lt 9 ];  then K=1; M=89; W=0
-          elif [ $H -lt 10 ]; then K=0; M=89; W=1
-          elif [ $H -lt 15 ]; then K=1; M=89; W=0
-          elif [ $H -lt 17 ]; then K=1; M=89; W=1
-          elif [ $H -lt 18 ]; then K=0; M=89; W=0
-          elif [ $H -lt 20 ]; then K=1; M=0;  W=1
-          else                     K=0; M=0;  W=1
+          # 표: 시 | 카톡(K=1 건너뜀) | 인스타 일반 최대 개수(M) | 내 권역(W)
+          # 6·7·8시 100개씩 → 297개를 9시 전에 완료, 9·15·17시는 빠진 곳 보충
+          if   [ $H -lt 9 ];  then K=1; M=100; W=0
+          elif [ $H -lt 15 ]; then K=0; M=90;  W=1
+          elif [ $H -lt 17 ]; then K=1; M=100; W=1
+          elif [ $H -lt 18 ]; then K=0; M=100; W=0
+          elif [ $H -lt 20 ]; then K=1; M=0;   W=1
+          else                     K=0; M=0;   W=1
           fi
           echo "skip_kakao=$K" >> $GITHUB_OUTPUT
           echo "ig_max=$M" >> $GITHUB_OUTPUT
