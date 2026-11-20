@@ -39,6 +39,19 @@ with sync_playwright() as p:
         _, _, lg, nv = stores[name][:4]
         print(f"\n■ {name} (정답 네이버 {KEY[name][0]} / 홈페이지 {KEY[name][1]})")
         pg = b.new_page(user_agent=rc.MOBILE_UA, locale="ko-KR")
+        bag = {}
+        def walk(o):
+            if isinstance(o, dict):
+                if "visited" in o and "created" in o and o.get("id"):
+                    bag[o["id"]] = (o["visited"], o["created"])
+                for v in o.values(): walk(v)
+            elif isinstance(o, list):
+                for v in o: walk(v)
+        def on_resp(r):
+            if "graphql" in r.url:
+                try: walk(r.json())
+                except Exception: pass
+        pg.on("response", on_resp)
         pg.goto(f"https://m.place.naver.com/place/{nv}/review/visitor?reviewSort=recent", wait_until="domcontentloaded", timeout=30000); pg.wait_for_timeout(3000)
         expand(pg, kd, "네이버 방문자", k == 0)
         body = pg.inner_text("body"); ds = kd(body)
@@ -46,15 +59,15 @@ with sync_playwright() as p:
         print(f"   네이버 방문자 11/1~11/19 = {n}  (11/20 {ds.count('2026-11-20')}, 날짜별 {sorted({d: ds.count(d) for d in set(ds) if d >= SINCE}.items())})")
         st = pg.evaluate("() => JSON.stringify(window.__APOLLO_STATE__ || {})")
         cr = re.findall(r'"created":"([^"]+)"', st); vi = re.findall(r'"visited":"([^"]+)"', st)
-        print(f"   [작성일] created {len(cr)}개 예시 {cr[:4]} / visited {len(vi)}개 예시 {vi[:4]}")
-        if k == 0:
-            j = st.find('"created"'); print("   [작성일 구조]", st[max(0, j - 400):j + 200])
         def nov(v):
             m = re.match(r"(\d{1,2})\.(\d{1,2})\.", v)
             if m: return "2026-%02d-%02d" % (int(m.group(1)), int(m.group(2)))
             m = re.match(r"(\d{4})-(\d{2})-(\d{2})", v)
             return m.group(0) if m else ""
-        print(f"   [작성일 기준] 11/1~11/19 = {sum(1 for v in cr if SINCE <= nov(v) <= UNTIL)}")
+        try: walk(json.loads(st))
+        except Exception: pass
+        cv = [(nov(v), nov(c)) for v, c in bag.values()]
+        print(f"   [작성일 기준·리뷰만] 모은 리뷰 {len(cv)}개 → 작성일 11/1~11/19 = {sum(1 for v, c in cv if SINCE <= c <= UNTIL)} / 방문일 기준 = {sum(1 for v, c in cv if SINCE <= v <= UNTIL)}")
         if k == 0:
             i = body.find("방문일"); print("   [구조] 첫 리뷰 주변:", body[max(0, i - 200):i + 120].replace("\n", " / "))
         pg.close()
