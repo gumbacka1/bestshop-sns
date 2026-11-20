@@ -124,30 +124,6 @@ for s in stores:
                   'kakao': rec.get('kakao'),
                   'posts': rec.get('posts') if ig_now else old.get('posts')}
 
-# ── 예비 경로: 인스타 키가 없거나 만료(190)되면, 오늘 못 받은 지점의 인스타 숫자를 경인담당 대시보드(허락받음)에서 채움 ──
-FALLBACK_URL = os.environ.get('IG_FALLBACK_URL', 'https://cold-feather-49fc.qkxkvnf.workers.dev/api')
-fb_used = 0
-if FALLBACK_URL and (not IG_TOKEN or '190' in ig_codes):
-    try:
-        fbl = {x['id']: x for x in get_json(FALLBACK_URL, timeout=40).get('list', [])}
-        for rec in latest:
-            if rec.get('igDate') == today:
-                continue
-            x = fbl.get(rec['handle'])
-            if not x or x.get('followers') is None:
-                continue
-            lp = x.get('lastPost')
-            rec.update({'followers': x.get('followers'), 'posts': x.get('posts'), 'lastPost': lp[:10] if lp else rec.get('lastPost'),
-                        'reelsTot': x.get('rlTot'), 'reelsMax': x.get('rlMax'), 'reelsN': x.get('rlN'), 'reelsUrl': x.get('rlU') or rec.get('reelsUrl'),
-                        'igDate': today, 'igSrc': 'fallback'})
-            d = daily.get((today, rec['handle']))
-            if d is not None:
-                d['followers'], d['posts'] = rec['followers'], rec['posts']
-            fb_used += 1
-    except Exception as e:
-        print('예비 경로 실패:', str(e)[:80])
-    print(f"예비 경로(경인담당 대시보드)로 인스타 채움 {fb_used}개")
-
 rows = sorted(daily.values(), key=lambda r: (r['date'], r['team'] or '', r['store'] or ''))
 json.dump(rows, open(dout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(latest, open(lout, 'w'), ensure_ascii=False, separators=(',', ':'))
