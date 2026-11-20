@@ -43,7 +43,7 @@ TEAM_ORDER = ["경북", "경인", "강남", "경원", "경남", "중부", "서�
 MAX_MORE_CLICKS = 60
 LG_DAYS = 7            # LG 리뷰는 늦게 올라오기도 해서 매일 최근 7일을 다시 셈
 LG_START = "2026-11-01"   # LG 리뷰 누적 시작일 (11월부터)
-NV_DAYS = 7            # 네이버 리뷰도 매일 최근 7일을 다시 셈 (방문자 = 방문일 기준, 블로그 = 글 날짜 기준)
+NV_DAYS = 7            # 네이버 리뷰도 매일 최근 7일을 다시 셈 (방문자 = 작성일 기준, 블로그 = 글 날짜 기준)
 NV_MAX_CLICKS = 40
 KDATE_RE = r"(\d{4})년 (\d{1,2})월 (\d{1,2})일"
 # 대시보드 이름과 네이버/LG 이름이 다른 지점
@@ -119,15 +119,7 @@ def read_lg(page, lg_id, since_day):
     page.goto(f"https://bestshop.lge.co.kr/storehub/dtl-{lg_id}/review",
               wait_until="networkidle", timeout=40000)
     page.wait_for_timeout(1500)
-    for _ in range(MAX_MORE_CLICKS):
-        dates = re.findall(DATE_RE, page.inner_text("body"))
-        if dates and min(dates) < since_day:
-            break
-        btn = page.locator("text=더보기").last
-        if btn.count() == 0 or not btn.is_visible():
-            break
-        btn.click()
-        page.wait_for_timeout(1200)
+    _expand(page, lambda: min(re.findall(DATE_RE, page.inner_text("body")) or [""]) or None, since_day, MAX_MORE_CLICKS)
 
     body = page.inner_text("body")
     ms = list(re.finditer(DATE_RE, body))
@@ -152,6 +144,40 @@ def read_lg(page, lg_id, since_day):
     return by_date
 
 
+CLICK_MORE = """() => { const els = [...document.querySelectorAll('a,button,span,div')].filter(e => e.children.length <= 2 && /^\\s*(펼쳐서\\s*)?더보기\\s*$/.test(e.innerText || '') && e.offsetParent !== null);
+  if (!els.length) return false; els.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const t = els[els.length - 1]; const c = t.closest('a,button') || t; c.scrollIntoView({block: 'center'}); c.click(); return true; }"""
+
+
+def _expand(page, oldest_fn, since_day, max_clicks=60):
+    """맨 아래 '더보기'를 눌러 가며, since_day 보다 오래된 날짜가 보인 뒤 2번 더 넘기고 멈춤"""
+    extra, last = 0, None
+    for _ in range(max_clicks):
+        o = oldest_fn()
+        if o and o < since_day:
+            extra += 1
+            if extra > 2:
+                break
+        if not page.evaluate(CLICK_MORE):
+            break
+        page.wait_for_timeout(1500)
+        cur = oldest_fn()
+        if cur == last == o:
+            page.wait_for_timeout(2500)
+        last = cur
+
+
+def _md_to_date(v, today=None):
+    """'11.19.목' → '2026-11-19' (연도 없으면 올해, 미래 달이면 작년)"""
+    m = re.match(r"(\d{1,2})\.(\d{1,2})\.", v or "")
+    if not m:
+        m2 = re.match(r"(\d{4})-(\d{2})-(\d{2})", v or "")
+        return m2.group(0) if m2 else ""
+    t = today or datetime.now()
+    y = t.year - (1 if int(m.group(1)) > t.month else 0)
+    return "%d-%02d-%02d" % (y, int(m.group(1)), int(m.group(2)))
+
+
 def _kdates(text):
     return ["%s-%02d-%02d" % (y, int(m), int(d)) for y, m, d in re.findall(KDATE_RE, text)]
 
@@ -166,20 +192,7 @@ def _count_list(page, url, since_day, sort_recent=False):
             page.wait_for_timeout(1500)
         except Exception:
             pass
-    last_n = -1
-    for _ in range(NV_MAX_CLICKS):
-        ds = _kdates(page.inner_text("body"))
-        if not ds or len(ds) == last_n or all(d < since_day for d in ds[-3:]):
-            break
-        last_n = len(ds)
-        btn = page.locator("a:has-text('더보기'), button:has-text('더보기')").last
-        if btn.count() == 0:
-            break
-        try:
-            btn.click(timeout=3000)
-        except Exception:
-            break
-        page.wait_for_timeout(1200)
+    _expand(page, lambda: min(_kdates(page.inner_text("body")) or [""]) or None, since_day, NV_MAX_CLICKS)
     out = {}
     body = page.inner_text("body")
     for d in _kdates(body):
@@ -189,9 +202,47 @@ def _count_list(page, url, since_day, sort_recent=False):
     return out, (int(m.group(1).replace(",", "")) if m else None)
 
 
+def _visitor_by_created(page, nv_id, since_day):
+    """방문자 리뷰를 작성일(created) 기준으로 셈 → ({날짜: 개수}, 전체 개수)"""
+    bag = {}
+    def walk(o):
+        if isinstance(o, dict):
+            if "visited" in o and "created" in o and o.get("id"):
+                bag[o["id"]] = _md_to_date(o["created"])
+            for x in o.values():
+                walk(x)
+        elif isinstance(o, list):
+            for x in o:
+                walk(x)
+    def on_resp(r):
+        if "graphql" in r.url:
+            try:
+                walk(r.json())
+            except Exception:
+                pass
+    page.on("response", on_resp)
+    try:
+        page.goto(f"https://m.place.naver.com/place/{nv_id}/review/visitor?reviewSort=recent", wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_timeout(2500)
+        try:
+            walk(json.loads(page.evaluate("() => JSON.stringify(window.__APOLLO_STATE__ || {})")))
+        except Exception:
+            pass
+        _expand(page, lambda: min([d for d in bag.values() if d] or [""]) or None, since_day, NV_MAX_CLICKS)
+        body = page.inner_text("body")
+    finally:
+        page.remove_listener("response", on_resp)
+    out = {}
+    for d in bag.values():
+        if d and d >= since_day:
+            out[d] = out.get(d, 0) + 1
+    m = re.search(r"\n리뷰([\d,]+)\n", body)
+    return out, (int(m.group(1).replace(",", "")) if m else None)
+
+
 def read_nv_dates(page, nv_id, since_day):
-    """→ {날짜: [방문자, 블로그]}"""
-    v, vt = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/visitor?reviewSort=recent", since_day)
+    """→ {날짜: [방문자(작성일), 블로그(글 날짜)]}"""
+    v, vt = _visitor_by_created(page, nv_id, since_day)
     time.sleep(random.uniform(1, 2))
     b, bt = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/ugc?type=list", since_day, sort_recent=True)
     return {d: [v.get(d, 0), b.get(d, 0)] for d in set(v) | set(b)}, vt, bt

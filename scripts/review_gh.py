@@ -33,7 +33,9 @@ def collect(part, parts):
     h = load(HIST, {})
     lg_t = max(rc.LG_START, (now - timedelta(days=rc.LG_DAYS)).strftime("%Y-%m-%d"))
     nv_t = max(rc.LG_START, (now - timedelta(days=rc.NV_DAYS)).strftime("%Y-%m-%d"))
-    ss = [s for i, s in enumerate(stores()) if i % parts == part]
+    team = os.environ.get("TEAM", "").replace("담당", "").strip()
+    ss = [s for s in stores() if not team or s["team"] == team]
+    ss = [s for i, s in enumerate(ss) if i % parts == part]
     res = {}
     os.makedirs("parts", exist_ok=True)
     with sync_playwright() as p:
