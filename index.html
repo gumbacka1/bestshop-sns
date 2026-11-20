@@ -242,7 +242,7 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-field="accounts" data-k="accounts">지점</th>
           <th rowspan="2" class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
           <th colspan="4" class="ig-grp ig-g1">온라인 리뷰 (당월)</th>
-          <th colspan="3" class="ig-grp ig-g1">누적</th>
+          <th colspan="2" class="ig-grp ig-g1">누적</th>
           <th colspan="2" class="ig-grp ig-g1">카톡</th>
         </tr>
         <tr>
@@ -250,9 +250,8 @@ window.addEventListener('load',()=>dash._load());
           <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
           <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
           <th class="ig-sort" data-field="lg_month" data-k="lg_month">홈페이지</th>
-          <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 방문자</th>
-          <th class="ig-sort" data-field="blog" data-k="blog">네이버 블로그</th>
-          <th class="ig-sort" data-field="lg_total" data-k="lg_total">홈페이지(11/1~)</th>
+          <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰</th>
+          <th class="ig-sort" data-field="blog" data-k="blog">블로그 리뷰</th>
           <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
           <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
         </tr>
@@ -276,9 +275,8 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
         <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
         <th class="ig-sort" data-field="lg_month" data-k="lg_month">홈페이지</th>
-        <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 방문자 누적</th>
-        <th class="ig-sort" data-field="blog" data-k="blog">네이버 블로그 누적</th>
-        <th class="ig-sort" data-field="lg_total" data-k="lg_total">홈페이지 누적(11/1~)</th>
+        <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰 누적</th>
+        <th class="ig-sort" data-field="blog" data-k="blog">블로그 리뷰 누적</th>
         <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
         <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
       </tr></thead>
@@ -295,7 +293,7 @@ window.addEventListener('load',()=>dash._load());
 
   <details class="ig-note" id="rv-defs" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
-    <p>· 네이버 방문자·블로그 리뷰는 네이버 플레이스에 보이는 누적 숫자예요. 전일비 = 오늘 수집 − 지난 수집(비교일은 위 기준 줄에 나와요).</p>
+    <p>· 네이버 리뷰·블로그 리뷰는 네이버 플레이스에 보이는 누적 숫자예요. 전일비 = 오늘 수집 − 지난 수집(비교일은 위 기준 줄에 나와요).</p>
     <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 리뷰에 적힌 날짜로 세요: 누적 = 2026년 11월 1일부터, 당월 = 이번 달 1일부터, 어제 = 어제 날짜 리뷰 수. 하루쯤 늦게 올라오는 경우가 있어서 매일 최근 7일을 다시 세요(그래서 어제 숫자가 다음 날 조금 늘 수 있어요).</p>
     <p>· 리뷰는 은효님 PC가 매일 아침 8시 30분에 모아요. 카톡 친구는 매일 9·17·20시에 갱신돼요.</p>
   </details>
@@ -751,7 +749,7 @@ dash.calc('rvkpi', {
       td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
       td(tr, IG.fmt(r.buyers));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
-      td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog)); td(tr, IG.fmt(r.lg_total));
+      td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = null; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
       tb.appendChild(tr);
@@ -776,7 +774,7 @@ dash.calc('rvkpi', {
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
       td(tr, IG.fmt(r.buyers));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
-      td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog)); td(tr, IG.fmt(r.lg_total));
+      td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
       tb.appendChild(tr);
