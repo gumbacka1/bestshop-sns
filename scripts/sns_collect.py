@@ -70,7 +70,7 @@ latest, errs = [], {'kakao': 0, 'ig': 0}
 IG_MAX = int(os.environ.get('IG_MAX', '89'))   # 메타 앱 시간당 호출 한도 때문에 한 번에 최대 이만큼만 (새 글 알림 지점 6개는 별도)
 SKIP_KAKAO = os.environ.get('SKIP_KAKAO') == '1'   # 1이면 이번 실행은 카톡을 건너뛰고 이전 값 유지
 WATCH = [w.strip() for w in os.environ.get('WATCH', '').split(',') if w.strip()]   # 새 글 알림 지점 이름 → 매 실행마다 인스타 확인
-TEAM = os.environ.get('TEAM_REFRESH', '').strip()   # 예: 경북담당 → 이 담당 지점은 이번 실행에 무조건 새로 수집(시간별 기록)
+TEAM = os.environ.get('TEAM_REFRESH', '').strip()   # 예: 경북담당 → 이 담당 지점은 이번 실행에 무조건 새로 수집(시간별 기록 + 하루 숫자도 실시간 반영, 261120 사용자 요청)
 hourly = []
 new_posts = []
 stores = sorted(stores, key=lambda s: 0 if s['store'] in WATCH else 1)   # 알림 지점 먼저
@@ -123,8 +123,6 @@ for s in stores:
     latest.append(rec)
     key = (today, s['ig'])
     old = daily.get(key, {})
-    if TEAM and s['team'] == TEAM and old.get('followers') is not None:
-        ig_now = False   # 일별 기록은 아침 숫자 유지(전주비 기준 시각을 전국과 맞춤), 낮 숫자는 시간별 기록에만
     daily[key] = {**base, 'date': today,
                   'followers': rec.get('followers') if ig_now else old.get('followers'),
                   'following': rec.get('following') if ig_now else old.get('following'),
