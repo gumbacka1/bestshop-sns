@@ -62,7 +62,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-table tr.ig-age2 td { border-top: 2px solid #E24B4A; border-bottom: 2px solid #E24B4A; }
 .ig-table tr.ig-age2 td:first-child { border-left: 2px solid #E24B4A; } .ig-table tr.ig-age2 td:last-child { border-right: 2px solid #E24B4A; }
 .ig-table tr.ig-age3 td { background: #A32D2D !important; color: #fff !important; font-weight: 600; border-top: 2px solid #791F1F; border-bottom: 2px solid #791F1F; }
-.ig-table tr.ig-age3 td.ig-days { font-size: 1.15em; }
+.ig-table tr.ig-age3 td.ig-days { font-size: 1.15em; color: #fff !important; }
 .ig-table tr.ig-age3 a { color: #fff; }
 .ig-warn { display: inline-block; margin-right: 4px; animation: ig-blink 1.2s infinite; }
 @keyframes ig-blink { 50% { opacity: .3; } }
@@ -147,7 +147,7 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-num" data-draw="k-wk" data-source="kpi" data-field="f_week" data-row="0">—</div>
     </div>
     <div class="ig-card" id="card-stale">
-      <div class="ig-card-label">30일 넘게 게시 없음</div>
+      <div class="ig-card-label">30일 이상 게시 없음</div>
       <div class="ig-card-num" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</div>
       <div class="ig-card-chg ig-flat"><span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>개 지점 중</div>
     </div>
