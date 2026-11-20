@@ -130,6 +130,6 @@ json.dump(latest, open(lout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(new_posts, open(os.path.join(os.path.dirname(os.path.abspath(lout)), 'new_posts.json'), 'w'), ensure_ascii=False, indent=1)
 if WATCH:
     print(f"알림 지점 새 글 {len(new_posts)}개" + ''.join(f"\n - {p['store']} {p['t']} {p['url']}" for p in new_posts))
-done_today = sum(1 for r in latest if r.get('igDate') == today)
-print(f"인스타 오늘 수집 {done_today}/{len(latest)} (이번 실행 {ig_used}건{', 한도 도달' if ig_stop and '190' not in ig_codes else ''}) | 오류 코드 {ig_codes or '없음'}")
+done_today = sum(1 for r in latest if r.get('igDate') == today and r.get('igSrc') == 'api')
+print(f"인스타 오늘 공식 수집 {done_today}/{len(latest)} (이번 실행 {ig_used}건{', 한도 도달' if ig_stop and '190' not in ig_codes else ''}) | 오류 코드 {ig_codes or '없음'}")
 print(f"완료 {now:%Y-%m-%d %H:%M} | 지점 {len(latest)} | 카톡 {'건너뜀' if SKIP_KAKAO else '실패 ' + str(errs['kakao'])} | 인스타 {'실패 ' + str(errs['ig']) if IG_TOKEN else '토큰 없음(건너뜀)'}")
