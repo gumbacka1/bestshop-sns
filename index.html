@@ -144,11 +144,7 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-card" id="card-fol">
       <div class="ig-card-label">인스타 팔로워</div>
       <div class="ig-card-num" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</div>
-      <div class="ig-card-chg">전주비 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span> · 신장률 <span data-draw="k-folr" data-source="kpi" data-field="f_rate" data-row="0">—</span></div>
-    </div>
-    <div class="ig-card" id="card-week">
-      <div class="ig-card-label">이번 주 팔로워 (월요일 이후)</div>
-      <div class="ig-card-num" data-draw="k-wk" data-source="kpi" data-field="f_week" data-row="0">—</div>
+      <div class="ig-card-chg">주간 증가 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span> · 증가율 <span data-draw="k-folr" data-source="kpi" data-field="f_rate" data-row="0">—</span></div>
     </div>
     <div class="ig-card" id="card-stale">
       <div class="ig-card-label">30일 이상 게시 없음</div>
@@ -156,7 +152,7 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-chg ig-flat"><span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>개 지점 중</div>
     </div>
   </div>
-  <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
+  <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
   <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
   <div class="ig-wrap">
@@ -165,11 +161,11 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort" data-field="team" data-k="team">담당</th>
         <th class="ig-sort" data-field="accounts" data-k="accounts">지점</th>
         <th class="ig-sort ig-grp" data-field="followers" data-k="followers">팔로워</th>
-        <th class="ig-sort" data-field="f_diff" data-k="f_diff">전주비</th>
-        <th class="ig-sort" data-field="f_rate" data-k="f_rate">신장률</th>
+        <th class="ig-sort" data-field="f_diff" data-k="f_diff">주간 증가</th>
+        <th class="ig-sort" data-field="f_rate" data-k="f_rate">증가율</th>
         <th class="ig-sort ig-grp" data-field="following" data-k="following">팔로잉</th>
-        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">전주비</th>
-        <th class="ig-sort" data-field="fl_rate" data-k="fl_rate">신장률</th>
+        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">주간 증가</th>
+        <th class="ig-sort" data-field="fl_rate" data-k="fl_rate">증가율</th>
         <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
         <th class="ig-sort" data-field="stale" data-k="stale">30일 미게시</th>
       </tr></thead>
@@ -189,11 +185,10 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort" data-field="team" data-k="team">담당</th>
         <th class="ig-sort" data-field="store" data-k="store">지점</th>
         <th class="ig-sort ig-grp" data-field="followers" data-k="followers" aria-sort="descending">팔로워</th>
-        <th class="ig-sort" data-field="f_diff" data-k="f_diff">전주비</th>
-        <th class="ig-sort" data-field="f_rate" data-k="f_rate">신장률</th>
-        <th class="ig-sort" data-field="f_week" data-k="f_week">이번 주</th>
+        <th class="ig-sort" data-field="f_diff" data-k="f_diff">주간 증가</th>
+        <th class="ig-sort" data-field="f_rate" data-k="f_rate">증가율</th>
         <th class="ig-sort ig-grp" data-field="following" data-k="following">팔로잉</th>
-        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">전주비</th>
+        <th class="ig-sort" data-field="fl_diff" data-k="fl_diff">주간 증가</th>
         <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
         <th class="ig-sort" data-field="days" data-k="days">최근 게시</th>
         <th class="ig-sort" data-field="reelsMax" data-k="reelsMax">릴스 최다 조회</th>
@@ -210,8 +205,8 @@ window.addEventListener('load',()=>dash._load());
   <details class="ig-note" id="defs" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
     <p>· 인스타 숫자는 메타 공식 Instagram API, 카톡 친구 수는 카카오톡 채널 공개 정보에서 직접 모아요. 인스타는 전국 297곳을 매일 아침 6~8시에 모아 9시에 마무리하고, 경북담당 29곳은 12~20시에 매시간 다시 모아요. 카톡은 매일 9시에 1번 갱신돼요.</p><p>· 팔로잉은 11/20 직접 수집부터 나와요(그 전 기록은 —). 경북담당은 맨 앞 탭과 표 위쪽에 노란색으로 먼저 보여요.</p><p>· 최근 게시는 그 계정이 직접 올린 글 기준이에요. 다른 계정이 올리고 공동 작성자(콜라보)로 넣은 글은 들어가지 않아요.</p>
-    <p>· 전주비 = 가장 최근 월요일 수치 − 그보다 7일 전 수치. 7일 전 기록이 없으면 그 이전 가장 가까운 날과 비교해요(위 기준 줄에 날짜가 나와요).</p>
-    <p>· 신장률 = 전주비 ÷ 비교일 수치. 이번 주 = 최신 수치 − 기준 월요일 수치.</p>
+    <p>· 주간 증가 = 가장 최근 월요일 아침 수치 − 그 전 월요일 아침 수치(월~일 한 주). 모든 담당을 같은 아침 수집값(6~9시)으로 비교해요. 그 전 월요일 기록이 없으면 가장 오래된 기록과 비교해요(위 기준 줄에 날짜가 나와요).</p>
+    <p>· 증가율 = 주간 증가 ÷ 그 주 시작(월요일 아침) 수치. 담당 합계는 지점 증가 합 ÷ 지점 시작 수치 합이에요.</p>
     <p>· 최근 게시는 주 1회 업로드 기준으로 표시해요: 8일 이상 빨간 글씨, 15일 이상 빨간 테두리, 30일 이상 진한 빨강 바탕과 ⚠ 표시(최근 게시 칸만). 릴스 최다 조회는 그 지점 릴스 중 조회수가 가장 많은 것이고, 누르면 그 릴스로 가요.</p>
     <p>· 누적 좋아요·누적 댓글은 경북담당 29곳만, 그 계정이 지금까지 올린 모든 게시물의 합계예요(인스타 수집 때마다 새로 셈). 좋아요 수를 숨긴 글은 좋아요에서 빠지고 '숨김 N개'로 표시돼요. 광고로 받은 반응은 들어가지 않아요. 다른 담당은 —로 보여요.</p>
   </details>
@@ -242,10 +237,10 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-card" id="card-kakao">
       <div class="ig-card-label">카톡 친구</div>
       <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
-      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span> · 이번 주 <span data-draw="k-wkk" data-source="kpi" data-field="k_week" data-row="0">—</span></div>
+      <div class="ig-card-chg">주간 증가 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 증가율 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span></div>
     </div>
   </div>
-  <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 전주비 기준 <span data-draw="period">—</span></p>
+  <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 주간 기준 <span data-draw="period">—</span></p>
 
   <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
   <div class="ig-wrap">
@@ -268,7 +263,7 @@ window.addEventListener('load',()=>dash._load());
           <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰</th>
           <th class="ig-sort" data-field="blog" data-k="blog">블로그 리뷰</th>
           <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
-          <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
+          <th class="ig-sort" data-field="k_diff" data-k="k_diff">주간 증가</th>
         </tr>
       </thead>
       <tbody data-draw="rv-team-body"></tbody>
@@ -301,7 +296,7 @@ window.addEventListener('load',()=>dash._load());
           <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰</th>
           <th class="ig-sort" data-field="blog" data-k="blog">블로그 리뷰</th>
           <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
-          <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
+          <th class="ig-sort" data-field="k_diff" data-k="k_diff">주간 증가</th>
         </tr>
       </thead>
       <tbody data-draw="rv-store-body"></tbody>
@@ -338,7 +333,7 @@ IG.STALE = 30;
 dash.calc('period', {
   inputs: ['daily', 'latest'],
   title: '비교 날짜',
-  description: '최신 기록일, 기준 월요일, 비교일(기준 7일 전 또는 그 이전 가장 가까운 기록일), 원본 갱신 시각',
+  description: '최신 기록일, 기준 월요일, 비교일(기준 7일 전 월요일, 없으면 가장 오래된 기록일), 원본 갱신 시각',
   fn: (daily, latest) => {
     const dates = [...new Set(daily.map((r) => r.date))].sort();
     if (!dates.length) return [];
@@ -347,9 +342,8 @@ dash.calc('period', {
     const base = mondays.length ? mondays[mondays.length - 1] : last;
     const t = new Date(base + 'T00:00:00Z'); t.setUTCDate(t.getUTCDate() - 7);
     const target = t.toISOString().slice(0, 10);
-    const earlier = dates.filter((d) => d <= target);
     const before = dates.filter((d) => d < base);
-    const prev = earlier.length ? earlier[earlier.length - 1] : (before.length ? before[0] : null);
+    const prev = dates.includes(target) ? target : (before.length ? before[0] : null);
     const upd = latest.map((r) => r.updated).filter(Boolean).sort();
     return [{ last, base, prev, updated: upd.length ? upd[upd.length - 1] : '' }];
   }
@@ -357,8 +351,8 @@ dash.calc('period', {
 
 dash.calc('snap', {
   inputs: ['latest', 'daily', 'period'],
-  title: '지점별 최신값과 전주비',
-  description: '지점마다 최신 팔로워·카톡 친구·게시물, 기준 월요일 대비 비교일 차이(전주비), 신장률, 이번 주 변화, 최근 게시 후 지난 날수',
+  title: '지점별 최신값과 주간 증가',
+  description: '지점마다 최신 팔로워·카톡 친구·게시물, 주간 증가(월요일 아침 − 전 월요일 아침), 증가율, 최근 게시 후 지난 날수',
   fn: (latest, daily, period) => {
     if (!period || !period.length) return [];
     const { last, base, prev } = period[0];
@@ -370,9 +364,10 @@ dash.calc('snap', {
     const today = new Date(last + 'T00:00:00Z');
     return latest.map((r) => {
       const b = B.get(r.handle), p = P.get(r.handle);
-      const bf = b ? num(b.followers) : null, pf = p ? num(p.followers) : null;
+      const am = (x, k) => x ? num(x['am_' + k] !== undefined ? x['am_' + k] : x[k]) : null;   // 월요일 아침값(없으면 그날 값)
+      const bf = am(b, 'followers'), pf = am(p, 'followers');
       const bk = b ? num(b.kakao) : null, pk = p ? num(p.kakao) : null;
-      const bl = b ? num(b.following) : null, pl = p ? num(p.following) : null;
+      const bl = am(b, 'following'), pl = am(p, 'following');
       const fd = prev ? diff(bf, pf) : null, kd = prev ? diff(bk, pk) : null, ld = prev ? diff(bl, pl) : null;
       const days = r.lastPost ? Math.round((today - new Date(r.lastPost + 'T00:00:00Z')) / 86400000) : null;
       return {
@@ -390,11 +385,11 @@ dash.calc('snap', {
 dash.calc('teams', {
   inputs: ['snap', 'daily', 'period'],
   title: '담당별 합계',
-  description: '담당별 지점 수, 팔로워·카톡 친구·게시물 합계와 전주비·신장률, 30일 미게시 지점 수 (맨 위는 전체)',
+  description: '담당별 지점 수, 팔로워·카톡 친구·게시물 합계와 주간 증가·증가율, 30일 미게시 지점 수 (맨 위는 전체)',
   fn: (snap, daily, period) => {
     if (!snap || !snap.length || !period || !period.length) return [];
     const { prev } = period[0];
-    const sumAt = (d, team, k) => d3.sum(daily.filter((r) => r.date === d && (!team || r.team === team)), (r) => +r[k] || 0);
+    const sumAt = (d, team, k) => d3.sum(daily.filter((r) => r.date === d && (!team || r.team === team)), (r) => +(r['am_' + k] !== undefined ? r['am_' + k] : r[k]) || 0);
     const order = ['경북담당', '강남담당', '경원담당', '경인담당', '중부담당', '서부담당', '경남담당', '백화점담당'];
     const agg = (team) => {
       const rs = snap.filter((r) => !team || r.team === team);
@@ -506,15 +501,13 @@ dash.draw('k-folr', setNum('f_rate', IG.pfmt, true));
 dash.draw('k-kak', setNum('kakao', IG.fmt));
 dash.draw('k-kakd', setNum('k_diff', IG.sfmt, true));
 dash.draw('k-kakr', setNum('k_rate', IG.pfmt, true));
-dash.draw('k-wk', setNum('f_week', IG.sfmt));
-dash.draw('k-wkk', setNum('k_week', IG.sfmt, true));
 dash.draw('k-stale', setNum('stale', IG.fmt));
 dash.draw('k-acct', setNum('accounts', IG.fmt));
 
 dash.draw('period', (el) => {
   if (!ok('period')) { el.textContent = '—'; return; }
   const p = dash.data('period').data[0];
-  el.textContent = p.prev ? (IG.md(p.base) + ' vs ' + IG.md(p.prev)) : (IG.md(p.base) + ' — 비교할 이전 기록이 아직 없어요');
+  el.textContent = p.prev ? (IG.md(p.prev) + ' → ' + IG.md(p.base)) : (IG.md(p.base) + ' — 비교할 이전 기록이 아직 없어요');
 });
 const updAt = (t) => { const m = /(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(t || ''); return m ? '🕒 ' + m[2] + '/' + m[3] + ' ' + m[4] + ':' + m[5] + ' 업데이트' : '—'; };
 dash.draw('ig-upd-at', (el) => { el.textContent = ok('period') ? updAt(dash.data('period').data[0].updated) : '—'; });
@@ -530,7 +523,7 @@ dash.draw('takeaway', (el) => {
   const r = kpiRow(), p = dash.data('period').data[0];
   const who = r.team === '전체' ? '전국 ' + r.accounts + '개 지점' : r.team + ' ' + r.accounts + '개 지점';
   let s = who + ' 인스타 팔로워 ' + IG.fmt(r.followers) + '명, 카톡 친구 ' + IG.fmt(r.kakao) + '명이에요.';
-  if (p.prev && r.f_diff !== null) s += ' 팔로워 전주비 ' + IG.sfmt(r.f_diff) + '명(' + IG.pfmt(r.f_rate) + '), 카톡 ' + IG.sfmt(r.k_diff) + '명(' + IG.pfmt(r.k_rate) + ')이에요.';
+  if (p.prev && r.f_diff !== null) s += ' 지난주 팔로워 증가 ' + IG.sfmt(r.f_diff) + '명(' + IG.pfmt(r.f_rate) + '), 카톡 ' + IG.sfmt(r.k_diff) + '명(' + IG.pfmt(r.k_rate) + ')이에요.';
   el.textContent = s;
 });
 
@@ -579,7 +572,7 @@ dash.draw('store-body', (tb) => {
     const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb'; const ag = r.days === null ? 0 : r.days >= 30 ? 3 : r.days >= 15 ? 2 : r.days >= 8 ? 1 : 0; if (ag) tr.classList.add('ig-age' + ag);
     td(tr, r.team, 'ig-c');
     const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; c.appendChild(a);
-    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.sfmt(r.f_week), IG.cls(r.f_week));
+    td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
     td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff));
     td(tr, IG.fmt(r.posts));
     { const dc = td(tr, '', 'ig-days'); const sp = document.createElement('span'); sp.className = 'ig-dv'; if (ag === 3) { const w = document.createElement('span'); w.className = 'ig-warn'; w.textContent = '⚠'; sp.appendChild(w); } sp.appendChild(document.createTextNode(r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'))); dc.appendChild(sp); }
@@ -630,13 +623,12 @@ dash.draw('comment', (el) => {
   const line = (s) => { const q = document.createElement('p'); q.textContent = s; el.appendChild(q); };
   const top = (k, n, f) => rs.filter((r) => r[k] !== null).sort((a, b) => b[k] - a[k]).slice(0, n).map((r) => r.store + ' ' + f(r[k])).join(', ');
   if (p.prev) {
-    line('· 팔로워 전주비 상위: ' + top('f_diff', 3, IG.sfmt));
+    line('· 지난주 팔로워 증가 상위: ' + top('f_diff', 3, IG.sfmt));
     const fdown = rs.filter((r) => r.f_diff !== null && r.f_diff < 0);
     line('· 팔로워가 줄어든 지점 ' + fdown.length + '개' + (fdown.length ? ' (' + fdown.sort((a, b) => a.f_diff - b.f_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.f_diff)).join(', ') + ')' : ''));
   }
   const stale = rs.filter((r) => r.days !== null && r.days >= IG.STALE).sort((a, b) => b.days - a.days);
   line('· 30일 이상 게시 없음 ' + stale.length + '개' + (stale.length ? ' (' + stale.slice(0, 6).map((r) => r.store + ' ' + r.days + '일').join(', ') + (stale.length > 6 ? ' 외' : '') + ')' : ''));
-  line('· 이번 주(월요일 이후) 팔로워가 가장 많이 는 곳: ' + top('f_week', 3, IG.sfmt));
 });
 </script>
 
@@ -645,7 +637,7 @@ dash.draw('comment', (el) => {
 dash.calc('rvsnap', {
   inputs: ['reviews', 'snap'],
   title: '지점별 온라인 리뷰',
-  description: '지점마다 카톡 친구(전주비), 네이버 방문자·블로그 리뷰(전일비), 홈페이지(LG) 매장·매니저 리뷰(최근 7일, 신규)',
+  description: '지점마다 카톡 친구(주간 증가), 네이버 방문자·블로그 리뷰(전일비), 홈페이지(LG) 매장·매니저 리뷰(최근 7일, 신규)',
   fn: (reviews, snap) => {
     const num = (v) => (v === null || v === undefined || v === '' || v === '-') ? null : +v;
     const S = new Map((snap || []).map((r) => [r.store, r]));
@@ -675,7 +667,7 @@ dash.calc('rvsnap', {
 dash.calc('rvteams', {
   inputs: ['rvsnap', 'teams'],
   title: '담당별 온라인 리뷰',
-  description: '담당별 카톡 친구(전주비·신장률은 인스타 탭과 같은 계산), 네이버 방문자·블로그 리뷰 합계와 전일비, 홈페이지 리뷰 합계 (맨 위는 전체)',
+  description: '담당별 카톡 친구(주간 증가·증가율은 인스타 탭과 같은 계산), 네이버 방문자·블로그 리뷰 합계와 전일비, 홈페이지 리뷰 합계 (맨 위는 전체)',
   fn: (rvsnap, teams) => {
     if (!rvsnap || !rvsnap.length) return [];
     const T = new Map((teams || []).map((t) => [t.team, t]));
@@ -904,7 +896,7 @@ dash.calc('rvkpi', {
       const stamp = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
       const per = document.querySelector('[data-draw="period"]');
       const upd = btn.parentElement.querySelector('.snap-upd');
-      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + team + '</p>';
+      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '주간 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + team + '</p>';
       const c = wrap.cloneNode(true); box.appendChild(c); document.body.appendChild(box);
       const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));

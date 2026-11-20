@@ -159,6 +159,12 @@ for s in stores:
                   'following': rec.get('following') if ig_now else old.get('following'),
                   'kakao': rec.get('kakao'),
                   'posts': rec.get('posts') if ig_now else old.get('posts')}
+    # 주간 증가 기준값: 그날 아침(12시 전) 수집값을 따로 고정 — 경북 시간별 수집이 덮어써도 전 담당 같은 시각으로 비교 (261120)
+    for k in ('followers', 'following'):
+        if old.get('am_' + k) is not None:
+            daily[key]['am_' + k] = old['am_' + k]
+        elif ig_now and now.hour < 12 and rec.get(k) is not None:
+            daily[key]['am_' + k] = rec.get(k)
 
 rows = sorted(daily.values(), key=lambda r: (r['date'], r['team'] or '', r['store'] or ''))
 ddir = os.path.dirname(os.path.abspath(dout))
