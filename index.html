@@ -892,13 +892,16 @@ dash.calc('rvkpi', {
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));
       const cv = await h2c(box, { scale: sc, backgroundColor: '#ffffff' });
       box.remove();
-      const blob = await new Promise((r) => cv.toBlob(r, 'image/png'));
+      const url = cv.toDataURL('image/png');
       const name = title.replace(/\s+/g, '') + '_' + String(now.getFullYear()).slice(2) + pad(now.getMonth() + 1) + pad(now.getDate()) + '.png';
-      const file = new File([blob], name, { type: 'image/png' });
-      if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
-        try { await navigator.share({ files: [file], title: title }); } catch (x) {}
-      } else {
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        const ov = document.createElement('div');
+        ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);overflow:auto;padding:14px;text-align:center';
+        ov.innerHTML = '<p style="color:#fff;margin:0 0 10px;font-size:14px">다운로드가 안 되면 사진을 꾹 눌러 \'이미지 저장\'을 해 주세요</p><button type="button" style="font:inherit;padding:6px 18px;margin-bottom:10px;border-radius:6px;border:0">✕ 닫기</button><br>';
+        const img = new Image(); img.src = url; img.alt = name; img.style.cssText = 'max-width:100%;background:#fff';
+        ov.appendChild(img); ov.querySelector('button').onclick = () => ov.remove();
+        document.body.appendChild(ov);
       }
     } catch (e) { console.error(e); btn.textContent = '⚠ 실패 · 다시 눌러 주세요'; btn.disabled = false; setTimeout(() => { btn.textContent = old; }, 3000); return; }
     btn.textContent = old; btn.disabled = false;
