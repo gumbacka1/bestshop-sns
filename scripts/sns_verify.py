@@ -7,7 +7,7 @@ SNS 대시보드 자동 점검 (수집이 끝날 때마다 깃허브에서 실�
  1) 297개 지점이 오늘 공식(api)으로 수집됐는지
  2) 팔로워가 0이거나 비어 있는 곳
  3) 팔로워 전일비가 10% 넘게 바뀐 곳 (계정이 잘못 연결됐을 때 티가 남)
- 4) 경북 내 권역 6곳 전주비·신장률을 대시보드와 같은 규칙으로 따로 계산
+ 4) 경북 내 권역 6곳 주간 증가·증가율을 대시보드와 같은 규칙으로 따로 계산 (월요일 아침 − 전 월요일 아침)
 사용: python3 sns_verify.py data/latest.json data/daily.json data/verify.json
 """
 import json, sys, datetime as dt
@@ -40,21 +40,21 @@ if today in dates and dates.index(today) > 0:
         if a and b and abs(b - a) / a > 0.10:
             jump.append({'store': r['store'], 'from': a, 'to': b, 'rate': round((b - a) / a * 100, 1)})
 
-# 4) 전주비 (대시보드 규칙: 가장 최근 월요일 − 7일 전, 없으면 그 이전 가장 가까운 날 / 그것도 없으면 월요일 전 첫 기록일)
+# 4) 주간 증가 (대시보드 규칙, 261120 변경: 가장 최근 월요일 아침값 − 그 전 월요일 아침값 = 월~일 한 주, 그 전 월요일 기록이 없으면 가장 오래된 기록일)
 mondays = [d for d in dates if dt.date.fromisoformat(d).weekday() == 0]
 base = mondays[-1] if mondays else (dates[-1] if dates else None)
 prev = None
 if base:
     target = (dt.date.fromisoformat(base) - dt.timedelta(days=7)).isoformat()
-    earlier = [d for d in dates if d <= target]
     before = [d for d in dates if d < base]
-    prev = earlier[-1] if earlier else (before[0] if before else None)
+    prev = target if target in dates else (before[0] if before else None)
 handle = {r['store']: r['handle'] for r in latest}
 week = []
 for st in MY:
     h = handle.get(st)
-    a = by.get((prev, h), {}).get('followers') if prev else None
-    b = by.get((base, h), {}).get('followers') if base else None
+    am = lambda r: r.get('am_followers', r.get('followers'))   # 아침값(없으면 그날 값)
+    a = am(by.get((prev, h), {})) if prev else None
+    b = am(by.get((base, h), {})) if base else None
     d = (b - a) if (a is not None and b is not None) else None
     week.append({'store': st, 'base': b, 'prev': a, 'diff': d, 'rate': round(d / a * 100, 1) if d is not None and a else None})
 
