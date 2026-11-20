@@ -191,6 +191,27 @@ cut = (now.date() - dt.timedelta(days=62)).isoformat()   # 화면용 daily.json�
 json.dump([r for r in rows if r['date'] >= cut], open(dout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(latest, open(lout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(new_posts, open(os.path.join(os.path.dirname(os.path.abspath(lout)), 'new_posts.json'), 'w'), ensure_ascii=False, indent=1)
+
+# 261120: 경북담당 게시글별 조회수·좋아요·댓글 날짜별 기록 (사용자가 필요할 때 보는 용도, 화면 표시 없음)
+#   data/post_hist/YYYY-MM.json = {게시글주소: {store, t(올린 시각), type, d: {날짜: [조회수, 좋아요, 댓글]}}}
+#   같은 날 여러 번 모으면 그날 마지막 값으로 덮어씀(= 그날 밤 기준 숫자)
+try:
+    ph_dir = os.path.join(os.path.dirname(os.path.abspath(lout)), 'post_hist')
+    os.makedirs(ph_dir, exist_ok=True)
+    ph_fp = os.path.join(ph_dir, today[:7] + '.json')
+    ph = json.load(open(ph_fp, encoding='utf-8')) if os.path.exists(ph_fp) else {}
+    for r in latest:
+        if r.get('team') != ENGAGE_TEAM or r.get('igDate') != today or r.get('igSrc') != 'api':
+            continue
+        for x in r.get('recent') or []:
+            if not x.get('url'):
+                continue
+            e = ph.setdefault(x['url'], {'store': r['store'], 't': x.get('t'), 'type': x.get('type'), 'd': {}})
+            e['d'][today] = [x.get('v'), x.get('l'), x.get('c')]
+    json.dump(ph, open(ph_fp, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    print('게시글 기록:', len(ph), '개 →', ph_fp)
+except Exception as e:
+    print('게시글 기록 실패(다른 저장은 정상):', e)
 if WATCH:
     print(f"알림 지점 새 글 {len(new_posts)}개" + ''.join(f"\n - {p['store']} {p['t']} {p['url']}" for p in new_posts))
 if TEAM:
