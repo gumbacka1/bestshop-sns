@@ -77,7 +77,7 @@ ig_used, ig_stop, ig_codes = 0, False, {}
 for s in stores:
     base = {'team': s['team'], 'store': s['store'], 'handle': s['ig']}
     prev = old_latest.get(s['ig'], {})
-    rec = {**base, **{k: prev.get(k) for k in ('followers', 'following', 'posts', 'lastPost', 'kakao', 'reelsTot', 'reelsMax', 'reelsN', 'reelsUrl', 'igDate', 'recent', 'seen')}}
+    rec = {**base, **{k: prev.get(k) for k in ('followers', 'following', 'posts', 'lastPost', 'kakao', 'reelsTot', 'reelsMax', 'reelsN', 'reelsUrl', 'igDate', 'igSrc', 'recent', 'seen')}}
     rec['status'] = 'ok'
     if s.get('kakao') and not SKIP_KAKAO:
         try:
@@ -87,11 +87,11 @@ for s in stores:
         time.sleep(0.4)
     ig_now = False
     watch = s['store'] in WATCH
-    if IG_TOKEN and IG_USER and not ig_stop and (watch or (rec.get('igDate') != today and ig_used < IG_MAX)):
+    if IG_TOKEN and IG_USER and not ig_stop and (watch or ((rec.get('igDate') != today or rec.get('igSrc') == 'fallback') and ig_used < IG_MAX)):
         if not watch:
             ig_used += 1
         try:
-            rec.update(instagram(s['ig'])); rec['igDate'] = today; ig_now = True
+            rec.update(instagram(s['ig'])); rec['igDate'] = today; rec['igSrc'] = 'api'; ig_now = True
             if watch:
                 urls = [x['url'] for x in rec.get('recent') or [] if x.get('url')]
                 if prev.get('seen') is not None:   # 처음 실행 때는 기준만 잡고 알리지 않음
