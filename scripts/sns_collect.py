@@ -35,7 +35,7 @@ def kakao(cid):
 
 
 IG_TOKEN, IG_USER = os.environ.get('IG_TOKEN'), os.environ.get('IG_USER_ID')
-FIELDS = 'followers_count,follows_count,media_count,media.limit(25){timestamp,media_product_type,view_count,permalink}'
+FIELDS = 'followers_count,follows_count,media_count,media.limit(25){timestamp,media_product_type,view_count,permalink,like_count,comments_count}'   # 261120 전국도 게시글별 좋아요·댓글(요청 횟수 같음)
 ENGAGE_TEAM = os.environ.get('ENGAGE_TEAM', '경북담당').strip()   # 이 담당만 전체 게시물 누적 좋아요·댓글을 셈 (261120 사용자 요청)
 EFIELDS = 'followers_count,follows_count,media_count,media.limit(50){timestamp,media_product_type,view_count,permalink,like_count,comments_count}'
 
@@ -78,9 +78,9 @@ def instagram(handle, full=False):
             'reelsTot': sum(m['view_count'] for m in reels) if reels else None,
             'reelsMax': top['view_count'] if top else None, 'reelsN': len(reels) if reels else None,
             'reelsUrl': top.get('permalink') if top else None,
-            # 261120: 최근 게시글 표용 — 경북담당 25개(조회수·좋아요·댓글), 다른 담당 10개(조회수만)
+            # 261120: 최근 게시글 표용 — 경북담당 25개, 다른 담당 10개 (조회수·좋아요·댓글)
             'recent': [{'t': kst(m['timestamp']), 'url': m.get('permalink'), 'type': m.get('media_product_type'), 'v': m.get('view_count'),
-                        **({'l': m.get('like_count'), 'c': m.get('comments_count')} if full else {})} for m in media[:25 if full else 10]],
+                        'l': m.get('like_count'), 'c': m.get('comments_count')} for m in media[:25 if full else 10]],
             **(safe_engage(handle, bd) if full else {})}
 
 
