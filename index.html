@@ -663,7 +663,7 @@ dash.calc('rvteams', {
         visit: s('visit'), visit_diff: s('visit_diff'), blog: s('blog'), blog_diff: s('blog_diff'),
         lg_total: s('lg_total'), lg_month: s('lg_month'), lg_yday: s('lg_yday'),
         nv_month: s('nv_month'), nv_yday: s('nv_yday'), buyers: s('buyers'), on_month: s('on_month'), on_yday: s('on_yday'),
-        on_rate: s('buyers') ? (s('on_month') || 0) / s('buyers') : null,
+        on_rate: (() => { const b = rs.filter((r) => r.buyers); const n = d3.sum(b, (r) => r.buyers); return n ? d3.sum(b, (r) => r.on_month || 0) / n : null; })(),
       };
     };
     return [agg(''), ...order.map(agg)];
