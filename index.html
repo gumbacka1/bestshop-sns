@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>하이프라자 297개 지점 SNS 대시보드</title>
+<title>경북 SNS 현황</title>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <style>
 :root{--font-anthropic-sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;--font-anthropic-serif:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
@@ -879,7 +879,7 @@ dash.calc('rvkpi', {
       const now = new Date();
       const stamp = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
       const per = document.querySelector('[data-draw="period"]');
-      box.innerHTML = '<p class="snap-h">하이프라자 297개 지점 SNS · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + stamp + ' 기준 · 선택: ' + team + '</p>';
+      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + stamp + ' 기준 · 선택: ' + team + '</p>';
       const c = wrap.cloneNode(true); box.appendChild(c); document.body.appendChild(box);
       const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));
