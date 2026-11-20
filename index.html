@@ -212,11 +212,6 @@ window.addEventListener('load',()=>dash._load());
 
   <section id="sec-rv" hidden>
   <div class="ig-cards" id="rv-cards">
-    <div class="ig-card" id="card-kakao">
-      <div class="ig-card-label">카톡 친구</div>
-      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
-      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span> · 이번 주 <span data-draw="k-wkk" data-source="kpi" data-field="k_week" data-row="0">—</span></div>
-    </div>
     <div class="ig-card" id="card-on">
       <div class="ig-card-label">온라인 리뷰 건수 · 당월</div>
       <div class="ig-card-num" data-draw="rv-onm">—</div>
@@ -232,24 +227,27 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-num" data-draw="rv-ony">—</div>
       <div class="ig-card-chg">네이버 <span data-draw="rv-nvy">—</span> · 홈페이지 <span data-draw="rv-lgy">—</span></div>
     </div>
+    <div class="ig-card" id="card-kakao">
+      <div class="ig-card-label">카톡 친구</div>
+      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
+      <div class="ig-card-chg">전주비 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 신장률 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span> · 이번 주 <span data-draw="k-wkk" data-source="kpi" data-field="k_week" data-row="0">—</span></div>
+    </div>
   </div>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 전주비 기준 <span data-draw="period">—</span></p>
 
-  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span></h2>
+  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="rv-team-table" data-source="rvteams" data-row-key="team">
       <thead>
         <tr>
           <th rowspan="2" class="ig-sort" data-field="team" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-field="accounts" data-k="accounts">지점</th>
-          <th colspan="2" class="ig-grp ig-g1">카톡</th>
           <th rowspan="2" class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
           <th colspan="4" class="ig-grp ig-g1">온라인 리뷰 (당월)</th>
           <th colspan="3" class="ig-grp ig-g1">누적</th>
+          <th colspan="2" class="ig-grp ig-g1">카톡</th>
         </tr>
         <tr>
-          <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">친구</th>
-          <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
           <th class="ig-sort ig-grp" data-field="on_month" data-k="on_month">건수</th>
           <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
           <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
@@ -257,13 +255,15 @@ window.addEventListener('load',()=>dash._load());
           <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 방문자</th>
           <th class="ig-sort" data-field="blog" data-k="blog">네이버 블로그</th>
           <th class="ig-sort" data-field="lg_total" data-k="lg_total">홈페이지(11/1~)</th>
+          <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
+          <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
         </tr>
       </thead>
       <tbody data-draw="rv-team-body"></tbody>
     </table>
   </div>
 
-  <h2 class="ig-h" id="h-rv-store">지점별 온라인 리뷰 <span class="ig-note" data-draw="rv-store-count">—</span></h2>
+  <h2 class="ig-h" id="h-rv-store">지점별 온라인 리뷰 <span class="ig-note" data-draw="rv-store-count">—</span><button class="ig-reset" id="rv-store-reset" type="button">↺ 정렬 초기화</button></h2>
   <div class="ig-tools">
     <input class="ig-search" id="rv-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
     <span class="ig-note">표 머리를 누르면 정렬돼요</span>
@@ -273,8 +273,6 @@ window.addEventListener('load',()=>dash._load());
       <thead><tr>
         <th class="ig-sort" data-field="team" data-k="team">담당</th>
         <th class="ig-sort" data-field="store" data-k="store">지점</th>
-        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
-        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
         <th class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
         <th class="ig-sort ig-grp" data-field="on_month" data-k="on_month" aria-sort="descending">리뷰 건수(당월)</th>
         <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
@@ -283,6 +281,8 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 방문자 누적</th>
         <th class="ig-sort" data-field="blog" data-k="blog">네이버 블로그 누적</th>
         <th class="ig-sort" data-field="lg_total" data-k="lg_total">홈페이지 누적(11/1~)</th>
+        <th class="ig-sort ig-grp" data-field="kakao" data-k="kakao">카톡 친구</th>
+        <th class="ig-sort" data-field="k_diff" data-k="k_diff">전주비</th>
       </tr></thead>
       <tbody data-draw="rv-store-body"></tbody>
     </table>
@@ -691,8 +691,12 @@ dash.calc('rvkpi', {
     dash.setLink(id);
   };
   document.querySelectorAll('.ig-sec').forEach((b) => b.addEventListener('click', () => show(b.getAttribute('data-sec'))));
-  window.IG.rvsort = { k: 'visit', dir: -1 };
+  window.IG.rvsort = { k: 'on_month', dir: -1 };
   window.IG.rvtsort = { k: null, dir: -1 };
+  [['rv-team-reset', 'rvtsort', 'rv-team-table', 'rv-team-body', null], ['rv-store-reset', 'rvsort', 'rv-store-table', 'rv-store-body', 'on_month']].forEach(([b, st, tbl, body, k]) => {
+    const el = document.getElementById(b); if (!el) return;
+    el.addEventListener('click', () => { IG[st] = { k, dir: -1 }; document.querySelectorAll('#' + tbl + ' th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === k ? 'descending' : 'none')); dash.draw(body); });
+  });
   window.IG.rvq = '';
   document.querySelectorAll('#rv-store-table th.ig-sort').forEach((th) => th.addEventListener('click', () => {
     const k = th.getAttribute('data-k');
@@ -747,9 +751,10 @@ dash.calc('rvkpi', {
       if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
       if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
       td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
-      td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); td(tr, IG.fmt(r.buyers));
+      td(tr, IG.fmt(r.buyers));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog)); td(tr, IG.fmt(r.lg_total));
+      td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = null; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
       tb.appendChild(tr);
     });
@@ -771,9 +776,10 @@ dash.calc('rvkpi', {
       if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb';
       td(tr, r.team, 'ig-c'); td(tr, r.store, 'ig-l');
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
-      td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); td(tr, IG.fmt(r.buyers));
+      td(tr, IG.fmt(r.buyers));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog)); td(tr, IG.fmt(r.lg_total));
+      td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
       tb.appendChild(tr);
     });
