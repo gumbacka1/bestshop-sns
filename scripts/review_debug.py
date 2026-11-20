@@ -22,25 +22,26 @@ with sync_playwright() as p:
         pg.wait_for_timeout(3000)
         print("   매니저 탭 URL:", pg.url)
         print("   매니저 탭 화면:", pg.inner_text("body")[:700].replace("\n", " / "))
-        links = [l for l in pg.evaluate(LINKS) if re.search(r"manager|mng|dtl-|counsel", l[1], re.I)]
-        print("   매니저 탭 링크 예시:", links[:25])
-        mlinks = list(dict.fromkeys(h for t, h in links if re.search(r"manager|mng", h, re.I) and "review" not in h.lower()))[:20]
-        total = 0
-        for k, h in enumerate(mlinks):
-            url = h if h.startswith("http") else "https://bestshop.lge.co.kr" + h
+        names = pg.evaluate("""() => [...document.querySelectorAll('*')].filter(e => e.children.length === 0 && /^[가-힣]{2,4} (매니저|부지점장|지점장|명장)$/.test((e.innerText || '').trim())).map(e => e.innerText.trim())""")
+        names = list(dict.fromkeys(names))
+        print("   매니저 이름:", names)
+        total, seen = 0, set()
+        for k, nm in enumerate(names):
             try:
-                mp = b.new_page(locale="ko-KR"); mp.goto(url, wait_until="networkidle", timeout=30000); mp.wait_for_timeout(1500)
-                try: mp.locator("text=리뷰").first.click(timeout=3000); mp.wait_for_timeout(1500)
+                pg.goto(f"https://bestshop.lge.co.kr/storehub/dtl-{lg}/manager", wait_until="networkidle", timeout=30000); pg.wait_for_timeout(1200)
+                pg.get_by_text(nm, exact=True).first.click(timeout=5000); pg.wait_for_timeout(2500)
+                url = pg.url
+                try: pg.get_by_text(re.compile("리뷰")).last.scroll_into_view_if_needed(timeout=2000)
                 except Exception: pass
-                rc._expand(mp, lambda: re.findall(rc.DATE_RE, mp.inner_text("body")), SINCE, 30)
-                ds = [d for d in re.findall(rc.DATE_RE, mp.inner_text("body")) if SINCE <= d <= UNTIL]
+                rc._expand(pg, lambda: re.findall(rc.DATE_RE, pg.inner_text("body")), SINCE, 30)
+                body = pg.inner_text("body")
+                ds = [d for d in re.findall(rc.DATE_RE, body) if SINCE <= d <= UNTIL]
                 total += len(ds)
-                print(f"   매니저 페이지 {k+1}: {url[-60:]} → 11/1~11/19 {len(ds)}건")
+                print(f"   {nm}: {url[-70:]} → 11/1~11/19 {len(ds)}건")
                 if k == 0:
-                    body = mp.inner_text("body"); m = re.search(rc.DATE_RE, body)
-                    print("   [구조]", body[:300].replace("\n", " / "), " ... ", body[max(0, m.start()-150):m.end()+150].replace("\n", " / ") if m else "날짜 없음")
-                mp.close()
+                    m = re.search(rc.DATE_RE, body)
+                    print("   [구조]", body[:250].replace("\n", " / "), " ... ", body[max(0, m.start()-150):m.end()+150].replace("\n", " / ") if m else "날짜 없음")
             except Exception as e:
-                print("   매니저 페이지 실패:", url, str(e)[:100])
+                print("   실패:", nm, str(e)[:120])
         print(f"   매니저 페이지 합계 11/1~11/19 = {total}")
     b.close()
