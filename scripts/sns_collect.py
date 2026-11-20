@@ -70,6 +70,8 @@ latest, errs = [], {'kakao': 0, 'ig': 0}
 IG_MAX = int(os.environ.get('IG_MAX', '89'))   # 메타 앱 시간당 호출 한도 때문에 한 번에 최대 이만큼만 (새 글 알림 지점 6개는 별도)
 SKIP_KAKAO = os.environ.get('SKIP_KAKAO') == '1'   # 1이면 이번 실행은 카톡을 건너뛰고 이전 값 유지
 WATCH = [w.strip() for w in os.environ.get('WATCH', '').split(',') if w.strip()]   # 새 글 알림 지점 이름 → 매 실행마다 인스타 확인
+TEAM = os.environ.get('TEAM_REFRESH', '').strip()   # 예: 경북담당 → 이 담당 지점은 이번 실행에 무조건 새로 수집(시간별 기록)
+hourly = []
 new_posts = []
 stores = sorted(stores, key=lambda s: 0 if s['store'] in WATCH else 1)   # 알림 지점 먼저
 ig_used, ig_stop, ig_codes = 0, False, {}
@@ -86,13 +88,16 @@ for s in stores:
             errs['kakao'] += 1; rec['status'] = 'partial'
         time.sleep(0.4)
     ig_now = False
-    watch = s['store'] in WATCH
+    watch = s['store'] in WATCH or (TEAM and s['team'] == TEAM)
     if IG_TOKEN and IG_USER and not ig_stop and (watch or ((rec.get('igDate') != today or rec.get('igSrc') == 'fallback') and ig_used < IG_MAX)):
         if not watch:
             ig_used += 1
         try:
             rec.update(instagram(s['ig'])); rec['igDate'] = today; rec['igSrc'] = 'api'; ig_now = True
-            if watch:
+            if TEAM and s['team'] == TEAM:
+                hourly.append({**base, 'date': today, 'time': now.strftime('%H:%M'), 'followers': rec.get('followers'),
+                               'following': rec.get('following'), 'posts': rec.get('posts')})
+            if s['store'] in WATCH:
                 urls = [x['url'] for x in rec.get('recent') or [] if x.get('url')]
                 if prev.get('seen') is not None:   # 처음 실행 때는 기준만 잡고 알리지 않음
                     for x in rec.get('recent') or []:
@@ -118,6 +123,8 @@ for s in stores:
     latest.append(rec)
     key = (today, s['ig'])
     old = daily.get(key, {})
+    if TEAM and s['team'] == TEAM and old.get('followers') is not None:
+        ig_now = False   # 일별 기록은 아침 숫자 유지(전주비 기준 시각을 전국과 맞춤), 낮 숫자는 시간별 기록에만
     daily[key] = {**base, 'date': today,
                   'followers': rec.get('followers') if ig_now else old.get('followers'),
                   'following': rec.get('following') if ig_now else old.get('following'),
@@ -125,11 +132,32 @@ for s in stores:
                   'posts': rec.get('posts') if ig_now else old.get('posts')}
 
 rows = sorted(daily.values(), key=lambda r: (r['date'], r['team'] or '', r['store'] or ''))
-json.dump(rows, open(dout, 'w'), ensure_ascii=False, separators=(',', ':'))
+ddir = os.path.dirname(os.path.abspath(dout))
+
+
+def merge_month(folder, ym, new, keyf):   # 월별 보관 파일(data/<folder>/YYYY-MM.json)에 합쳐 저장
+    os.makedirs(os.path.join(ddir, folder), exist_ok=True)
+    fp = os.path.join(ddir, folder, ym + '.json')
+    cur = {}
+    if os.path.exists(fp):
+        cur = {keyf(r): r for r in json.load(open(fp, encoding='utf-8'))}
+    for r in new:
+        cur[keyf(r)] = r
+    json.dump(sorted(cur.values(), key=keyf), open(fp, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+
+
+for ym in sorted({r['date'][:7] for r in rows}):
+    merge_month('daily', ym, [r for r in rows if r['date'][:7] == ym], lambda r: (r['date'], r['team'] or '', r['store'] or '', r['handle']))
+if hourly:
+    merge_month('hourly', today[:7], hourly, lambda r: (r['date'], r['time'], r['team'] or '', r['store'] or '', r['handle']))
+cut = (now.date() - dt.timedelta(days=62)).isoformat()   # 화면용 daily.json은 최근 62일만(가볍게), 전체는 data/daily/월별 파일
+json.dump([r for r in rows if r['date'] >= cut], open(dout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(latest, open(lout, 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(new_posts, open(os.path.join(os.path.dirname(os.path.abspath(lout)), 'new_posts.json'), 'w'), ensure_ascii=False, indent=1)
 if WATCH:
     print(f"알림 지점 새 글 {len(new_posts)}개" + ''.join(f"\n - {p['store']} {p['t']} {p['url']}" for p in new_posts))
+if TEAM:
+    print(f"{TEAM} 시간별 수집 {len(hourly)}곳 ({now:%H:%M})")
 done_today = sum(1 for r in latest if r.get('igDate') == today and r.get('igSrc') == 'api')
 print(f"인스타 오늘 공식 수집 {done_today}/{len(latest)} (이번 실행 {ig_used}건{', 한도 도달' if ig_stop and '190' not in ig_codes else ''}) | 오류 코드 {ig_codes or '없음'}")
 print(f"완료 {now:%Y-%m-%d %H:%M} | 지점 {len(latest)} | 카톡 {'건너뜀' if SKIP_KAKAO else '실패 ' + str(errs['kakao'])} | 인스타 {'실패 ' + str(errs['ig']) if IG_TOKEN else '토큰 없음(건너뜀)'}")

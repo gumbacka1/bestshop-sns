@@ -1,7 +1,7 @@
 name: 리뷰 수집(네이버·LG)
 on:
   schedule:
-    - cron: "10 22 * * *"   # 한국 시각 07:10
+    - cron: "0 21 * * *"   # 한국 시각 06:00 (9시 전 마무리, 261120 변경)
   workflow_dispatch:
     inputs:
       team: { description: "담당만 (비우면 전체)", required: false, default: "" }

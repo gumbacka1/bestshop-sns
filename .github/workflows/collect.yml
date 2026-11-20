@@ -2,14 +2,12 @@ name: SNS 수집
 
 on:
   schedule:
-    # 한국 시각 6·7·8·9·15·17·20시 (깃허브는 UTC 기준, 몇 분~수십 분 늦게 돌 수 있어요)
+    # 한국 시각 6·7·8·9시(전국) + 12~20시 매시간(경북만) — 깃허브는 UTC 기준, 몇 분~수십 분 늦게 돌 수 있어요
     - cron: '3 21 * * *'
     - cron: '3 22 * * *'
     - cron: '3 23 * * *'
     - cron: '3 0 * * *'
-    - cron: '3 6 * * *'
-    - cron: '3 8 * * *'
-    - cron: '3 11 * * *'
+    - cron: '3 3-11 * * *'
   workflow_dispatch:
     inputs:
       hour:
@@ -35,19 +33,19 @@ jobs:
         run: |
           H=$(TZ=Asia/Seoul date +%-H)
           if [ -n "${{ github.event.inputs.hour }}" ]; then H=${{ github.event.inputs.hour }}; fi
-          # 표: 시 | 카톡(K=1 건너뜀) | 인스타 일반 최대 개수(M) | 내 권역(W)
-          # 6·7·8시 100개씩 → 297개를 9시 전에 완료, 9·15·17시는 빠진 곳 보충
-          if   [ $H -lt 9 ];  then K=1; M=100; W=0
-          elif [ $H -lt 15 ]; then K=0; M=90;  W=1
-          # 내 권역 새 글 확인은 9·15·17시(아침 수집 끝·보충 때)만, 20시는 카톡만
-          elif [ $H -lt 17 ]; then K=1; M=100; W=1
-          elif [ $H -lt 18 ]; then K=0; M=100; W=1
-          elif [ $H -lt 20 ]; then K=1; M=0;   W=0
-          else                     K=0; M=0;   W=0
+          # 표: 시 | 카톡(K=1 건너뜀) | 인스타 전국 최대 개수(M) | 시간별 담당(T)
+          # 6·7·8시 100개씩 → 9시에 빠진 곳 보충 + 카톡(하루 1번) → 9시에 전국 마무리
+          # 12~20시는 경북담당 29곳만 매시간 새로 수집(시간별 기록), 전국·카톡은 안 함
+          T=""
+          if   [ $H -lt 9 ];  then K=1; M=100
+          elif [ $H -lt 12 ]; then K=0; M=100
+          else                     K=1; M=0; T="경북담당"
           fi
+          W=0   # 내 권역 새 글 확인은 261120 사용자 요청으로 없앰
           echo "skip_kakao=$K" >> $GITHUB_OUTPUT
           echo "ig_max=$M" >> $GITHUB_OUTPUT
           if [ $W = 1 ]; then echo "watch=황금본점,제주본점,이도본점,율하점,범어점,서귀포점" >> $GITHUB_OUTPUT; else echo "watch=" >> $GITHUB_OUTPUT; fi
+          echo "team=$T" >> $GITHUB_OUTPUT
           echo "hour=$H" >> $GITHUB_OUTPUT
       - name: 수집
         env:
@@ -56,6 +54,7 @@ jobs:
           IG_MAX: ${{ steps.plan.outputs.ig_max }}
           SKIP_KAKAO: ${{ steps.plan.outputs.skip_kakao }}
           WATCH: ${{ steps.plan.outputs.watch }}
+          TEAM_REFRESH: ${{ steps.plan.outputs.team }}
         run: |
           python3 scripts/sns_collect.py scripts/master.tsv data/daily.json data/daily.json data/latest.json | tee run.log
           python3 - <<'PY'
