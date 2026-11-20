@@ -119,7 +119,7 @@ def read_lg(page, lg_id, since_day):
     page.goto(f"https://bestshop.lge.co.kr/storehub/dtl-{lg_id}/review",
               wait_until="networkidle", timeout=40000)
     page.wait_for_timeout(1500)
-    _expand(page, lambda: min(re.findall(DATE_RE, page.inner_text("body")) or [""]) or None, since_day, MAX_MORE_CLICKS)
+    _expand(page, lambda: re.findall(DATE_RE, page.inner_text("body")), since_day, MAX_MORE_CLICKS)
 
     body = page.inner_text("body")
     ms = list(re.finditer(DATE_RE, body))
@@ -149,22 +149,25 @@ CLICK_MORE = """() => { const els = [...document.querySelectorAll('a,button,span
   const t = els[els.length - 1]; const c = t.closest('a,button') || t; c.scrollIntoView({block: 'center'}); c.click(); return true; }"""
 
 
-def _expand(page, oldest_fn, since_day, max_clicks=60):
-    """맨 아래 '더보기'를 눌러 가며, since_day 보다 오래된 날짜가 보인 뒤 2번 더 넘기고 멈춤"""
-    extra, last = 0, None
+def _expand(page, dates_fn, since_day, max_clicks=60):
+    """맨 아래 '더보기'를 눌러 가며, since_day 보다 오래된 날짜가 보인 뒤 2번 더 넘기고 멈춤.
+    버튼이 잠깐 안 보이면 2.5초 기다렸다가 한 번 더 시도."""
+    extra, prev = 0, -1
     for _ in range(max_clicks):
-        o = oldest_fn()
-        if o and o < since_day:
+        ds = dates_fn()
+        if len(ds) == prev:
+            page.wait_for_timeout(2500)
+            ds = dates_fn()
+        prev = len(ds)
+        if ds and min(ds) < since_day:
             extra += 1
             if extra > 2:
                 break
         if not page.evaluate(CLICK_MORE):
-            break
-        page.wait_for_timeout(1500)
-        cur = oldest_fn()
-        if cur == last == o:
             page.wait_for_timeout(2500)
-        last = cur
+            if not page.evaluate(CLICK_MORE):
+                break
+        page.wait_for_timeout(1500)
 
 
 def _md_to_date(v, today=None):
@@ -192,7 +195,7 @@ def _count_list(page, url, since_day, sort_recent=False):
             page.wait_for_timeout(1500)
         except Exception:
             pass
-    _expand(page, lambda: min(_kdates(page.inner_text("body")) or [""]) or None, since_day, NV_MAX_CLICKS)
+    _expand(page, lambda: _kdates(page.inner_text("body")), since_day, NV_MAX_CLICKS)
     out = {}
     body = page.inner_text("body")
     for d in _kdates(body):
@@ -228,7 +231,7 @@ def _visitor_by_created(page, nv_id, since_day):
             walk(json.loads(page.evaluate("() => JSON.stringify(window.__APOLLO_STATE__ || {})")))
         except Exception:
             pass
-        _expand(page, lambda: min([d for d in bag.values() if d] or [""]) or None, since_day, NV_MAX_CLICKS)
+        _expand(page, lambda: [d for d in bag.values() if d], since_day, NV_MAX_CLICKS)
         body = page.inner_text("body")
     finally:
         page.remove_listener("response", on_resp)
