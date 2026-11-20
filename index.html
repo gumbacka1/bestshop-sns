@@ -62,6 +62,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-table tr.ig-age1 .ig-dv, .ig-table tr.ig-age2 .ig-dv { color: #E24B4A; font-weight: 600; }
 .ig-table tr.ig-age2 .ig-dv { border-color: #E24B4A; }
 .ig-table tr.ig-age3 .ig-dv { background: #A32D2D; border-color: #A32D2D; color: #fff; font-weight: 600; }
+.ig-table .ig-hid { font-size: 11px; color: #854F0B; line-height: 1.2; }
 .ig-warn { display: inline-block; margin-right: 4px; animation: ig-blink 1.2s infinite; }
 @keyframes ig-blink { 50% { opacity: .3; } }
 .ig-table tr.ig-total td { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); }
@@ -190,6 +191,8 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort ig-grp" data-field="posts" data-k="posts">게시물</th>
         <th class="ig-sort" data-field="days" data-k="days">최근 게시</th>
         <th class="ig-sort" data-field="reelsMax" data-k="reelsMax">릴스 최다 조회</th>
+        <th class="ig-sort ig-grp" data-field="likesTot" data-k="likesTot">누적 좋아요</th>
+        <th class="ig-sort" data-field="commentsTot" data-k="commentsTot">누적 댓글</th>
       </tr></thead>
       <tbody data-draw="store-body"></tbody>
     </table>
@@ -204,6 +207,7 @@ window.addEventListener('load',()=>dash._load());
     <p>· 전주비 = 가장 최근 월요일 수치 − 그보다 7일 전 수치. 7일 전 기록이 없으면 그 이전 가장 가까운 날과 비교해요(위 기준 줄에 날짜가 나와요).</p>
     <p>· 신장률 = 전주비 ÷ 비교일 수치. 이번 주 = 최신 수치 − 기준 월요일 수치.</p>
     <p>· 최근 게시는 주 1회 업로드 기준으로 표시해요: 8일 이상 빨간 글씨, 15일 이상 빨간 테두리, 30일 이상 진한 빨강 바탕과 ⚠ 표시(최근 게시 칸만). 릴스 최다 조회는 그 지점 릴스 중 조회수가 가장 많은 것이고, 누르면 그 릴스로 가요.</p>
+    <p>· 누적 좋아요·누적 댓글은 경북담당 29곳만, 그 계정이 지금까지 올린 모든 게시물의 합계예요(인스타 수집 때마다 새로 셈). 좋아요 수를 숨긴 글은 좋아요에서 빠지고 '숨김 N개'로 표시돼요. 광고로 받은 반응은 들어가지 않아요. 다른 담당은 —로 보여요.</p>
   </details>
   </section>
 
@@ -363,6 +367,7 @@ dash.calc('snap', {
         kakao: num(r.kakao), k_diff: kd, k_rate: rate(kd, pk), k_week: diff(num(r.kakao), bk),
         posts: num(r.posts), lastPost: r.lastPost, days: days === null ? null : Math.max(0, days),
         reelsMax: num(r.reelsMax), reelsUrl: r.reelsUrl || '',
+        likesTot: num(r.likesTot), commentsTot: num(r.commentsTot), likesHidden: num(r.likesHidden),
       };
     });
   }
@@ -563,6 +568,8 @@ dash.draw('store-body', (tb) => {
     { const dc = td(tr, '', 'ig-days'); const sp = document.createElement('span'); sp.className = 'ig-dv'; if (ag === 3) { const w = document.createElement('span'); w.className = 'ig-warn'; w.textContent = '⚠'; sp.appendChild(w); } sp.appendChild(document.createTextNode(r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'))); dc.appendChild(sp); }
     const rc = td(tr, '');
     if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
+    { const lc = td(tr, IG.fmt(r.likesTot)); if (r.likesHidden) { const h = document.createElement('div'); h.className = 'ig-hid'; h.textContent = '숨김 ' + r.likesHidden + '개'; lc.appendChild(h); } }
+    td(tr, IG.fmt(r.commentsTot));
     tb.appendChild(tr);
   });
 });

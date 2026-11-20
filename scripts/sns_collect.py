@@ -36,6 +36,8 @@ def kakao(cid):
 
 IG_TOKEN, IG_USER = os.environ.get('IG_TOKEN'), os.environ.get('IG_USER_ID')
 FIELDS = 'followers_count,follows_count,media_count,media.limit(25){timestamp,media_product_type,view_count,permalink}'
+ENGAGE_TEAM = os.environ.get('ENGAGE_TEAM', '경북담당').strip()   # 이 담당만 전체 게시물 누적 좋아요·댓글을 셈 (261120 사용자 요청)
+EFIELDS = 'followers_count,follows_count,media_count,media.limit(50){timestamp,media_product_type,view_count,permalink,like_count,comments_count}'
 
 
 def kst(ts):   # 메타 시각(UTC) → 한국 시각 'YYYY-MM-DD HH:MM'
@@ -45,10 +47,30 @@ def kst(ts):   # 메타 시각(UTC) → 한국 시각 'YYYY-MM-DD HH:MM'
         return ts[:16]
 
 
-def instagram(handle):
-    q = urllib.parse.urlencode({'fields': f'business_discovery.username({handle}){{{FIELDS}}}', 'access_token': IG_TOKEN})
-    bd = get_json(f'https://graph.facebook.com/v25.0/{IG_USER}?{q}')['business_discovery']
-    media = (bd.get('media') or {}).get('data') or []
+def bd_get(handle, fields):
+    q = urllib.parse.urlencode({'fields': f'business_discovery.username({handle}){{{fields}}}', 'access_token': IG_TOKEN})
+    return get_json(f'https://graph.facebook.com/v25.0/{IG_USER}?{q}')['business_discovery']
+
+
+def engage(handle, bd):   # 전체 게시물 좋아요·댓글 합계 (50개씩 다음 장까지 모두)
+    m = bd.get('media') or {}
+    allm = list(m.get('data') or [])
+    cur = ((m.get('paging') or {}).get('cursors') or {}).get('after')
+    pages = 0
+    while cur and (m.get('paging') or {}).get('next') and pages < 20:
+        pages += 1
+        time.sleep(0.4)
+        m = bd_get(handle, f'media.after({cur}).limit(50){{like_count,comments_count}}').get('media') or {}
+        allm += m.get('data') or []
+        cur = ((m.get('paging') or {}).get('cursors') or {}).get('after')
+    hidden = sum(1 for x in allm if x.get('like_count') is None)
+    return {'likesTot': sum(x.get('like_count') or 0 for x in allm), 'commentsTot': sum(x.get('comments_count') or 0 for x in allm),
+            'likesHidden': hidden, 'engageN': len(allm), 'engageAt': now.strftime('%Y-%m-%d %H:%M')}
+
+
+def instagram(handle, full=False):
+    bd = bd_get(handle, EFIELDS if full else FIELDS)
+    media = ((bd.get('media') or {}).get('data') or [])[:25]   # 릴스·최근 게시는 다른 담당과 같게 최근 25개 기준
     reels = [m for m in media if m.get('media_product_type') == 'REELS' and m.get('view_count') is not None]
     top = max(reels, key=lambda m: m['view_count']) if reels else None
     return {'followers': bd.get('followers_count'), 'following': bd.get('follows_count'), 'posts': bd.get('media_count'),
@@ -56,7 +78,15 @@ def instagram(handle):
             'reelsTot': sum(m['view_count'] for m in reels) if reels else None,
             'reelsMax': top['view_count'] if top else None, 'reelsN': len(reels) if reels else None,
             'reelsUrl': top.get('permalink') if top else None,
-            'recent': [{'t': kst(m['timestamp']), 'url': m.get('permalink'), 'type': m.get('media_product_type')} for m in media[:5]]}
+            'recent': [{'t': kst(m['timestamp']), 'url': m.get('permalink'), 'type': m.get('media_product_type')} for m in media[:5]],
+            **(safe_engage(handle, bd) if full else {})}
+
+
+def safe_engage(handle, bd):   # 좋아요·댓글 다음 장 조회가 실패해도 팔로워 등은 그대로 저장 (이전 누적값 유지)
+    try:
+        return engage(handle, bd)
+    except Exception:
+        return {}
 
 
 daily = {(r['date'], r['handle']): r for r in (json.load(open(din)) if din != '-' else [])}
@@ -79,7 +109,7 @@ ig_used, ig_stop, ig_codes = 0, False, {}
 for s in stores:
     base = {'team': s['team'], 'store': s['store'], 'handle': s['ig']}
     prev = old_latest.get(s['ig'], {})
-    rec = {**base, **{k: prev.get(k) for k in ('followers', 'following', 'posts', 'lastPost', 'kakao', 'reelsTot', 'reelsMax', 'reelsN', 'reelsUrl', 'igDate', 'igSrc', 'recent', 'seen')}}
+    rec = {**base, **{k: prev.get(k) for k in ('followers', 'following', 'posts', 'lastPost', 'kakao', 'reelsTot', 'reelsMax', 'reelsN', 'reelsUrl', 'igDate', 'igSrc', 'recent', 'seen', 'likesTot', 'commentsTot', 'likesHidden', 'engageN', 'engageAt')}}
     rec['status'] = 'ok'
     if s.get('kakao') and not SKIP_KAKAO:
         try:
@@ -93,10 +123,11 @@ for s in stores:
         if not watch:
             ig_used += 1
         try:
-            rec.update(instagram(s['ig'])); rec['igDate'] = today; rec['igSrc'] = 'api'; ig_now = True
+            rec.update(instagram(s['ig'], full=bool(ENGAGE_TEAM) and s['team'] == ENGAGE_TEAM)); rec['igDate'] = today; rec['igSrc'] = 'api'; ig_now = True
             if TEAM and s['team'] == TEAM:
                 hourly.append({**base, 'date': today, 'time': now.strftime('%H:%M'), 'followers': rec.get('followers'),
-                               'following': rec.get('following'), 'posts': rec.get('posts')})
+                               'following': rec.get('following'), 'posts': rec.get('posts'),
+                               'likes': rec.get('likesTot'), 'comments': rec.get('commentsTot')})
             if s['store'] in WATCH:
                 urls = [x['url'] for x in rec.get('recent') or [] if x.get('url')]
                 if prev.get('seen') is not None:   # 처음 실행 때는 기준만 잡고 알리지 않음
