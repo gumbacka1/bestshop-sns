@@ -38,6 +38,7 @@ window.addEventListener('load',()=>dash._load());
 .rv-bars .b i { display: block; width: 100%; }
 .rv-bars .b span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-fg-muted); white-space: nowrap; }
 #rv-store-table tbody tr { cursor: pointer; }
+.rv-qr { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: #FFE3D3; color: #C8102E; font-size: 11px; font-weight: 700; text-decoration: none; vertical-align: 1px; white-space: nowrap; }
 .ig-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--cds-gap-sm); margin: 0 0 var(--cds-gap-sm); }
 .ig-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); }
 .ig-card-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
@@ -865,7 +866,8 @@ dash.calc('rvkpi', {
     rvRows().forEach((r) => {
       const tr = document.createElement('tr'); tr.setAttribute('data-key', r.store);
       if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb';
-      td(tr, r.team, 'ig-c'); td(tr, r.store, 'ig-l');
+      td(tr, r.team, 'ig-c'); const sc = td(tr, r.store, 'ig-l');
+      { const q = document.createElement('a'); q.href = 'qr.html#' + encodeURIComponent(r.store); q.target = '_blank'; q.rel = 'noopener'; q.className = 'rv-qr'; q.textContent = 'QR'; q.title = '고객용 후기 QR 화면 열기'; q.addEventListener('click', (e) => e.stopPropagation()); sc.appendChild(q); }
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
       td(tr, IG.fmt(r.buyers)); td(tr, IG.fmt(r.on_today));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate));
@@ -968,7 +970,7 @@ dash.calc('rvkpi', {
       const per = document.querySelector('[data-draw="period"]');
       const upd = btn.parentElement.querySelector('.snap-upd');
       box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '주간 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + team + '</p>';
-      const c = wrap.cloneNode(true); box.appendChild(c); document.body.appendChild(box);
+      const c = wrap.cloneNode(true); c.querySelectorAll('.rv-qr').forEach((q) => q.remove()); box.appendChild(c); document.body.appendChild(box);
       const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));
       const cv = await h2c(box, { scale: sc, backgroundColor: '#ffffff' });

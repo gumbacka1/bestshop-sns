@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>베스트샵 후기 QR</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 계산대에서 건네는 밝은 감사 인사
+   IDEA: 시안 1 햇살 감사카드, 고객 휴대폰 한 화면에 맞춤
+   PICTURE: 선물 상자와 하트, 아래 큼직한 QR 4장
+   COLOUR and TYPE: 주황·노랑 햇살, 칸마다 브랜드색 아이콘 / Jua + Noto Sans KR
+   LAYOUT: 인사 카드 → 안내 한 줄 → 2x2 QR → 맺음말, 글자는 단어 단위로만 줄바꿈 */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#fff3c4;color:#3a1a08;font:16px/1.5 "Noto Sans KR","Noto Sans CJK KR",system-ui,sans-serif;word-break:keep-all;overflow-wrap:break-word;overflow-x:clip}
+.wrap{max-width:480px;margin:0 auto;padding:14px 14px 24px}
+.hero{position:relative;background:linear-gradient(150deg,#ff8a65,#ffb74d);border-radius:24px;padding:18px 18px 18px;overflow:hidden}
+.hero small{display:block;font-size:13px;font-weight:500;color:#5a2a0e}
+.hero h1{font:400 clamp(28px,8.4vw,36px)/1.15 Jua,sans-serif;margin:4px 0 6px;color:#3a1a08;max-width:66%}
+.hero p{margin:0;font-size:14px;line-height:1.55;max-width:66%;color:#4a220b}
+.hero svg{position:absolute;right:4px;bottom:6px;width:34%;max-width:150px;height:auto}
+.guide{margin:16px 2px 10px;font-size:15px;font-weight:700;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.q{border:0;font:inherit;color:inherit;background:#fff;border-radius:18px;box-shadow:0 3px 0 #f2c98a;padding:10px 8px 10px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center}
+.q .ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none}
+.q .ic svg{width:18px;height:18px}
+.q h2{margin:6px 0 8px;font-size:clamp(14px,3.9vw,16px);line-height:1.3;font-weight:700;min-height:0;display:flex;align-items:center;justify-content:center}
+.q .box{width:100%;background:#fff;border:1px solid #f3e3c8;border-radius:12px;padding:6px;display:flex;justify-content:center}
+.q .box img,.q .box canvas{width:100%!important;height:auto!important;max-width:150px}
+.q span{display:block;font-size:12.5px;line-height:1.4;margin-top:7px;font-weight:500;color:#7a4a28;min-height:2.8em}
+.nv .ic{background:#03c75a;color:#fff}.kk .ic{background:#fee500;color:#3a2a00}.ig .ic{background:#e91e63;color:#fff}.hp .ic{background:#c8102e;color:#fff}
+.foot{text-align:center;font-size:14px;margin:16px 0 0;color:#6a3a18}
+.foot b{color:#c8102e}
+.zoom{position:fixed;inset:0;background:rgba(30,15,5,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:9}
+.zoom.on{display:flex}
+.zc{background:#fff;border-radius:24px;padding:20px;width:min(100%,360px);text-align:center}
+.zc h3{font:400 22px Jua,sans-serif;margin:0 0 12px}
+.zc #zq{display:flex;justify-content:center}.zc #zq img,.zc #zq canvas{width:100%!important;max-width:290px;height:auto!important}
+.zc button{margin-top:14px;font:500 16px "Noto Sans KR",sans-serif;background:#c8102e;color:#fff;border:0;border-radius:999px;padding:12px 30px;min-height:46px;cursor:pointer}
+button:focus-visible{outline:3px solid #1e88e5;outline-offset:2px}
+@media(prefers-reduced-motion:no-preference){.fl{animation:fl 3s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-5px)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <small id="store">LG전자 베스트샵 황금본점</small>
+    <h1>오늘 방문<br>감사해요!</h1>
+    <p>고객님의 한마디가<br>저희에게 큰 힘이 돼요.</p>
+    <svg viewBox="0 0 150 130" aria-hidden="true"><circle cx="112" cy="30" r="14" fill="#fff3c4" opacity=".8"/><g class="fl"><path d="M36 50c-6-10-20-4-14 6l14 12 14-12c6-10-8-16-14-6z" fill="#fff"/></g><rect x="56" y="78" width="78" height="48" rx="8" fill="#c8102e"/><rect x="52" y="68" width="86" height="16" rx="6" fill="#e83a54"/><rect x="88" y="68" width="12" height="58" fill="#ffd54f"/></svg>
+  </section>
+  <p class="guide">휴대폰 카메라로 QR을 찍어 주세요</p>
+  <div class="grid" id="grid"></div>
+  <p class="foot">1분이면 충분해요. <b>따뜻한 후기</b> 기다릴게요</p>
+</div>
+<div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-labelledby="zt"><div class="zc"><h3 id="zt"></h3><div id="zq"></div><button id="zx">닫기</button></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+{
+const IC={
+ pen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>',
+ chat:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.5 4 3 7.3 3 11c0 2.4 1.5 4.4 3.8 5.6L6 20l3.8-2.3c.7.1 1.4.2 2.2.2 5.5 0 9-3.3 9-7s-3.5-7-9-7z"/></svg>',
+ cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/></svg>',
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>'
+};
+const name=decodeURIComponent(location.hash.slice(1)||'');
+const grid=document.getElementById('grid');
+const Q0=s=>[
+ {c:'nv',t:'네이버 리뷰 쓰기',d:'영수증 인증 후<br>별점 남기기',i:IC.pen,u:s.nv&&`https://m.place.naver.com/place/${s.nv}/review/visitor`},
+ {c:'kk',t:'카카오톡 친구 추가',d:'매장 혜택 소식 받기',i:IC.chat,u:s.kk&&`https://pf.kakao.com/${s.kk}/friend`},
+ {c:'ig',t:'인스타그램 팔로우',d:'신제품 소식 구경하기',i:IC.cam,u:s.ig&&`https://www.instagram.com/${s.ig}/`},
+ {c:'hp',t:'홈페이지 후기 쓰기',d:'구매 제품 후기 남기기',i:IC.home,u:s.lg&&`https://bestshop.lge.co.kr/storehub/dtl-${s.lg}/review`}
+];
+let Q=[];
+function qr(el,u,sz){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:u,width:sz,height:sz,correctLevel:QRCode.CorrectLevel.M});else el.textContent='QR을 불러오지 못했어요';}
+function render(s){
+  document.getElementById('store').textContent='LG전자 베스트샵 '+name;
+  Q=Q0(s);
+  grid.innerHTML=Q.map((q,i)=>`<button class="q ${q.c}" data-i="${i}" aria-label="${q.t} QR 크게 보기"><div class="ic">${q.i}</div><h2>${q.t}</h2><div class="box" id="b${i}"></div><span>${q.d}</span></button>`).join('');
+  Q.forEach((q,i)=>{const el=document.getElementById('b'+i);if(q.u)qr(el,q.u,300);else{el.innerHTML='<p style="margin:40px 0;font-size:13px;color:#999">준비 중이에요</p>';}});
+}
+fetch('data/qr_links.json',{cache:'no-cache'}).then(r=>r.json()).then(D=>{
+  if(D[name])render(D[name]);
+  else{document.getElementById('store').textContent='LG전자 베스트샵';grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#7a4a28">지점을 찾지 못했어요. 대시보드에서 지점 옆 QR 버튼으로 열어 주세요.</p>';}
+}).catch(()=>{grid.innerHTML='<p style="grid-column:1/-1;text-align:center">잠시 후 다시 열어 주세요.</p>';});
+const zoom=document.getElementById('zoom');
+grid.addEventListener('click',e=>{const b=e.target.closest('.q');if(!b)return;const q=Q[b.dataset.i];if(!q||!q.u)return;document.getElementById('zt').textContent=q.t;qr(document.getElementById('zq'),q.u,580);zoom.classList.add('on');document.getElementById('zx').focus();});
+document.getElementById('zx').addEventListener('click',()=>zoom.classList.remove('on'));
+zoom.addEventListener('click',e=>{if(e.target===zoom)zoom.classList.remove('on');});
+}
+</script>
+</body>
+</html>
