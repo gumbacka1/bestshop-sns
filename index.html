@@ -119,7 +119,8 @@ window.addEventListener('load',()=>dash._load());
 }
 </style>
 
-<div class="ig">
+<div class="ig" style="position:relative">
+  <button type="button" id="admBtn" class="adm-btn">🔒 관리자</button>
   <div class="ig-kicker" id="kicker">경북담당 실행강화팀 SNS관리용</div>
   <p class="ig-sub" id="takeaway" data-draw="takeaway">—</p>
 
@@ -987,6 +988,110 @@ dash.calc('rvkpi', {
     btn.textContent = old; btn.disabled = false;
   }));
 })();
+</script>
+
+<style>
+.adm-btn{position:absolute;top:0;right:0;font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid #d6d6d2;background:#fff;color:#1f1f1f;cursor:pointer}
+.adm-btn.on{background:#A50034;border-color:#A50034;color:#fff}
+.adm-dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px}
+.adm-dim.show{display:flex}
+.adm-box{background:#fff;color:#1f1f1f;border-radius:16px;width:100%;max-width:560px;padding:22px 18px;font-family:"LG스마트체2.0 Regular","LG스마트체","Pretendard","Malgun Gothic",sans-serif}
+.adm-box h3{margin:0 0 14px;font-size:20px;color:#A50034}
+.adm-box input[type=password]{width:100%;box-sizing:border-box;font-size:16px;padding:12px;border:2px solid #A50034;border-radius:10px;margin-bottom:10px}
+.adm-main{width:100%;font:inherit;font-size:16px;font-weight:700;padding:12px;border:0;border-radius:10px;background:#A50034;color:#fff;cursor:pointer}
+.adm-sub{font:inherit;font-size:14px;padding:9px 14px;border:1px solid #d6d6d2;border-radius:10px;background:#fff;color:#1f1f1f;cursor:pointer}
+.adm-sec{border:1px solid #e2e2df;border-radius:12px;padding:12px;margin-bottom:12px}
+.adm-sec b{display:block;font-size:15px;margin-bottom:2px}
+.adm-sec small{display:block;color:#6b6b6b;font-size:12.5px;margin-bottom:8px}
+.adm-sec textarea{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px;border:1px solid #d6d6d2;border-radius:8px;resize:vertical}
+#admTxt{font-family:Consolas,Menlo,monospace;font-size:13px;white-space:pre;overflow-x:auto}
+.adm-prev{overflow-x:auto;margin-top:8px}.adm-prev table{border-collapse:collapse;font-size:12.5px}
+.adm-prev td{border:1px solid #e2e2df;padding:3px 7px;white-space:nowrap}.adm-prev tr:first-child td{background:#EDEDED;font-weight:600}
+.adm-drop{border:1.5px dashed #c9c9c4;border-radius:8px;min-height:84px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#6b6b6b;font-size:13px}
+.adm-th{position:relative;width:76px;height:76px;border-radius:6px;overflow:hidden;border:1px solid #e2e2df}
+.adm-th img{width:100%;height:100%;object-fit:cover}
+.adm-th button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:13px;padding:0}
+.adm-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#admMsg{font-size:14px;font-weight:600;margin-top:10px;min-height:20px}
+</style>
+<div class="adm-dim" id="admDim">
+ <div class="adm-box" id="admLogin">
+  <h3>관리자 로그인</h3>
+  <input type="password" id="admPw" placeholder="관리자 비밀번호" autocomplete="current-password">
+  <button class="adm-main" id="admGo">로그인</button>
+  <div id="admErr" style="color:#d93025;font-size:13px;margin-top:8px;min-height:18px"></div>
+  <button class="adm-sub" id="admClose1" style="margin-top:4px">닫기</button>
+ </div>
+ <div class="adm-box" id="admPanel" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">관리자 작업함</h3><button class="adm-sub" id="admClose2">닫기</button></div>
+  <div style="font-size:12.5px;color:#6b6b6b;margin-bottom:12px">저장소 연결 전 시험판이에요. 지금은 이 기기에만 임시로 남아요. <span id="admLast"></span></div>
+  <div class="adm-sec"><b>메모</b><small>Claude에게 시킬 일이나 기억할 내용</small><textarea id="admMemo" rows="3" placeholder="황금본점 이번 주 실적 표로 정리해 줘"></textarea></div>
+  <div class="adm-sec"><b>글 붙여넣기</b><small>엑셀에서 표를 복사해 붙여넣으면 아래에 표로 보여요</small><textarea id="admTxt" rows="6"></textarea><div class="adm-prev" id="admPrev"></div></div>
+  <div class="adm-sec"><b>이미지 붙여넣기</b><small>캡처를 복사한 뒤 칸을 길게 눌러 붙여넣기 · 고객 번호는 가리고 올려 주세요</small>
+   <div class="adm-drop" id="admDrop" contenteditable="true"><span id="admDh" contenteditable="false">여기를 눌러 붙여넣기</span></div>
+   <div class="adm-row"><label class="adm-sub">사진 고르기<input type="file" id="admPick" accept="image/*" multiple style="display:none"></label><button class="adm-sub" id="admClrImg">이미지 지우기</button></div>
+  </div>
+  <button class="adm-main" id="admSave">저장하기</button>
+  <div class="adm-row"><button class="adm-sub" id="admCopy">메모·글 복사</button><button class="adm-sub" id="admReset">모두 비우기</button><button class="adm-sub" id="admOut">로그아웃</button></div>
+  <div id="admMsg"></div>
+ </div>
+</div>
+<script>
+{
+const H='cc41d80b1697c04d19330fba23a82cfc68fb086e3445691578bfae3a3d6f3e57';
+const $=id=>document.getElementById(id);
+const st={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}};
+const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(e){}},del(k){try{sessionStorage.removeItem(k)}catch(e){}}};
+const dim=$('admDim'),btn=$('admBtn');let imgs=[];
+const say=(t,bad)=>{const m=$('admMsg');m.textContent=t;m.style.color=bad?'#d93025':'#1e8e3e'};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const logged=()=>ss.get('admOK')==='1';
+function mark(){btn.textContent=logged()?'🔓 관리자':'🔒 관리자';btn.classList.toggle('on',logged())}
+function open(){dim.classList.add('show');$('admLogin').style.display=logged()?'none':'block';$('admPanel').style.display=logged()?'block':'none';if(!logged())setTimeout(()=>$('admPw').focus(),50)}
+function close(){dim.classList.remove('show')}
+btn.onclick=open;$('admClose1').onclick=close;$('admClose2').onclick=close;
+dim.addEventListener('click',e=>{if(e.target===dim)close()});
+async function login(){
+ if(!$('admPw').value){$('admErr').textContent='비밀번호를 입력해 주세요.';return}
+ let h='';try{h=await sha($('admPw').value)}catch(e){$('admErr').textContent='이 브라우저에서는 로그인이 안 돼요.';return}
+ if(h===H){ss.set('admOK','1');$('admPw').value='';$('admErr').textContent='';mark();open()}else $('admErr').textContent='비밀번호가 달라요.';
+}
+$('admGo').onclick=login;$('admPw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('admOut').onclick=()=>{ss.del('admOK');mark();close()};
+function table(){
+ const L=$('admTxt').value.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+ if(!L.some(l=>l.includes('\t'))){$('admPrev').innerHTML='';return}
+ $('admPrev').innerHTML='<table>'+L.slice(0,30).map(l=>'<tr>'+l.split('\t').map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'+(L.length>30?'<div style="font-size:12px;color:#6b6b6b">처음 30줄만 보여요 (전체 '+L.length+'줄)</div>':'');
+}
+function thumbs(){
+ const d=$('admDrop');d.querySelectorAll('.adm-th').forEach(e=>e.remove());$('admDh').style.display=imgs.length?'none':'';
+ imgs.forEach((src,i)=>{const t=document.createElement('div');t.className='adm-th';t.contentEditable='false';t.innerHTML='<img alt=""><button aria-label="지우기">×</button>';t.querySelector('img').src=src;t.querySelector('button').onclick=e=>{e.preventDefault();imgs.splice(i,1);thumbs()};d.appendChild(t)});
+}
+function add(files){[...files].filter(f=>f.type.startsWith('image/')).forEach(f=>{const r=new FileReader();r.onload=()=>{imgs.push(r.result);thumbs();say('이미지 '+imgs.length+'장 들어왔어요.')};r.readAsDataURL(f)})}
+const drop=$('admDrop');
+drop.addEventListener('paste',e=>{e.preventDefault();const fs=[...(e.clipboardData?.items||[])].filter(i=>i.kind==='file').map(i=>i.getAsFile()).filter(Boolean);if(fs.length)add(fs);else say('붙여넣은 것 중에 이미지가 없어요. 캡처를 먼저 복사해 주세요.',1)});
+drop.addEventListener('beforeinput',e=>{if(e.inputType!=='insertFromPaste')e.preventDefault()});
+drop.addEventListener('dragover',e=>e.preventDefault());
+drop.addEventListener('drop',e=>{e.preventDefault();add(e.dataTransfer.files)});
+$('admPick').addEventListener('change',e=>{add(e.target.files);e.target.value=''});
+$('admClrImg').onclick=()=>{imgs=[];thumbs()};
+$('admTxt').addEventListener('input',table);
+$('admSave').onclick=()=>{
+ const m=$('admMemo').value,t=$('admTxt').value;
+ if(!m.trim()&&!t.trim()&&!imgs.length){say('저장할 내용이 없어요.',1);return}
+ const d=new Date(),at=(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+ const a=st.set('admMemo',m)&&st.set('admTxt',t),b=st.set('admImgs',JSON.stringify(imgs));if(!b)st.set('admImgs','[]');st.set('admAt',at);
+ $('admLast').textContent='· 최근 저장 '+at;
+ say(a&&b?'이 기기에 임시 저장했어요 · 이미지 '+imgs.length+'장':a?'메모와 글은 저장했어요. 이미지는 용량이 커서 못 남겼어요.':'이 기기에서는 임시 저장이 안 돼요.',!(a&&b));
+};
+$('admCopy').onclick=async()=>{try{await navigator.clipboard.writeText('[메모]\n'+$('admMemo').value+'\n\n[붙여넣은 글]\n'+$('admTxt').value);say('복사했어요. Claude 대화에 붙여넣으면 돼요.')}catch(e){say('복사가 막혔어요. 칸을 길게 눌러 직접 복사해 주세요.',1)}};
+$('admReset').onclick=()=>{$('admMemo').value='';$('admTxt').value='';imgs=[];thumbs();table();say('비웠어요. 저장하기를 눌러야 임시 저장본도 비워져요.')};
+$('admMemo').value=st.get('admMemo')||'';$('admTxt').value=st.get('admTxt')||'';
+try{imgs=JSON.parse(st.get('admImgs')||'[]')}catch(e){imgs=[]}
+const at=st.get('admAt');if(at)$('admLast').textContent='· 최근 저장 '+at;
+table();thumbs();mark();
+}
 </script>
 
 </body></html>
