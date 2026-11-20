@@ -14,12 +14,16 @@ CLICK = """() => { const els = [...document.querySelectorAll('a,button,span,div'
 def expand(page, date_fn, label, first):
     if first:
         print(f"   [{label}] 처음 '더보기' 후보:", json.dumps(page.evaluate(CANDS)[-6:], ensure_ascii=False))
-    seq = []
-    for i in range(40):
+    seq, extra = [], 0
+    for i in range(50):
         ds = date_fn(page.inner_text("body"))
+        if seq and seq[-1] == len(ds):
+            page.wait_for_timeout(2500); ds = date_fn(page.inner_text("body"))
         seq.append(len(ds))
         if ds and min(ds) < SINCE:
-            break
+            extra += 1
+            if extra > 2:
+                break
         r = page.evaluate(CLICK)
         if not r:
             seq.append("버튼없음"); break
@@ -40,6 +44,17 @@ with sync_playwright() as p:
         body = pg.inner_text("body"); ds = kd(body)
         n = sum(1 for d in ds if SINCE <= d <= UNTIL)
         print(f"   네이버 방문자 11/1~11/19 = {n}  (11/20 {ds.count('2026-11-20')}, 날짜별 {sorted({d: ds.count(d) for d in set(ds) if d >= SINCE}.items())})")
+        st = pg.evaluate("() => JSON.stringify(window.__APOLLO_STATE__ || {})")
+        cr = re.findall(r'"created":"([^"]+)"', st); vi = re.findall(r'"visited":"([^"]+)"', st)
+        print(f"   [작성일] created {len(cr)}개 예시 {cr[:4]} / visited {len(vi)}개 예시 {vi[:4]}")
+        if k == 0:
+            j = st.find('"created"'); print("   [작성일 구조]", st[max(0, j - 400):j + 200])
+        def nov(v):
+            m = re.match(r"(\d{1,2})\.(\d{1,2})\.", v)
+            if m: return "2026-%02d-%02d" % (int(m.group(1)), int(m.group(2)))
+            m = re.match(r"(\d{4})-(\d{2})-(\d{2})", v)
+            return m.group(0) if m else ""
+        print(f"   [작성일 기준] 11/1~11/19 = {sum(1 for v in cr if SINCE <= nov(v) <= UNTIL)}")
         if k == 0:
             i = body.find("방문일"); print("   [구조] 첫 리뷰 주변:", body[max(0, i - 200):i + 120].replace("\n", " / "))
         pg.close()
