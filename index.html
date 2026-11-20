@@ -215,9 +215,9 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-chg">전일비 <span data-draw="rv-blogd" data-source="rvkpi" data-field="blog_diff" data-row="0">—</span></div>
     </div>
     <div class="ig-card" id="card-lg">
-      <div class="ig-card-label">홈페이지(LG) 리뷰 · 최근 7일</div>
-      <div class="ig-card-num" data-draw="rv-lg7" data-source="rvkpi" data-field="lg7" data-row="0">—</div>
-      <div class="ig-card-chg">신규 <span data-draw="rv-lgnew" data-source="rvkpi" data-field="lg_new" data-row="0">—</span> · 매니저 <span data-draw="rv-lgmgr" data-source="rvkpi" data-field="lg_mgr7" data-row="0">—</span></div>
+      <div class="ig-card-label">홈페이지(LG) 리뷰 · 당월 누적</div>
+      <div class="ig-card-num" data-draw="rv-lgm" data-source="rvkpi" data-field="lg_month" data-row="0">—</div>
+      <div class="ig-card-chg">어제 <span data-draw="rv-lgy" data-source="rvkpi" data-field="lg_yday" data-row="0">—</span> · 11/1부터 누적 <span data-draw="rv-lgt" data-source="rvkpi" data-field="lg_total" data-row="0">—</span></div>
     </div>
   </div>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 전주비 기준 <span data-draw="period">—</span></p>
@@ -241,9 +241,9 @@ window.addEventListener('load',()=>dash._load());
           <th class="ig-sort" data-field="visit_diff" data-k="visit_diff">전일비</th>
           <th class="ig-sort" data-field="blog" data-k="blog">블로그</th>
           <th class="ig-sort" data-field="blog_diff" data-k="blog_diff">전일비</th>
-          <th class="ig-sort ig-grp" data-field="lg_store7" data-k="lg_store7">매장(7일)</th>
-          <th class="ig-sort" data-field="lg_mgr7" data-k="lg_mgr7">매니저(7일)</th>
-          <th class="ig-sort" data-field="lg_new" data-k="lg_new">신규</th>
+          <th class="ig-sort ig-grp" data-field="lg_total" data-k="lg_total">누적(11/1~)</th>
+          <th class="ig-sort" data-field="lg_month" data-k="lg_month">당월</th>
+          <th class="ig-sort" data-field="lg_yday" data-k="lg_yday">어제</th>
         </tr>
       </thead>
       <tbody data-draw="rv-team-body"></tbody>
@@ -266,11 +266,19 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort" data-field="visit_diff" data-k="visit_diff">전일비</th>
         <th class="ig-sort" data-field="blog" data-k="blog">네이버 블로그</th>
         <th class="ig-sort" data-field="blog_diff" data-k="blog_diff">전일비</th>
-        <th class="ig-sort ig-grp" data-field="lg_store7" data-k="lg_store7">홈페이지 매장(7일)</th>
-        <th class="ig-sort" data-field="lg_mgr7" data-k="lg_mgr7">매니저(7일)</th>
-        <th class="ig-sort" data-field="lg_new" data-k="lg_new">신규</th>
+        <th class="ig-sort ig-grp" data-field="lg_total" data-k="lg_total">홈페이지 누적(11/1~)</th>
+        <th class="ig-sort" data-field="lg_month" data-k="lg_month">당월</th>
+        <th class="ig-sort" data-field="lg_yday" data-k="lg_yday">어제</th>
       </tr></thead>
       <tbody data-draw="rv-store-body"></tbody>
+    </table>
+  </div>
+
+  <h2 class="ig-h" id="h-rv-daily">홈페이지(LG) 리뷰 일별 체크 <span class="ig-note">최근 7일 · 전체를 고르면 담당별, 담당을 고르면 지점별로 보여요</span></h2>
+  <div class="ig-wrap">
+    <table class="ig-table" id="rv-daily-table" data-source="rvdaily" data-row-key="name">
+      <thead><tr data-draw="rv-daily-head"></tr></thead>
+      <tbody data-draw="rv-daily-body"></tbody>
     </table>
   </div>
 
@@ -280,7 +288,7 @@ window.addEventListener('load',()=>dash._load());
   <details class="ig-note" id="rv-defs" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
     <p>· 네이버 방문자·블로그 리뷰는 네이버 플레이스에 보이는 누적 숫자예요. 전일비 = 오늘 수집 − 지난 수집(비교일은 위 기준 줄에 나와요).</p>
-    <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 하루쯤 늦게 올라오는 경우가 있어서 최근 7일을 날짜별로 세고, 지난 수집보다 늘어난 개수를 '신규'로 보여 줘요.</p>
+    <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 리뷰에 적힌 날짜로 세요: 누적 = 2026년 11월 1일부터, 당월 = 이번 달 1일부터, 어제 = 어제 날짜 리뷰 수. 하루쯤 늦게 올라오는 경우가 있어서 매일 최근 7일을 다시 세요(그래서 어제 숫자가 다음 날 조금 늘 수 있어요).</p>
     <p>· 리뷰는 은효님 PC가 매일 아침 8시 30분에 모아요. 카톡 친구는 매일 9·17·20시에 갱신돼요.</p>
   </details>
   </section>
@@ -608,15 +616,16 @@ dash.calc('rvsnap', {
     const seen = new Set();
     const out = (reviews || []).map((r) => {
       const s = S.get(r.name); seen.add(r.name);
-      const ls = num(r.lg_store7), lm = num(r.lg_mgr7);
+      let daily = r.lg_daily;
+      if (typeof daily === 'string') { try { daily = JSON.parse(daily); } catch (e) { daily = null; } }
       return {
         team: s ? s.team : (r.team ? r.team + '담당' : ''), store: r.name,
         kakao: s ? s.kakao : null, k_diff: s ? s.k_diff : null, k_rate: s ? s.k_rate : null, k_week: s ? s.k_week : null,
         visit: num(r.visit), visit_diff: num(r.visit_diff), blog: num(r.blog), blog_diff: num(r.blog_diff),
-        lg_store7: ls, lg_mgr7: lm, lg7: (ls === null && lm === null) ? null : (ls || 0) + (lm || 0), lg_new: num(r.lg_new),
+        lg_total: num(r.lg_total), lg_month: num(r.lg_month), lg_yday: num(r.lg_yday), lg_daily: daily && typeof daily === 'object' ? daily : null,
       };
     });
-    (snap || []).filter((s) => !seen.has(s.store)).forEach((s) => out.push({ team: s.team, store: s.store, kakao: s.kakao, k_diff: s.k_diff, k_rate: s.k_rate, k_week: s.k_week, visit: null, visit_diff: null, blog: null, blog_diff: null, lg_store7: null, lg_mgr7: null, lg7: null, lg_new: null }));
+    (snap || []).filter((s) => !seen.has(s.store)).forEach((s) => out.push({ team: s.team, store: s.store, kakao: s.kakao, k_diff: s.k_diff, k_rate: s.k_rate, k_week: s.k_week, visit: null, visit_diff: null, blog: null, blog_diff: null, lg_total: null, lg_month: null, lg_yday: null, lg_daily: null }));
     return out;
   }
 });
@@ -637,10 +646,29 @@ dash.calc('rvteams', {
         team: team || '전체', accounts: rs.length,
         kakao: t ? t.kakao : s('kakao'), k_diff: t ? t.k_diff : s('k_diff'), k_rate: t ? t.k_rate : null, k_week: t ? t.k_week : s('k_week'),
         visit: s('visit'), visit_diff: s('visit_diff'), blog: s('blog'), blog_diff: s('blog_diff'),
-        lg_store7: s('lg_store7'), lg_mgr7: s('lg_mgr7'), lg7: s('lg7'), lg_new: s('lg_new'),
+        lg_total: s('lg_total'), lg_month: s('lg_month'), lg_yday: s('lg_yday'),
       };
     };
     return [agg(''), ...order.map(agg)];
+  }
+});
+
+dash.calc('rvdaily', {
+  inputs: ['rvsnap'],
+  title: '홈페이지 리뷰 일별',
+  description: '최근 7일 날짜별 홈페이지(LG) 리뷰 수 — 전체를 고르면 담당별 합계, 담당을 고르면 지점별 (맨 위는 합계)',
+  fn: (rvsnap) => {
+    if (!rvsnap || !rvsnap.length) return [];
+    const keys = [...new Set(rvsnap.flatMap((r) => r.lg_daily ? Object.keys(r.lg_daily) : []))].sort();
+    if (!keys.length) return [];
+    const end = new Date(keys[keys.length - 1] + 'T00:00:00Z');
+    const dates = d3.range(6, -1, -1).map((i) => { const d = new Date(end); d.setUTCDate(d.getUTCDate() - i); return d.toISOString().slice(0, 10); });
+    const t = dash.params().team || '';
+    const row = (name, rs) => { const o = { name }; dates.forEach((d) => { o[d] = d3.sum(rs, (r) => (r.lg_daily && +r.lg_daily[d]) || 0); }); o['7일 합계'] = d3.sum(dates, (d) => o[d]); return o; };
+    const rs = rvsnap.filter((r) => r.lg_daily && (!t || r.team === t));
+    const order = ['경북담당', '강남담당', '경원담당', '경인담당', '중부담당', '서부담당', '경남담당', '백화점담당'];
+    const body = t ? rs.map((r) => row(r.store, [r])).sort((a, b) => b['7일 합계'] - a['7일 합계']) : order.map((tm) => row(tm, rs.filter((r) => r.team === tm)));
+    return [row(t ? t + ' 합계' : '전체', rs), ...body];
   }
 });
 
@@ -691,9 +719,9 @@ dash.calc('rvkpi', {
   dash.draw('rv-visitd', setv('visit_diff', IG.sfmt, true));
   dash.draw('rv-blog', setv('blog', IG.fmt));
   dash.draw('rv-blogd', setv('blog_diff', IG.sfmt, true));
-  dash.draw('rv-lg7', setv('lg7', IG.fmt));
-  dash.draw('rv-lgnew', setv('lg_new', IG.sfmt, true));
-  dash.draw('rv-lgmgr', setv('lg_mgr7', IG.fmt));
+  dash.draw('rv-lgm', setv('lg_month', IG.fmt));
+  dash.draw('rv-lgy', setv('lg_yday', IG.fmt));
+  dash.draw('rv-lgt', setv('lg_total', IG.fmt));
   dash.draw('rv-upd', (el) => { const d = dash.data('reviews'); el.textContent = d.status === 'ok' ? ((d.meta && d.meta.updated ? d.meta.updated + ' · ' : '') + d.data.length + '개 지점') : '—'; });
   dash.draw('rv-prev', (el) => {
     if (!okd('rvsnap')) { el.textContent = '—'; return; }
@@ -721,7 +749,7 @@ dash.calc('rvkpi', {
       td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff)); td(tr, IG.pfmt(r.k_rate), '', (r.k_rate === null || r.k_rate === undefined) ? null : IG.rateColor(r.k_rate));
       td(tr, IG.fmt(r.visit)); td(tr, IG.sfmt(r.visit_diff), IG.cls(r.visit_diff)); td(tr, IG.fmt(r.blog)); td(tr, IG.sfmt(r.blog_diff), IG.cls(r.blog_diff));
-      td(tr, IG.fmt(r.lg_store7)); td(tr, IG.fmt(r.lg_mgr7)); td(tr, IG.sfmt(r.lg_new), IG.cls(r.lg_new));
+      td(tr, IG.fmt(r.lg_total)); td(tr, IG.fmt(r.lg_month)); td(tr, IG.fmt(r.lg_yday));
       tb.appendChild(tr);
     });
   });
@@ -743,7 +771,30 @@ dash.calc('rvkpi', {
       td(tr, r.team, 'ig-c'); td(tr, r.store, 'ig-l');
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       td(tr, IG.fmt(r.visit)); td(tr, IG.sfmt(r.visit_diff), IG.cls(r.visit_diff)); td(tr, IG.fmt(r.blog)); td(tr, IG.sfmt(r.blog_diff), IG.cls(r.blog_diff));
-      td(tr, IG.fmt(r.lg_store7)); td(tr, IG.fmt(r.lg_mgr7)); td(tr, IG.sfmt(r.lg_new), IG.cls(r.lg_new));
+      td(tr, IG.fmt(r.lg_total)); td(tr, IG.fmt(r.lg_month)); td(tr, IG.fmt(r.lg_yday));
+      tb.appendChild(tr);
+    });
+  });
+
+  const dailyCols = () => { if (!okd('rvdaily')) return []; const d = dash.data('rvdaily'); return (d.columns || Object.keys(d.data[0] || {})).filter((c) => c !== 'name'); };
+  dash.draw('rv-daily-head', (tr) => {
+    tr.replaceChildren();
+    const th = (txt) => { const c = document.createElement('th'); c.textContent = txt; tr.appendChild(c); };
+    if (!okd('rvdaily')) { th('—'); return; }
+    th(dash.params().team ? '지점' : '담당');
+    dailyCols().forEach((c) => th(/^\d{4}-/.test(c) ? IG.md(c) : c));
+  });
+  dash.draw('rv-daily-body', (tb) => {
+    tb.replaceChildren();
+    if (!okd('rvdaily')) {
+      const tr = document.createElement('tr'); td(tr, '내일 아침 수집부터 일별 숫자가 나와요', 'ig-l'); tb.appendChild(tr); return;
+    }
+    const cols = dailyCols();
+    dash.data('rvdaily').data.forEach((r, i) => {
+      const tr = document.createElement('tr'); tr.setAttribute('data-key', r.name);
+      if (i === 0) tr.className = 'ig-total'; else if (r.name === '경북담당') tr.className = 'ig-gb';
+      td(tr, r.name, i === 0 || !dash.params().team ? 'ig-c' : 'ig-l');
+      cols.forEach((c) => td(tr, r[c] ? IG.fmt(r[c]) : '-', c === '7일 합계' ? '' : (r[c] ? '' : 'ig-flat')));
       tb.appendChild(tr);
     });
   });
@@ -758,10 +809,15 @@ dash.calc('rvkpi', {
     const top = (k, n, f) => rs.filter((r) => r[k] !== null && r[k] > 0).sort((a, b) => b[k] - a[k]).slice(0, n).map((r) => r.store + ' ' + f(r[k])).join(', ');
     const vd = top('visit_diff', 3, IG.sfmt);
     line('· 네이버 방문자 리뷰 전일비 상위: ' + (vd || '비교할 지난 수집이 아직 없어요'));
-    const lg = top('lg_new', 3, (v) => v + '건');
-    line('· 홈페이지(LG) 신규 리뷰 상위: ' + (lg || (rs.some((r) => r.lg_new !== null) ? '신규 없음' : '내일 수집부터 나와요')));
-    const wk = rs.filter((r) => r.lg7 === 0);
-    if (rs.some((r) => r.lg7 !== null)) line('· 최근 7일 홈페이지 리뷰 0건 지점: ' + wk.length + '개 / ' + rs.length + '개');
+    const has = rs.some((r) => r.lg_month !== null);
+    const lgm = top('lg_month', 3, (v) => v + '건');
+    line('· 홈페이지(LG) 리뷰 당월 상위: ' + (lgm || (has ? '이번 달 리뷰 없음' : '내일 아침 수집부터 나와요')));
+    if (has) {
+      const ly = top('lg_yday', 3, (v) => v + '건');
+      line('· 어제 홈페이지 리뷰: ' + (ly || '없음'));
+      const m0 = rs.filter((r) => r.lg_month === 0);
+      line('· 이번 달 홈페이지 리뷰 0건 지점: ' + m0.length + '개 / ' + rs.length + '개' + (m0.length && m0.length <= 8 ? ' (' + m0.map((r) => r.store).join(', ') + ')' : ''));
+    }
     const kdown = rs.filter((r) => r.k_diff !== null && r.k_diff < 0);
     line('· 카톡 친구가 줄어든 지점 ' + kdown.length + '개 / ' + rs.length + '개' + (kdown.length ? ' (많이 준 곳: ' + kdown.sort((a, b) => a.k_diff - b.k_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.k_diff)).join(', ') + ')' : ''));
   });
