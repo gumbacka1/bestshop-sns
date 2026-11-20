@@ -119,6 +119,7 @@ window.addEventListener('load',()=>dash._load());
   <div class="ig-secs" id="sec-tabs" role="tablist" aria-label="화면 선택">
     <button class="ig-sec is-on" role="tab" data-sec="sec-ig" type="button">📸 인스타</button>
     <button class="ig-sec" role="tab" data-sec="sec-rv" type="button">💬 온라인 리뷰</button>
+    <button class="ig-sec" role="tab" data-sec="sec-adm" type="button">🔒 관리자</button>
   </div>
 
   <div class="ig-tabs" id="tabs" role="tablist" aria-label="담당 선택">
@@ -152,7 +153,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button></h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset adm-only" data-snap="h-team" type="button" hidden>📷 이미지 생성</button></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
@@ -233,7 +234,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 전주비 기준 <span data-draw="period">—</span></p>
 
-  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button></h2>
+  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset adm-only" data-snap="h-rv-team" type="button" hidden>📷 이미지 생성</button></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="rv-team-table" data-source="rvteams" data-row-key="team">
       <thead>
@@ -299,6 +300,18 @@ window.addEventListener('load',()=>dash._load());
     <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 리뷰에 적힌 날짜로 세요: 누적 = 2026년 11월 1일부터, 당월 = 이번 달 1일부터, 어제 = 어제 날짜 리뷰 수. 하루쯤 늦게 올라오는 경우가 있어서 매일 최근 7일을 다시 세요(그래서 어제 숫자가 다음 날 조금 늘 수 있어요).</p>
     <p>· 리뷰는 은효님 PC가 매일 아침 8시 30분에 모아요. 카톡 친구는 매일 9·17·20시에 갱신돼요.</p>
   </details>
+  </section>
+
+  <section id="sec-adm" hidden>
+    <div id="adm-lock" class="adm-box">
+      <p class="adm-t">🔒 관리자만 볼 수 있어요</p>
+      <form id="adm-form" autocomplete="off"><input id="adm-pw" type="password" placeholder="비밀번호" class="adm-in"> <button class="ig-reset" type="submit">들어가기</button></form>
+      <p class="ig-note" id="adm-msg"></p>
+    </div>
+    <div id="adm-body" hidden>
+      <p class="ig-note">관리자 모드가 켜져 있어요. 인스타·온라인 리뷰 탭의 담당별 표 옆에 <b>📷 이미지 생성</b> 버튼이 보여요. <button class="ig-reset" id="adm-out" type="button">🔓 잠그기</button></p>
+      <iframe id="adm-frame" title="관리자 화면" style="width:100%;height:1700px;border:1px solid var(--color-border-line);border-radius:8px"></iframe>
+    </div>
   </section>
 </div>
 
@@ -685,7 +698,7 @@ dash.calc('rvkpi', {
       const on = b.getAttribute('data-sec') === id;
       b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    ['sec-ig', 'sec-rv'].forEach((s) => document.querySelectorAll('#' + s).forEach((el) => { el.hidden = s !== id; }));
+    ['sec-ig', 'sec-rv', 'sec-adm'].forEach((s) => document.querySelectorAll('#' + s).forEach((el) => { el.hidden = s !== id; }));
     dash.setLink(id);
   };
   document.querySelectorAll('.ig-sec').forEach((b) => b.addEventListener('click', () => show(b.getAttribute('data-sec'))));
@@ -836,6 +849,77 @@ dash.calc('rvkpi', {
     const kdown = rs.filter((r) => r.k_diff !== null && r.k_diff < 0);
     line('· 카톡 친구가 줄어든 지점 ' + kdown.length + '개 / ' + rs.length + '개' + (kdown.length ? ' (많이 준 곳: ' + kdown.sort((a, b) => a.k_diff - b.k_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.k_diff)).join(', ') + ')' : ''));
   });
+})();
+</script>
+
+<style>
+.adm-box { max-width: 360px; margin: 30px auto; padding: 20px; border: 1px solid var(--color-border-line); border-radius: 8px; text-align: center; background: var(--color-panel); }
+.adm-t { font-weight: 600; margin: 0 0 10px; }
+.adm-in { font: inherit; padding: 5px 10px; border: 1px solid var(--color-border-line); border-radius: 6px; width: 150px; }
+.snap-box { position: fixed; left: -10000px; top: 0; background: #fff; padding: 16px 18px; font-family: "LG스마트체2.0 Regular", "LG스마트체", var(--font-anthropic-sans); }
+.snap-box .ig-wrap { overflow: visible !important; }
+.snap-box td, .snap-box th { position: static !important; }
+.snap-box .snap-h { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.snap-box .snap-s { font-size: 12px; color: #6b6b6b; margin: 0 0 10px; }
+</style>
+<script>
+/* 관리자 탭: 비밀번호(가림막 수준) + 표 이미지 만들기 */
+(() => {
+  const H = 'dd53d4f83b3904615e8e416b4153164e0452a0ece1c4b3dc7fe130f5174196a2', KEY = 'igAdm';
+  const FRAME = 'https://gumbacka1.github.io/bestshop-sns/admin-b7f21e3e.html';
+  const sha = async (t) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))).map((b) => b.toString(16).padStart(2, '0')).join('');
+  const get = () => { try { return localStorage.getItem(KEY) === H; } catch (e) { return false; } };
+  const set = (on) => { try { on ? localStorage.setItem(KEY, H) : localStorage.removeItem(KEY); } catch (e) {} };
+  const apply = () => {
+    const on = get();
+    document.getElementById('adm-lock').hidden = on;
+    document.getElementById('adm-body').hidden = !on;
+    document.querySelectorAll('.adm-only').forEach((b) => { b.hidden = !on; });
+    const f = document.getElementById('adm-frame');
+    if (on && !f.src) f.src = FRAME + '?v=' + Date.now();
+  };
+  document.getElementById('adm-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pw = document.getElementById('adm-pw');
+    if (await sha(pw.value) === H) { set(true); pw.value = ''; document.getElementById('adm-msg').textContent = ''; apply(); }
+    else document.getElementById('adm-msg').textContent = '비밀번호가 맞지 않아요.';
+  });
+  document.getElementById('adm-out').addEventListener('click', () => { set(false); const f = document.getElementById('adm-frame'); f.removeAttribute('src'); apply(); });
+  document.getElementById('adm-frame').addEventListener('load', (e) => { try { const d = e.target.contentDocument; if (d && d.body) e.target.style.height = (d.documentElement.scrollHeight + 30) + 'px'; } catch (x) {} });
+  apply();
+
+  let lib = null;
+  const load = () => lib || (lib = new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'; s.onload = () => ok(window.html2canvas); s.onerror = no; document.head.appendChild(s); }));
+  const pad = (n) => String(n).padStart(2, '0');
+  document.querySelectorAll('[data-snap]').forEach((btn) => btn.addEventListener('click', async () => {
+    const h = document.getElementById(btn.getAttribute('data-snap'));
+    const wrap = h && h.nextElementSibling;
+    if (!wrap) return;
+    const old = btn.textContent; btn.textContent = '⏳ 만드는 중…'; btn.disabled = true;
+    try {
+      const h2c = await load();
+      const box = document.createElement('div'); box.className = 'ig snap-box';
+      const title = h.childNodes[0].textContent.trim();
+      const team = (dash.params().team || '전체');
+      const now = new Date();
+      const stamp = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+      const per = document.querySelector('[data-draw="period"]');
+      box.innerHTML = '<p class="snap-h">하이프라자 297개 지점 SNS · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + stamp + ' 기준 · 선택: ' + team + '</p>';
+      const c = wrap.cloneNode(true); box.appendChild(c); document.body.appendChild(box);
+      const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
+      const cv = await h2c(box, { scale: 2, backgroundColor: '#ffffff' });
+      box.remove();
+      const blob = await new Promise((r) => cv.toBlob(r, 'image/png'));
+      const name = title.replace(/\s+/g, '') + '_' + String(now.getFullYear()).slice(2) + pad(now.getMonth() + 1) + pad(now.getDate()) + '.png';
+      const file = new File([blob], name, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        try { await navigator.share({ files: [file], title: title }); } catch (x) {}
+      } else {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+      }
+    } catch (e) { console.error(e); btn.textContent = '⚠ 실패 · 다시 눌러 주세요'; btn.disabled = false; setTimeout(() => { btn.textContent = old; }, 3000); return; }
+    btn.textContent = old; btn.disabled = false;
+  }));
 })();
 </script>
 
