@@ -1,0 +1,39 @@
+name: 리뷰 수집(네이버·LG)
+on:
+  schedule:
+    - cron: "10 22 * * *"   # 한국 시각 07:10
+  workflow_dispatch:
+concurrency: { group: review-collect, cancel-in-progress: false }
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy: { fail-fast: false, matrix: { part: [0, 1, 2, 3] } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install playwright openpyxl && python -m playwright install --with-deps chromium
+      - run: python scripts/review_gh.py collect ${{ matrix.part }} 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "part${{ matrix.part }}", path: parts/, if-no-files-found: ignore }
+  merge:
+    needs: collect
+    if: always()
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install playwright openpyxl
+      - uses: actions/download-artifact@v4
+        with: { path: parts }
+      - run: python scripts/review_gh.py merge
+      - run: |
+          git config user.name "review-bot"; git config user.email "review-bot@users.noreply.github.com"
+          git add data/review_hist.json data/reviews.json
+          git diff --cached --quiet && exit 0
+          git commit -m "리뷰 수집 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

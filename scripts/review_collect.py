@@ -181,18 +181,20 @@ def _count_list(page, url, since_day, sort_recent=False):
             break
         page.wait_for_timeout(1200)
     out = {}
-    for d in _kdates(page.inner_text("body")):
+    body = page.inner_text("body")
+    for d in _kdates(body):
         if d >= since_day:
             out[d] = out.get(d, 0) + 1
-    return out
+    m = re.search(r"\n리뷰([\d,]+)\n", body)          # 목록 위 "리뷰3,047" = 전체 개수
+    return out, (int(m.group(1).replace(",", "")) if m else None)
 
 
 def read_nv_dates(page, nv_id, since_day):
     """→ {날짜: [방문자, 블로그]}"""
-    v = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/visitor?reviewSort=recent", since_day)
+    v, vt = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/visitor?reviewSort=recent", since_day)
     time.sleep(random.uniform(1, 2))
-    b = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/ugc?type=list", since_day, sort_recent=True)
-    return {d: [v.get(d, 0), b.get(d, 0)] for d in set(v) | set(b)}
+    b, bt = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/ugc?type=list", since_day, sort_recent=True)
+    return {d: [v.get(d, 0), b.get(d, 0)] for d in set(v) | set(b)}, vt, bt
 
 
 def nv_summary(days, today, yday, month_start):
