@@ -304,9 +304,14 @@ window.addEventListener('load',()=>dash._load());
     </table>
   </div>
 
-  <h2 class="ig-h" id="h-rv-daily">일자별 새 리뷰 <span class="ig-note" data-draw="rv-bar-title">—</span></h2>
-  <div class="rv-bars" data-draw="rv-bars"></div>
-  <p class="ig-note">표에서 지점 줄을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 진한 색 네이버, 연한 색 홈페이지 · 막대에 마우스를 올리면 숫자가 보여요</p>
+  <h2 class="ig-h" id="h-rv-daily">일자별 새 리뷰 <span class="ig-note" data-draw="rv-bar-title">—</span><button class="ig-reset" data-snap="h-rv-daily" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
+  <div class="ig-wrap" style="max-width:520px">
+    <table class="ig-table" id="rv-daily-table">
+      <thead><tr><th>날짜</th><th>네이버</th><th>홈페이지</th><th>계</th></tr></thead>
+      <tbody data-draw="rv-bars"></tbody>
+    </table>
+  </div>
+  <p class="ig-note">위 지점별 표에서 지점 줄을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 최근 7일(최신 날짜가 위) · 네이버는 방문자 리뷰만</p>
 
   <h2 class="ig-h" id="h-rv-comment">▶ 코멘트</h2>
   <div class="ig-comment" id="rv-comment" data-draw="rv-comment">—</div>
@@ -824,24 +829,21 @@ dash.calc('rvkpi', {
   };
   dash.draw('rv-bar-title', (el) => {
     const t = dash.params().team || '전체', rs = barRows();
-    el.textContent = (IG.rvpick && rs.length === 1 ? IG.rvpick : t) + ' · 네이버 + 홈페이지 · 당월';
+    el.textContent = (IG.rvpick && rs.length === 1 ? IG.rvpick : t) + ' · 네이버(방문자) + 홈페이지';
   });
   dash.draw('rv-bars', (el) => {
     el.replaceChildren();
     const rs = barRows();
     const keys = [...new Set(rs.flatMap((r) => [...Object.keys(r.nv_daily || {}), ...Object.keys(r.lg_daily || {})]))].sort();
-    if (!keys.length) { el.textContent = '내일 아침 수집부터 일자별 막대가 나와요'; return; }
+    const cell = (tr, txt, cls) => { const c = document.createElement('td'); c.textContent = txt; if (cls) c.className = cls; tr.appendChild(c); };
+    if (!keys.length) { const tr = document.createElement('tr'); cell(tr, '내일 아침 수집부터 나와요', 'ig-c'); tr.firstChild.colSpan = 4; el.appendChild(tr); return; }
     const last = keys[keys.length - 1], start = last.slice(0, 8) + '01', days = [];
     for (let d = new Date(start + 'T00:00:00Z'); d.toISOString().slice(0, 10) <= last; d.setUTCDate(d.getUTCDate() + 1)) days.push(d.toISOString().slice(0, 10));
     const v = days.map((d) => [d3.sum(rs, (r) => +((r.nv_daily || {})[d] || 0)), d3.sum(rs, (r) => +((r.lg_daily || {})[d] || 0))]);
-    const mx = d3.max(v, (x) => x[0] + x[1]) || 1;
-    days.forEach((d, k) => {
-      const b = document.createElement('div'); b.className = 'b';
-      b.title = IG.md(d) + '  네이버 ' + v[k][0] + ' · 홈페이지 ' + v[k][1] + ' (계 ' + (v[k][0] + v[k][1]) + ')';
-      [[v[k][0], '#2E6BE6'], [v[k][1], '#A9C1F2']].forEach(([n, c]) => { const i = document.createElement('i'); i.style.height = (n / mx * 100) + '%'; i.style.background = c; b.appendChild(i); });
-      if (k === 0 || k === days.length - 1 || (k + 1) % 5 === 0) { const sp = document.createElement('span'); sp.textContent = IG.md(d).replace(/\(.*\)/, ''); b.appendChild(sp); }
-      el.appendChild(b);
-    });
+    const f = (n) => n ? IG.fmt(n) : '-';
+    const row = (label, n, l, cls) => { const tr = document.createElement('tr'); if (cls) tr.className = cls; cell(tr, label, 'ig-c'); cell(tr, f(n)); cell(tr, f(l)); cell(tr, f(n + l)); el.appendChild(tr); };
+    row('당월', d3.sum(v, (x) => x[0]), d3.sum(v, (x) => x[1]), 'ig-total');
+    days.map((d, k) => [d, v[k]]).slice(-7).reverse().forEach(([d, x]) => row(IG.md(d), x[0], x[1]));
   });
   dash.draw('rv-store-count', (el) => { el.textContent = okd('rvsnap') ? rvRows().length + '개' : '—'; });
 
