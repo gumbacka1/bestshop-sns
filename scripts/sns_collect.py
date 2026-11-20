@@ -78,7 +78,9 @@ def instagram(handle, full=False):
             'reelsTot': sum(m['view_count'] for m in reels) if reels else None,
             'reelsMax': top['view_count'] if top else None, 'reelsN': len(reels) if reels else None,
             'reelsUrl': top.get('permalink') if top else None,
-            'recent': [{'t': kst(m['timestamp']), 'url': m.get('permalink'), 'type': m.get('media_product_type')} for m in media[:5]],
+            # 261120: 최근 게시글 표용 — 경북담당 25개(조회수·좋아요·댓글), 다른 담당 10개(조회수만)
+            'recent': [{'t': kst(m['timestamp']), 'url': m.get('permalink'), 'type': m.get('media_product_type'), 'v': m.get('view_count'),
+                        **({'l': m.get('like_count'), 'c': m.get('comments_count')} if full else {})} for m in media[:25 if full else 10]],
             **(safe_engage(handle, bd) if full else {})}
 
 
@@ -129,9 +131,9 @@ for s in stores:
                                'following': rec.get('following'), 'posts': rec.get('posts'),
                                'likes': rec.get('likesTot'), 'comments': rec.get('commentsTot')})
             if s['store'] in WATCH:
-                urls = [x['url'] for x in rec.get('recent') or [] if x.get('url')]
+                urls = [x['url'] for x in (rec.get('recent') or [])[:5] if x.get('url')]
                 if prev.get('seen') is not None:   # 처음 실행 때는 기준만 잡고 알리지 않음
-                    for x in rec.get('recent') or []:
+                    for x in (rec.get('recent') or [])[:5]:
                         if x.get('url') and x['url'] not in prev['seen']:
                             new_posts.append({'team': s['team'], 'store': s['store'], 'handle': s['ig'], **x})
                 rec['seen'] = (urls + [u for u in (prev.get('seen') or []) if u not in urls])[:15]

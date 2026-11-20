@@ -200,6 +200,15 @@ window.addEventListener('load',()=>dash._load());
     </table>
   </div>
 
+  <h2 class="ig-h" id="h-posts">최근 게시글 <span class="ig-note" data-draw="post-title">—</span><button class="ig-reset" data-snap="h-posts" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
+  <div class="ig-wrap" style="max-width:720px">
+    <table class="ig-table" id="post-table">
+      <thead><tr data-draw="post-head"></tr></thead>
+      <tbody data-draw="post-body"></tbody>
+    </table>
+  </div>
+  <p class="ig-note">위 지점별 현황 표에서 지점명 말고 그 줄의 다른 곳을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 조회수는 릴스만 나와요 · 좋아요·댓글은 경북담당만(숨긴 글은 '숨김')</p>
+
   <h2 class="ig-h" id="h-comment">▶ 코멘트</h2>
   <div class="ig-comment" id="comment" data-draw="comment">—</div>
 
@@ -384,6 +393,7 @@ dash.calc('snap', {
         posts: num(r.posts), lastPost: r.lastPost, days: days === null ? null : Math.max(0, days),
         reelsMax: num(r.reelsMax), reelsUrl: r.reelsUrl || '',
         likesTot: num(r.likesTot), commentsTot: num(r.commentsTot), likesHidden: num(r.likesHidden),
+        recent: (() => { let v = r.recent; if (typeof v === 'string') { try { v = JSON.parse(v); } catch (e) { v = null; } } return Array.isArray(v) ? v : []; })(),
       };
     });
   }
@@ -576,21 +586,71 @@ const storeRows = () => {
 dash.draw('store-body', (tb) => {
   tb.replaceChildren();
   storeRows().forEach((r) => {
-    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb'; const ag = r.days === null ? 0 : r.days >= 30 ? 3 : r.days >= 15 ? 2 : r.days >= 8 ? 1 : 0; if (ag) tr.classList.add('ig-age' + ag);
+    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); tr.style.cursor = 'pointer'; if (IG.igpick === r.handle) tr.style.outline = '2px solid var(--color-fg)';
+    tr.addEventListener('click', () => { IG.igpick = IG.igpick === r.handle ? null : r.handle; dash.draw('store-body'); dash.draw('post-title'); dash.draw('post-head'); dash.draw('post-body'); }); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb'; const ag = r.days === null ? 0 : r.days >= 30 ? 3 : r.days >= 15 ? 2 : r.days >= 8 ? 1 : 0; if (ag) tr.classList.add('ig-age' + ag);
     td(tr, r.team, 'ig-c');
-    const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; c.appendChild(a);
+    const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; a.addEventListener('click', (e) => e.stopPropagation()); c.appendChild(a);
     td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
     td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff));
     td(tr, IG.fmt(r.posts));
     { const dc = td(tr, '', 'ig-days'); const sp = document.createElement('span'); sp.className = 'ig-dv'; if (ag === 3) { const w = document.createElement('span'); w.className = 'ig-warn'; w.textContent = '⚠'; sp.appendChild(w); } sp.appendChild(document.createTextNode(r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'))); dc.appendChild(sp); }
     const rc = td(tr, '');
-    if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
+    if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.addEventListener('click', (e) => e.stopPropagation()); ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
     { const lc = td(tr, IG.fmt(r.likesTot)); if (r.likesHidden) { const h = document.createElement('div'); h.className = 'ig-hid'; h.textContent = '숨김 ' + r.likesHidden + '개'; lc.appendChild(h); } }
     td(tr, IG.fmt(r.commentsTot));
     tb.appendChild(tr);
   });
 });
 dash.draw('store-count', (el) => { el.textContent = ok('snap') ? storeRows().length + '개' : '—'; });
+
+/* 최근 게시글 표 (261120) */
+const postPick = () => {
+  if (!ok('snap')) return { one: null, list: [] };
+  const all = dash.data('snap').data;
+  const one = IG.igpick ? all.find((r) => r.handle === IG.igpick) : null;
+  if (one) return { one, list: one.recent.map((x) => ({ ...x, store: one.store })) };
+  const t = dash.params().team || '경북담당';
+  const list = all.filter((r) => r.team === t).flatMap((r) => r.recent.map((x) => ({ ...x, store: r.store })));
+  return { one: null, team: t, list };
+};
+dash.draw('post-title', (el) => { const p = postPick(); el.textContent = p.one ? p.one.store : ((p.team || '') + ' · 최근 14일 전체 지점'); });
+dash.draw('post-head', (tr) => {
+  tr.replaceChildren();
+  const p = postPick();
+  (p.one ? ['날짜', '종류', '지난 날수', '조회수', '좋아요', '댓글', '보기'] : ['날짜', '지점', '종류', '조회수', '좋아요', '댓글', '보기']).forEach((h) => { const c = document.createElement('th'); c.textContent = h; tr.appendChild(c); });
+});
+dash.draw('post-body', (tb) => {
+  tb.replaceChildren();
+  if (!ok('snap') || !ok('period')) return;
+  const p = postPick(), last = dash.data('period').data[0].last;
+  const ld = new Date(last + 'T00:00:00Z');
+  const ago = (t) => Math.max(0, Math.round((ld - new Date(t.slice(0, 10) + 'T00:00:00Z')) / 86400000));
+  const kind = (k) => k === 'REELS' ? '릴스' : k === 'STORY' ? '스토리' : '게시물';
+  const n = (v, gb) => v === null || v === undefined ? (gb ? '숨김' : '—') : IG.fmt(v);
+  let rows = p.list.filter((x) => x && x.t).sort((a, b) => (a.t < b.t ? 1 : -1));
+  if (!p.one) rows = rows.filter((x) => ago(x.t) <= 14).slice(0, 40);
+  const isGb = (x) => 'l' in x || 'c' in x;
+  const mon = last.slice(0, 7), mrows = p.one ? p.list.filter((x) => x && x.t && x.t.slice(0, 7) === mon) : [];
+  const cell = (tr, txt, cls, style) => { const c = document.createElement('td'); c.textContent = txt; if (cls) c.className = cls; if (style) c.style.cssText = style; tr.appendChild(c); return c; };
+  if (p.one) {
+    const tr = document.createElement('tr'); tr.className = 'ig-total';
+    const sum = (k) => mrows.some((x) => x[k] !== null && x[k] !== undefined) ? d3.sum(mrows, (x) => x[k] || 0) : null;
+    cell(tr, (+mon.slice(5)) + '월', 'ig-c'); cell(tr, mrows.length + '개', 'ig-c'); cell(tr, '');
+    cell(tr, IG.fmt(sum('v'))); cell(tr, IG.fmt(sum('l'))); cell(tr, IG.fmt(sum('c'))); cell(tr, '');
+    tb.appendChild(tr);
+  }
+  if (!rows.length) { const tr = document.createElement('tr'); const c = cell(tr, p.one ? '저장된 게시글이 아직 없어요(다음 인스타 수집부터 나와요)' : '최근 14일 게시글이 없어요', 'ig-c'); c.colSpan = 7; tb.appendChild(tr); return; }
+  rows.forEach((x) => {
+    const tr = document.createElement('tr'), d = ago(x.t);
+    cell(tr, IG.md(x.t.slice(0, 10)), 'ig-c');
+    if (p.one) { cell(tr, kind(x.type), 'ig-c'); cell(tr, d === 0 ? '오늘' : d + '일 전', 'ig-c', d >= 8 ? 'color:#E24B4A;font-weight:600' : ''); }
+    else { cell(tr, x.store, 'ig-l'); cell(tr, kind(x.type), 'ig-c'); }
+    cell(tr, x.type === 'REELS' ? n(x.v) : '—'); cell(tr, isGb(x) ? n(x.l, true) : '—'); cell(tr, isGb(x) ? n(x.c) : '—');
+    const lc = cell(tr, '', 'ig-c');
+    if (/^https:/.test(x.url || '')) { const a = document.createElement('a'); a.href = x.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'rv-lk'; a.textContent = '열기'; lc.appendChild(a); } else lc.textContent = '—';
+    tb.appendChild(tr);
+  });
+});
 
 dash.draw('trend-label', (el) => { const t = dash.params().team; el.textContent = '(' + (t || '전체') + ')'; });
 dash.draw('leg1', (el) => { el.style.background = dash.colors[0]; });
