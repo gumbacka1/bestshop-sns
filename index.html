@@ -77,6 +77,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: 6px; padding: 4px 8px; font-size: 12px; white-space: nowrap; }
 .ig-comment { margin-top: var(--cds-gap-sm); font-size: var(--cds-font-size-body); line-height: 1.6; }
 .ig-comment p { margin: 2px 0; }
+.ig-table a.rv-lk { text-decoration: underline; text-decoration-color: #9BB7F0; text-underline-offset: 2px; }
 .snap-upd { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted, #888); margin-left: 8px; vertical-align: middle; white-space: nowrap; display: inline-block; font-weight: 400; }
 .ig-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 4px 10px; border: 1px solid var(--color-border-line); border-radius: 999px; background: var(--color-panel); color: var(--color-fg); cursor: pointer; margin-left: 6px; vertical-align: middle; }
 #team-table td:first-child, #team-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-bg); }
@@ -312,6 +313,7 @@ window.addEventListener('load',()=>dash._load());
 
   <details class="ig-note" id="rv-defs" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
+    <p>· 당월 네이버 = 네이버 방문자 리뷰만 세요(블로그 리뷰는 건수에 넣지 않아요). 온라인 리뷰 건수 = 네이버(방문자) + 홈페이지. 지점별 표의 당월 네이버·홈페이지 숫자를 누르면 그 지점 리뷰 페이지가 열려요.</p>
     <p>· 네이버 리뷰·블로그 리뷰는 네이버 플레이스에 보이는 누적 숫자예요. 전일비 = 오늘 수집 − 지난 수집(비교일은 위 기준 줄에 나와요).</p>
     <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 리뷰에 적힌 날짜로 세요: 누적 = 2026년 11월 1일부터, 당월 = 이번 달 1일부터, 어제 = 어제 날짜 리뷰 수. 하루쯤 늦게 올라오는 경우가 있어서 매일 최근 7일을 다시 세요(그래서 어제 숫자가 다음 날 조금 늘 수 있어요).</p>
     <p>· 리뷰(네이버·홈페이지)는 매일 아침 6시에 자동으로 모아 9시 전에 마무리해요. 카톡 친구는 매일 9시에 1번 갱신돼요.</p>
@@ -657,6 +659,7 @@ dash.calc('rvsnap', {
         on_month: add(nvm, lgm), on_yday: add(num(r.nv_yday), num(r.lg_yday)),
         on_rate: buy ? add(nvm, lgm) / buy : null,
         on_today: num(r.on_today), nv_today: num(r.nv_today), lg_today: num(r.lg_today), check: r.check || '',
+        nv_id: /^\d+$/.test(r.nv_id || '') ? r.nv_id : '', lg_id: /^[A-Za-z0-9]+$/.test(r.lg_id || '') ? r.lg_id : '',
       };
     });
     (snap || []).filter((s) => !seen.has(s.store)).forEach((s) => out.push({ team: s.team, store: s.store, kakao: s.kakao, k_diff: s.k_diff, k_rate: s.k_rate, k_week: s.k_week, visit: null, visit_diff: null, blog: null, blog_diff: null, lg_total: null, lg_month: null, lg_yday: null, lg_daily: null, nv_month: null, nv_yday: null, nv_daily: null, buyers: null, on_month: null, on_yday: null, on_rate: null }));
@@ -799,7 +802,12 @@ dash.calc('rvkpi', {
       td(tr, r.team, 'ig-c'); td(tr, r.store, 'ig-l');
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
       td(tr, IG.fmt(r.buyers)); td(tr, IG.fmt(r.on_today));
-      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
+      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate));
+      [[r.nv_month, r.nv_id && 'https://m.place.naver.com/place/' + r.nv_id + '/review/visitor?reviewSort=recent'],
+       [r.lg_month, r.lg_id && 'https://bestshop.lge.co.kr/storehub/dtl-' + r.lg_id + '/review']].forEach(([v, url]) => {
+        const c = td(tr, url ? '' : IG.fmt(v));
+        if (url) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'rv-lk'; a.textContent = IG.fmt(v); a.title = '눌러서 리뷰 페이지 열기'; a.addEventListener('click', (e) => e.stopPropagation()); c.appendChild(a); }
+      });
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });

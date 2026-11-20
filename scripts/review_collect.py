@@ -360,10 +360,11 @@ def read_nv_dates(page, nv_id, since_day, debug=False):
 
 def nv_summary(days, today, yday, month_start):
     tot = lambda d, i: sum(x[i] for k, x in days.items() if k >= d)
-    daily = {k: x[0] + x[1] for k, x in sorted(days.items()) if k >= LG_START}
+    # 261120: 네이버 리뷰 카운트 = 방문자 리뷰만 (블로그는 nv_b_month 로 따로 보관, 건수에는 넣지 않음 — 본사 기준)
+    daily = {k: x[0] for k, x in sorted(days.items()) if k >= LG_START}
     return {"nv_v_month": tot(month_start, 0), "nv_b_month": tot(month_start, 1),
-            "nv_month": tot(month_start, 0) + tot(month_start, 1),
-            "nv_yday": sum(days.get(yday, [0, 0])), "nv_today": sum(days.get(today, [0, 0])), "nv_daily": dict(list(daily.items())[-62:])}
+            "nv_month": tot(month_start, 0),
+            "nv_yday": days.get(yday, [0, 0])[0], "nv_today": days.get(today, [0, 0])[0], "nv_daily": dict(list(daily.items())[-62:])}
 
 
 def load_hist(lg_ws):

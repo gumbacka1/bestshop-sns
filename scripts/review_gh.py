@@ -105,7 +105,8 @@ def merge():
         if prev:
             prevs.append(prev)
         row = {"team": s["team"], "name": n, "visit": cur[0], "visit_diff": dif(cur[0], pv[0]),
-               "blog": cur[1], "blog_diff": dif(cur[1], pv[1])}
+               "blog": cur[1], "blog_diff": dif(cur[1], pv[1]),
+               "nv_id": s["nv"] if s["nv"].isdigit() else "", "lg_id": s["lg"]}   # 대시보드 숫자 링크용
         lgd, nvd = h["lg"].get(n), h["nv"].get(n)
         row.update(rc.lg_summary(lgd, today, yday, ms) if lgd is not None else
                    {"lg_total": None, "lg_month": None, "lg_yday": None, "lg_today": None, "lg_mgr_month": None, "lg_daily": {}})
