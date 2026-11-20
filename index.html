@@ -77,6 +77,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: 6px; padding: 4px 8px; font-size: 12px; white-space: nowrap; }
 .ig-comment { margin-top: var(--cds-gap-sm); font-size: var(--cds-font-size-body); line-height: 1.6; }
 .ig-comment p { margin: 2px 0; }
+.snap-upd { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted, #888); margin-left: 8px; vertical-align: middle; white-space: nowrap; display: inline-block; font-weight: 400; }
 .ig-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 4px 10px; border: 1px solid var(--color-border-line); border-radius: 999px; background: var(--color-panel); color: var(--color-fg); cursor: pointer; margin-left: 6px; vertical-align: middle; }
 #team-table td:first-child, #team-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-bg); }
 #team-table th:first-child { background: #EDEDED; }
@@ -157,7 +158,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="period-note">전주비 기준: <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button></h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
@@ -179,7 +180,7 @@ window.addEventListener('load',()=>dash._load());
   <h2 class="ig-h" id="h-store">지점별 현황 <span class="ig-note" data-draw="store-count">—</span></h2>
   <div class="ig-tools">
     <input class="ig-search" id="store-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
-    <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-store" type="button">📷 이미지 생성</button>
+    <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-store" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span>
     <span class="ig-note">표 머리를 누르면 정렬돼요 · 지점명을 누르면 인스타로 가요</span>
   </div>
   <div class="ig-wrap">
@@ -246,7 +247,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 전주비 기준 <span data-draw="period">—</span></p>
 
-  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button></h2>
+  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="rv-team-table" data-source="rvteams" data-row-key="team">
       <thead>
@@ -274,7 +275,7 @@ window.addEventListener('load',()=>dash._load());
     </table>
   </div>
 
-  <h2 class="ig-h" id="h-rv-store">지점별 온라인 리뷰 <span class="ig-note" data-draw="rv-store-count">—</span><button class="ig-reset" id="rv-store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-store" type="button">📷 이미지 생성</button></h2>
+  <h2 class="ig-h" id="h-rv-store">지점별 온라인 리뷰 <span class="ig-note" data-draw="rv-store-count">—</span><button class="ig-reset" id="rv-store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-store" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
   <div class="ig-tools">
     <input class="ig-search" id="rv-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
     <span class="ig-note">표 머리를 누르면 정렬돼요</span>
@@ -515,6 +516,9 @@ dash.draw('period', (el) => {
   const p = dash.data('period').data[0];
   el.textContent = p.prev ? (IG.md(p.base) + ' vs ' + IG.md(p.prev)) : (IG.md(p.base) + ' — 비교할 이전 기록이 아직 없어요');
 });
+const updAt = (t) => { const m = /(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(t || ''); return m ? '🕒 ' + m[2] + '/' + m[3] + ' ' + m[4] + ':' + m[5] + ' 업데이트' : '—'; };
+dash.draw('ig-upd-at', (el) => { el.textContent = ok('period') ? updAt(dash.data('period').data[0].updated) : '—'; });
+dash.draw('rv-upd-at', (el) => { const d = dash.data('reviews'); el.textContent = d.status === 'ok' && d.meta ? updAt(d.meta.updated) : '—'; });
 dash.draw('lastrun', (el) => {
   if (!ok('period')) { el.textContent = '—'; return; }
   const p = dash.data('period').data[0];
@@ -899,7 +903,8 @@ dash.calc('rvkpi', {
       const now = new Date();
       const stamp = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
       const per = document.querySelector('[data-draw="period"]');
-      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + stamp + ' 기준 · 선택: ' + team + '</p>';
+      const upd = btn.parentElement.querySelector('.snap-upd');
+      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '전주비 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + team + '</p>';
       const c = wrap.cloneNode(true); box.appendChild(c); document.body.appendChild(box);
       const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));
