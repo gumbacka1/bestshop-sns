@@ -94,11 +94,11 @@ def first_int(pattern, text):
 def read_naver(page, nv_id):
     page.goto(f"https://m.place.naver.com/place/{nv_id}/home", wait_until="domcontentloaded", timeout=30000)
     page.wait_for_timeout(2500)
-    html = page.content()
-    visit = first_int(r'"reviewCount"\s*:\s*(\d+)', html)
-    blog = first_int(r'"cafeBlogReviewsTotal"\s*:\s*(\d+)', html)
-    m = (re.search(r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', html)
-         or re.search(r'"name"\s*:\s*"((?:LG|엘지)[^"]{0,40})"', html))
+    src = page.content()
+    visit = first_int(r'"reviewCount"\s*:\s*(\d+)', src)
+    blog = first_int(r'"cafeBlogReviewsTotal"\s*:\s*(\d+)', src)
+    m = (re.search(r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', src)
+         or re.search(r'"name"\s*:\s*"((?:LG|엘지)[^"]{0,40})"', src))
     place_name = html.unescape(m.group(1)).replace(" : 네이버", "").strip() if m else ""
     return visit, blog, place_name
 
