@@ -96,12 +96,12 @@ window.addEventListener('load',()=>dash._load());
   <div class="ig-tabs" id="tabs" role="tablist" aria-label="담당 선택">
     <button class="ig-tab ig-tab-gb" role="tab" data-team="경북담당">★ 경북담당</button>
     <button class="ig-tab" role="tab" data-team="">전체</button>
-    <button class="ig-tab" role="tab" data-team="경인담당">경인담당</button>
     <button class="ig-tab" role="tab" data-team="강남담당">강남담당</button>
     <button class="ig-tab" role="tab" data-team="경원담당">경원담당</button>
-    <button class="ig-tab" role="tab" data-team="경남담당">경남담당</button>
+    <button class="ig-tab" role="tab" data-team="경인담당">경인담당</button>
     <button class="ig-tab" role="tab" data-team="중부담당">중부담당</button>
     <button class="ig-tab" role="tab" data-team="서부담당">서부담당</button>
+    <button class="ig-tab" role="tab" data-team="경남담당">경남담당</button>
     <button class="ig-tab" role="tab" data-team="백화점담당">백화점담당</button>
   </div>
 
@@ -260,7 +260,7 @@ dash.calc('teams', {
     if (!snap || !snap.length || !period || !period.length) return [];
     const { prev } = period[0];
     const sumAt = (d, team, k) => d3.sum(daily.filter((r) => r.date === d && (!team || r.team === team)), (r) => +r[k] || 0);
-    const order = ['경북담당', '경인담당', '강남담당', '경원담당', '경남담당', '중부담당', '서부담당', '백화점담당'];
+    const order = ['경북담당', '강남담당', '경원담당', '경인담당', '중부담당', '서부담당', '경남담당', '백화점담당'];
     const agg = (team) => {
       const rs = snap.filter((r) => !team || r.team === team);
       const s = (k) => rs.some((r) => r[k] !== null) ? d3.sum(rs, (r) => r[k] || 0) : null;
