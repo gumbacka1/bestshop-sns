@@ -225,6 +225,11 @@ window.addEventListener('load',()=>dash._load());
       <div class="ig-card-num" data-draw="rv-ony">—</div>
       <div class="ig-card-chg">네이버 <span data-draw="rv-nvy">—</span> · 홈페이지 <span data-draw="rv-lgy">—</span></div>
     </div>
+    <div class="ig-card" id="card-today">
+      <div class="ig-card-label">오늘 새 리뷰 (당일)</div>
+      <div class="ig-card-num" data-draw="rv-ont">—</div>
+      <div class="ig-card-chg">네이버 <span data-draw="rv-nvt">—</span> · 홈페이지 <span data-draw="rv-lgtd">—</span></div>
+    </div>
     <div class="ig-card" id="card-kakao">
       <div class="ig-card-label">카톡 친구</div>
       <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
@@ -241,13 +246,14 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-field="team" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-field="accounts" data-k="accounts">지점</th>
           <th rowspan="2" class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
-          <th colspan="4" class="ig-grp ig-g1">온라인 리뷰 (당월)</th>
+          <th colspan="5" class="ig-grp ig-g1">온라인 리뷰 (당월)</th>
           <th colspan="2" class="ig-grp ig-g1">누적</th>
           <th colspan="2" class="ig-grp ig-g1">카톡</th>
         </tr>
         <tr>
           <th class="ig-sort ig-grp" data-field="on_month" data-k="on_month">건수</th>
           <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
+          <th class="ig-sort" data-field="on_today" data-k="on_today">오늘</th>
           <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
           <th class="ig-sort" data-field="lg_month" data-k="lg_month">홈페이지</th>
           <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰</th>
@@ -273,6 +279,7 @@ window.addEventListener('load',()=>dash._load());
         <th class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
         <th class="ig-sort ig-grp" data-field="on_month" data-k="on_month" aria-sort="descending">리뷰 건수(당월)</th>
         <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
+        <th class="ig-sort" data-field="on_today" data-k="on_today">오늘</th>
         <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
         <th class="ig-sort" data-field="lg_month" data-k="lg_month">홈페이지</th>
         <th class="ig-sort ig-grp" data-field="visit" data-k="visit">네이버 리뷰 누적</th>
@@ -634,6 +641,7 @@ dash.calc('rvsnap', {
         nv_month: nvm, nv_yday: num(r.nv_yday), nv_daily: nvd, buyers: buy,
         on_month: add(nvm, lgm), on_yday: add(num(r.nv_yday), num(r.lg_yday)),
         on_rate: buy ? add(nvm, lgm) / buy : null,
+        on_today: num(r.on_today), nv_today: num(r.nv_today), lg_today: num(r.lg_today), check: r.check || '',
       };
     });
     (snap || []).filter((s) => !seen.has(s.store)).forEach((s) => out.push({ team: s.team, store: s.store, kakao: s.kakao, k_diff: s.k_diff, k_rate: s.k_rate, k_week: s.k_week, visit: null, visit_diff: null, blog: null, blog_diff: null, lg_total: null, lg_month: null, lg_yday: null, lg_daily: null, nv_month: null, nv_yday: null, nv_daily: null, buyers: null, on_month: null, on_yday: null, on_rate: null }));
@@ -658,7 +666,7 @@ dash.calc('rvteams', {
         kakao: t ? t.kakao : s('kakao'), k_diff: t ? t.k_diff : s('k_diff'), k_rate: t ? t.k_rate : null, k_week: t ? t.k_week : s('k_week'),
         visit: s('visit'), visit_diff: s('visit_diff'), blog: s('blog'), blog_diff: s('blog_diff'),
         lg_total: s('lg_total'), lg_month: s('lg_month'), lg_yday: s('lg_yday'),
-        nv_month: s('nv_month'), nv_yday: s('nv_yday'), buyers: s('buyers'), on_month: s('on_month'), on_yday: s('on_yday'),
+        nv_month: s('nv_month'), nv_yday: s('nv_yday'), on_today: s('on_today'), nv_today: s('nv_today'), lg_today: s('lg_today'), buyers: s('buyers'), on_month: s('on_month'), on_yday: s('on_yday'),
         on_rate: (() => { const b = rs.filter((r) => r.buyers); const n = d3.sum(b, (r) => r.buyers); return n ? d3.sum(b, (r) => r.on_month || 0) / n : null; })(),
       };
     };
@@ -722,6 +730,9 @@ dash.calc('rvkpi', {
   dash.draw('rv-ony', setv('on_yday', IG.fmt));
   dash.draw('rv-nvy', setv('nv_yday', IG.fmt));
   dash.draw('rv-lgy', setv('lg_yday', IG.fmt));
+  dash.draw('rv-ont', setv('on_today', IG.fmt));
+  dash.draw('rv-nvt', setv('nv_today', IG.fmt));
+  dash.draw('rv-lgtd', setv('lg_today', IG.fmt));
   dash.draw('rv-upd', (el) => { const d = dash.data('reviews'); el.textContent = d.status === 'ok' ? ((d.meta && d.meta.updated ? d.meta.updated + ' · ' : '') + d.data.length + '개 지점') : '—'; });
   dash.draw('rv-prev', (el) => {
     if (!okd('rvsnap')) { el.textContent = '—'; return; }
@@ -748,7 +759,7 @@ dash.calc('rvkpi', {
       if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
       td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
       td(tr, IG.fmt(r.buyers));
-      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
+      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.on_today)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = null; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
@@ -773,7 +784,7 @@ dash.calc('rvkpi', {
       td(tr, r.team, 'ig-c'); td(tr, r.store, 'ig-l');
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
       td(tr, IG.fmt(r.buyers));
-      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
+      td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.on_today)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
       tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
@@ -818,6 +829,10 @@ dash.calc('rvkpi', {
     const rs = dash.data('rvsnap').data.filter((r) => !t || r.team === t);
     const line = (s) => { const q = document.createElement('p'); q.textContent = s; el.appendChild(q); };
     const top = (k, n, f) => rs.filter((r) => r[k] !== null && r[k] > 0).sort((a, b) => b[k] - a[k]).slice(0, n).map((r) => r.store + ' ' + f(r[k])).join(', ');
+    const chk = rs.filter((r) => r.check);
+    if (chk.length) line('· 점검 필요 ' + chk.length + '곳: ' + chk.slice(0, 6).map((r) => r.store + '(' + r.check + ')').join(', ') + (chk.length > 6 ? ' 외' : ''));
+    const ont = top('on_today', 3, (v) => v + '건');
+    if (ont) line('· 오늘 새 리뷰 상위: ' + ont);
     const onm = top('on_month', 3, (v) => v + '건');
     line('· 당월 온라인 리뷰(네이버+홈페이지) 상위: ' + (onm || '내일 아침 수집부터 나와요'));
     const nvm = top('nv_month', 3, (v) => v + '건');
