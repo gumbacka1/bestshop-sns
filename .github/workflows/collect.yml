@@ -10,7 +10,12 @@ on:
     - cron: '3 8 * * *'
     - cron: '3 9 * * *'
     - cron: '3 11 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      hour:
+        description: '이 시각 일정으로 실행 (비우면 지금 시각)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -29,6 +34,7 @@ jobs:
         id: plan
         run: |
           H=$(TZ=Asia/Seoul date +%-H)
+          if [ -n "${{ github.event.inputs.hour }}" ]; then H=${{ github.event.inputs.hour }}; fi
           # 표: 시 | 카톡 | 인스타 일반 | 내 권역
           if   [ $H -lt 9 ];  then K=1; M=89; W=0
           elif [ $H -lt 10 ]; then K=0; M=89; W=1
