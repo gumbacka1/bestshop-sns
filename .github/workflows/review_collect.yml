@@ -1,7 +1,8 @@
 name: 리뷰 수집(네이버·LG)
 on:
   schedule:
-    - cron: "0 21 * * *"   # 한국 시각 06:00 (9시 전 마무리, 261120 변경)
+    - cron: "0 21 * * *"   # 한국 시각 06:00 전국 297곳 (9시 전 마무리, 261120 변경)
+    - cron: "0 6,9,11 * * *"   # 한국 시각 15·18·20시 경북 29곳만 당일 숫자 다시 셈 (261120 사용자 요청)
   workflow_dispatch:
     inputs:
       team: { description: "담당만 (비우면 전체)", required: false, default: "" }
@@ -19,7 +20,7 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install playwright openpyxl && python -m playwright install --with-deps chromium
       - run: python scripts/review_gh.py collect ${{ matrix.part }} 8
-        env: { TEAM: "${{ github.event.inputs.team }}", FULL: "${{ github.event.inputs.full }}", NV_DEBUG: "${{ github.event.inputs.debug }}" }   # 6시 자동 실행 = 전국 297곳, 수동 실행만 담당 지정 가능 (261120)
+        env: { TEAM: "${{ github.event_name == 'schedule' && github.event.schedule == '0 6,9,11 * * *' && '경북' || github.event.inputs.team }}", FULL: "${{ github.event.inputs.full }}", NV_DEBUG: "${{ github.event.inputs.debug }}" }   # 6시 = 전국, 15·18·20시 = 경북만, 수동 실행은 담당 지정 가능 (261120)
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: "part${{ matrix.part }}", path: parts/, if-no-files-found: ignore }
