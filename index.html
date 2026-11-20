@@ -53,6 +53,14 @@ window.addEventListener('load',()=>dash._load());
 .ig-table td.ig-c { text-align: center; }
 .ig-table td.ig-bad { color: var(--color-bad); font-weight: var(--cds-font-weight-medium); }
 .ig-table tr.ig-gb td { background: #FFF4D6; font-weight: 600; }
+.ig-table tr.ig-age1 td.ig-days, .ig-table tr.ig-age2 td.ig-days { color: #E24B4A; font-weight: 600; }
+.ig-table tr.ig-age2 td { border-top: 2px solid #E24B4A; border-bottom: 2px solid #E24B4A; }
+.ig-table tr.ig-age2 td:first-child { border-left: 2px solid #E24B4A; } .ig-table tr.ig-age2 td:last-child { border-right: 2px solid #E24B4A; }
+.ig-table tr.ig-age3 td { background: #A32D2D !important; color: #fff !important; font-weight: 600; border-top: 2px solid #791F1F; border-bottom: 2px solid #791F1F; }
+.ig-table tr.ig-age3 td.ig-days { font-size: 1.15em; }
+.ig-table tr.ig-age3 a { color: #fff; }
+.ig-warn { display: inline-block; margin-right: 4px; animation: ig-blink 1.2s infinite; }
+@keyframes ig-blink { 50% { opacity: .3; } }
 .ig-table tr.ig-total td { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); }
 .ig-table a { color: inherit; text-decoration: none; }
 .ig-table a:hover { text-decoration: underline; }
@@ -193,7 +201,7 @@ window.addEventListener('load',()=>dash._load());
     <p>· 인스타 숫자는 메타 공식 Instagram API, 카톡 친구 수는 카카오톡 채널 공개 정보에서 직접 모아요. 카톡은 매일 9·17·20시, 인스타는 지점마다 하루 1번(오전 6~8시, 9시 전 완료) 갱신돼요.</p><p>· 팔로잉은 11/20 직접 수집부터 나와요(그 전 기록은 —). 경북담당은 맨 앞 탭과 표 위쪽에 노란색으로 먼저 보여요.</p><p>· 최근 게시는 그 계정이 직접 올린 글 기준이에요. 다른 계정이 올리고 공동 작성자(콜라보)로 넣은 글은 들어가지 않아요.</p>
     <p>· 전주비 = 가장 최근 월요일 수치 − 그보다 7일 전 수치. 7일 전 기록이 없으면 그 이전 가장 가까운 날과 비교해요(위 기준 줄에 날짜가 나와요).</p>
     <p>· 신장률 = 전주비 ÷ 비교일 수치. 이번 주 = 최신 수치 − 기준 월요일 수치.</p>
-    <p>· 최근 게시가 30일을 넘으면 빨간색으로 표시해요. 릴스 최다 조회는 그 지점 릴스 중 조회수가 가장 많은 것이고, 누르면 그 릴스로 가요.</p>
+    <p>· 최근 게시는 주 1회 업로드 기준으로 표시해요: 8일 이상 빨간 글씨, 15일 이상 빨간 테두리, 30일 이상 진한 빨강 배경과 ⚠ 표시. 릴스 최다 조회는 그 지점 릴스 중 조회수가 가장 많은 것이고, 누르면 그 릴스로 가요.</p>
   </details>
   </section>
 
@@ -375,7 +383,7 @@ dash.calc('teams', {
         team: team || '전체', accounts: rs.length,
         followers: s('followers'), following: s('following'), fl_diff: ld, fl_rate: ld === null || !pl ? null : Math.round(ld / pl * 10000) / 10000, f_diff: fd, f_rate: fd === null || !pf ? null : Math.round(fd / pf * 10000) / 10000, f_week: s('f_week'),
         kakao: s('kakao'), k_diff: kd, k_rate: kd === null || !pk ? null : Math.round(kd / pk * 10000) / 10000, k_week: s('k_week'),
-        posts: s('posts'), stale: rs.filter((r) => r.days !== null && r.days > IG.STALE).length,
+        posts: s('posts'), stale: rs.filter((r) => r.days !== null && r.days >= IG.STALE).length,
       };
     };
     return [agg(''), ...order.map(agg)];
@@ -542,13 +550,13 @@ const storeRows = () => {
 dash.draw('store-body', (tb) => {
   tb.replaceChildren();
   storeRows().forEach((r) => {
-    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb';
+    const tr = document.createElement('tr'); tr.setAttribute('data-key', r.handle); if (r.team === '경북담당' && !(dash.params().team)) tr.className = 'ig-gb'; const ag = r.days === null ? 0 : r.days >= 30 ? 3 : r.days >= 15 ? 2 : r.days >= 8 ? 1 : 0; if (ag) tr.classList.add('ig-age' + ag);
     td(tr, r.team, 'ig-c');
-    const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; c.appendChild(a);
+    const c = td(tr, '', 'ig-l'); const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + r.handle + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.store; if (ag === 3) { const w = document.createElement('span'); w.className = 'ig-warn'; w.textContent = '⚠'; c.appendChild(w); } c.appendChild(a);
     td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate); td(tr, IG.sfmt(r.f_week), IG.cls(r.f_week));
     td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff));
     td(tr, IG.fmt(r.posts));
-    td(tr, r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'), r.days !== null && r.days > IG.STALE ? 'ig-bad' : '');
+    td(tr, r.days === null ? '—' : (r.days === 0 ? '오늘' : r.days + '일 전'), 'ig-days');
     const rc = td(tr, '');
     if (r.reelsMax !== null && r.reelsUrl) { const ra = document.createElement('a'); ra.href = r.reelsUrl; ra.target = '_blank'; ra.rel = 'noopener'; ra.textContent = IG.fmt(r.reelsMax); rc.appendChild(ra); } else rc.textContent = IG.fmt(r.reelsMax);
     tb.appendChild(tr);
@@ -598,8 +606,8 @@ dash.draw('comment', (el) => {
     const fdown = rs.filter((r) => r.f_diff !== null && r.f_diff < 0);
     line('· 팔로워가 줄어든 지점 ' + fdown.length + '개' + (fdown.length ? ' (' + fdown.sort((a, b) => a.f_diff - b.f_diff).slice(0, 4).map((r) => r.store + ' ' + IG.sfmt(r.f_diff)).join(', ') + ')' : ''));
   }
-  const stale = rs.filter((r) => r.days !== null && r.days > IG.STALE).sort((a, b) => b.days - a.days);
-  line('· 30일 넘게 게시 없음 ' + stale.length + '개' + (stale.length ? ' (' + stale.slice(0, 6).map((r) => r.store + ' ' + r.days + '일').join(', ') + (stale.length > 6 ? ' 외' : '') + ')' : ''));
+  const stale = rs.filter((r) => r.days !== null && r.days >= IG.STALE).sort((a, b) => b.days - a.days);
+  line('· 30일 이상 게시 없음 ' + stale.length + '개' + (stale.length ? ' (' + stale.slice(0, 6).map((r) => r.store + ' ' + r.days + '일').join(', ') + (stale.length > 6 ? ' 외' : '') + ')' : ''));
   line('· 이번 주(월요일 이후) 팔로워가 가장 많이 는 곳: ' + top('f_week', 3, IG.sfmt));
 });
 </script>
