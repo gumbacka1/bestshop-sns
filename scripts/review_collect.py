@@ -256,7 +256,7 @@ def nv_summary(days, today, yday, month_start):
     daily = {k: x[0] + x[1] for k, x in sorted(days.items()) if k >= LG_START}
     return {"nv_v_month": tot(month_start, 0), "nv_b_month": tot(month_start, 1),
             "nv_month": tot(month_start, 0) + tot(month_start, 1),
-            "nv_yday": sum(days.get(yday, [0, 0])), "nv_daily": dict(list(daily.items())[-14:])}
+            "nv_yday": sum(days.get(yday, [0, 0])), "nv_daily": dict(list(daily.items())[-62:])}
 
 
 def load_hist(lg_ws):
@@ -272,7 +272,7 @@ def load_hist(lg_ws):
 def lg_summary(days, today, yday, month_start):
     tot = lambda d: sum(v[0] + v[1] for k, v in days.items() if k >= d)
     daily = {k: v[0] + v[1] for k, v in sorted(days.items()) if k >= LG_START}
-    recent = dict(list(daily.items())[-14:])
+    recent = dict(list(daily.items())[-62:])
     return {"lg_total": tot(LG_START), "lg_month": tot(month_start),
             "lg_yday": sum(days.get(yday, [0, 0])), "lg_today": sum(days.get(today, [0, 0])),
             "lg_mgr_month": sum(v[1] for k, v in days.items() if k >= month_start), "lg_daily": recent}
