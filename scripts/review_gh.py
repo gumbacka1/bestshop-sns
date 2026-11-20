@@ -34,6 +34,8 @@ def collect(part, parts):
     lg_t = max(rc.LG_START, (now - timedelta(days=rc.LG_DAYS)).strftime("%Y-%m-%d"))
     nv_t = max(rc.LG_START, (now - timedelta(days=rc.NV_DAYS)).strftime("%Y-%m-%d"))
     team = os.environ.get("TEAM", "").replace("담당", "").strip()
+    full = os.environ.get("FULL", "") in ("1", "true", "예")      # 11/1부터 다시 셈 (261120 블로그 날짜 수정 후 1회)
+    debug = os.environ.get("NV_DEBUG", "") in ("1", "true", "예")  # 앞 3곳 블로그 화면·원본 일부를 기록에 남김
     ss = [s for s in stores() if not team or s["team"] == team]
     ss = [s for i, s in enumerate(ss) if i % parts == part]
     res = {}
@@ -45,10 +47,10 @@ def collect(part, parts):
         for k, s in enumerate(ss, 1):
             r = {}
             if s["nv"].isdigit():
-                since = nv_t if s["name"] in h.get("nv", {}) else rc.LG_START
+                since = nv_t if (s["name"] in h.get("nv", {}) and not full) else rc.LG_START
                 for _ in range(2):
                     try:
-                        d, vt, bt = rc.read_nv_dates(nvp, s["nv"], since)
+                        d, vt, bt = rc.read_nv_dates(nvp, s["nv"], since, debug=(debug and k <= 3))
                         r.update(nv=d, nv_since=since, visit=vt, blog=bt)
                         break
                     except Exception as e:

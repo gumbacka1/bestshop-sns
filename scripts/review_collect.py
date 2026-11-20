@@ -28,7 +28,7 @@ import json
 import string
 import html
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 
 from openpyxl import Workbook, load_workbook
@@ -243,11 +243,118 @@ def _visitor_by_created(page, nv_id, since_day):
     return out, (int(m.group(1).replace(",", "")) if m else None)
 
 
-def read_nv_dates(page, nv_id, since_day):
+BLOG_DATE_KEYS = ("date", "created", "createdString", "createdDate", "writtenDate", "postDate", "regDate", "displayDate")
+DOT_DATE_RE = r"(?<![\d.])(?:\d{2,4}\.\d{1,2}\.\d{1,2}\.?(?!\d)|\d{1,2}\.\d{1,2}\.(?=[월화수목금토일]))"
+
+
+def _any_date(v, today=None):
+    """블로그 날짜 글자 → 'YYYY-MM-DD' ('2026.11.12.', '26.11.12.', '11.12.', '3일 전', '어제', '2026년 11월 12일' 등). 모르면 ''"""
+    t = today or datetime.now()
+    v = str(v or "").strip()
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", v)
+    if m:
+        return m.group(0)
+    m = re.search(KDATE_RE, v)
+    if m:
+        return "%s-%02d-%02d" % (m.group(1), int(m.group(2)), int(m.group(3)))
+    m = re.match(r"(\d{2,4})\.(\d{1,2})\.(\d{1,2})", v)
+    if m:
+        y = int(m.group(1)); y = y + 2000 if y < 100 else y
+        return "%d-%02d-%02d" % (y, int(m.group(2)), int(m.group(3)))
+    m = re.match(r"(\d+)\s*(분|시간|일|주)\s*전", v)
+    if m:
+        n = int(m.group(1)); u = m.group(2)
+        if u == "일":
+            dd = n
+        elif u == "주":
+            dd = n * 7
+        else:                                   # 분·시간 전 → 오늘 (지금 시각보다 많은 시간 전이면 어제)
+            dd = 1 if (u == "시간" and n > t.hour) else 0
+        return (t - timedelta(days=dd)).strftime("%Y-%m-%d")
+    if v.startswith("어제"):
+        return (t - timedelta(days=1)).strftime("%Y-%m-%d")
+    if v.startswith("오늘") or v.startswith("방금"):
+        return t.strftime("%Y-%m-%d")
+    m = re.match(r"(\d{1,2})\.(\d{1,2})\.", v)
+    if m:
+        return _md_to_date(v, t)
+    return ""
+
+
+def _blog_by_date(page, nv_id, since_day, debug=False):
+    """블로그·카페 리뷰를 글 날짜로 셈 (261120: 원래는 '2026년 11월 12일' 글자만 찾아서 거의 0이 나왔음)
+    1순위: 네이버 원본 데이터(graphql)의 날짜 / 2순위: 화면의 '2026.11.12.' 모양 날짜. 오늘 이후 날짜는 버림."""
+    now = datetime.now(timezone(timedelta(hours=9))).replace(tzinfo=None)
+    today = now.strftime("%Y-%m-%d")
+    bag, samples = {}, []
+    def walk(o):
+        if isinstance(o, dict):
+            ks = [k for k in BLOG_DATE_KEYS if isinstance(o.get(k), str) and o.get(k)]
+            key = o.get("url") or o.get("reviewId") or o.get("id")
+            if ks and key and ("visited" not in o):
+                d = _any_date(o[ks[0]], now)
+                if d:
+                    bag[str(key)] = d
+                    if debug and len(samples) < 3:
+                        samples.append({k: (str(o[k])[:40]) for k in list(o)[:15]})
+            for x in o.values():
+                walk(x)
+        elif isinstance(o, list):
+            for x in o:
+                walk(x)
+    def on_resp(r):
+        if "graphql" in r.url:
+            try:
+                walk(r.json())
+            except Exception:
+                pass
+    page.on("response", on_resp)
+    try:
+        page.goto(f"https://m.place.naver.com/place/{nv_id}/review/ugc?type=list", wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_timeout(2500)
+        try:
+            walk(json.loads(page.evaluate("() => JSON.stringify(window.__APOLLO_STATE__ || {})")))
+        except Exception:
+            pass
+        try:
+            page.locator("text=최신순").first.click(timeout=3000)
+            page.wait_for_timeout(1500)
+        except Exception:
+            pass
+        def text_dates():
+            return [_any_date(m.group(0), now) for m in re.finditer(DOT_DATE_RE, page.inner_text("body"))]
+        _expand(page, lambda: list(bag.values()) or [d for d in text_dates() if d], since_day, NV_MAX_CLICKS)
+        body = page.inner_text("body")
+    finally:
+        page.remove_listener("response", on_resp)
+    src = "graphql"
+    dates = list(bag.values())
+    if not dates:
+        src = "화면"
+        dates = [_any_date(m.group(0), now) for m in re.finditer(DOT_DATE_RE, body)]
+    out = {}
+    for d in dates:
+        if d and since_day <= d <= today:
+            out[d] = out.get(d, 0) + 1
+    m = re.search(r"\n리뷰([\d,]+)\n", body)
+    total = int(m.group(1).replace(",", "")) if m else None
+    if debug:
+        print(f"   [블로그 점검] {nv_id} 읽은 곳={src} 글 {len(dates)}개 기간내 {sum(out.values())} 누적 {total}")
+        print("   [블로그 점검] 원본 예시:", json.dumps(samples, ensure_ascii=False)[:600])
+        print("   [블로그 점검] 화면 앞부분:", body[:500].replace("\n", " / "))
+    return out, total
+
+
+def read_nv_dates(page, nv_id, since_day, debug=False):
     """→ {날짜: [방문자(작성일), 블로그(글 날짜)]}"""
     v, vt = _visitor_by_created(page, nv_id, since_day)
     time.sleep(random.uniform(1, 2))
-    b, bt = _count_list(page, f"https://m.place.naver.com/place/{nv_id}/review/ugc?type=list", since_day, sort_recent=True)
+    b, bt = _blog_by_date(page, nv_id, since_day, debug)
+    if bt is None:                       # 목록 위 "리뷰N"을 못 찾으면 네이버 첫 화면의 블로그 총수로
+        try:
+            bt = read_naver(page, nv_id)[1]
+        except Exception:
+            pass
     return {d: [v.get(d, 0), b.get(d, 0)] for d in set(v) | set(b)}, vt, bt
 
 
