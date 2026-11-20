@@ -104,11 +104,27 @@ def merge():
         row.update(rc.lg_summary(lgd, today, yday, ms) if lgd is not None else
                    {"lg_total": None, "lg_month": None, "lg_yday": None, "lg_today": None, "lg_mgr_month": None, "lg_daily": {}})
         row.update(rc.nv_summary(nvd, today, yday, ms) if nvd is not None else
-                   {"nv_v_month": None, "nv_b_month": None, "nv_month": None, "nv_yday": None, "nv_daily": {}})
+                   {"nv_v_month": None, "nv_b_month": None, "nv_month": None, "nv_yday": None, "nv_today": None, "nv_daily": {}})
+        row["on_today"] = None if row["nv_today"] is None and row["lg_today"] is None else (row["nv_today"] or 0) + (row["lg_today"] or 0)
+        # 자동 점검
+        iss = []
+        if s["nv"] and row["visit"] is None:
+            iss.append("네이버 못 읽음")
+        if s["lg"] and lgd is None:
+            iss.append("홈페이지 못 읽음")
+        if row["visit_diff"] is not None and nvd is not None and prev:
+            new_v = sum(x[0] for d, x in nvd.items() if prev < d <= (last or today))
+            if abs(row["visit_diff"] - new_v) > 3:
+                iss.append(f"네이버 누적 변화 {row['visit_diff']} vs 새 리뷰 {new_v}")
+        row["check"] = ", ".join(iss)
         rows.append(row)
+    caps = [r["name"] for r in rows if r.get("nv_v_month") == 10 or r.get("lg_month") == 10]
+    flagged = [{"name": r["name"], "team": r["team"], "issues": r["check"]} for r in rows if r["check"]]
+    check = {"flagged": flagged, "cap10": len(caps), "cap10_warn": len(caps) > 40}
+    print("점검:", len(flagged), "곳 /", "딱 10에서 멈춘 곳", len(caps))
     json.dump(h, open(HIST, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     json.dump({"updated": now.strftime("%Y-%m-%d %H:%M"), "lg_start": rc.LG_START, "month": ms[:7], "yday": yday,
-               "prev_day": max(prevs) if prevs else None, "source": "github", "rows": rows},
+               "prev_day": max(prevs) if prevs else None, "source": "github", "check": check, "rows": rows},
               open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("저장:", OUT, len(rows), "지점")
 
