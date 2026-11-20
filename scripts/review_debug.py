@@ -3,7 +3,7 @@ import sys, re, json, time
 sys.path.insert(0, "scripts")
 import review_collect as rc
 from playwright.sync_api import sync_playwright
-KEY = {"서귀포점": (3, 55), "이도본점": (0, 55), "율하점": (13, 16), "황금본점": (53, 13), "범어점": (4, 9), "제주본점": (9, 21)}
+KEY = {"북울산본점": (None, 94), "안동본점": (None, 72)}
 SINCE, UNTIL = "2026-11-01", "2026-11-19"
 CANDS = """() => [...document.querySelectorAll('a,button,span,div')].filter(e => /^\\s*(펼쳐서\\s*)?더보기\\s*$/.test(e.innerText || '') && e.offsetParent !== null)
   .map(e => ({t: e.tagName, c: (e.className || '').toString().slice(0, 40), r: e.getAttribute('role'), y: Math.round(e.getBoundingClientRect().top + scrollY), p: (e.closest('a,button') || {}).tagName || ''}))"""
@@ -37,7 +37,7 @@ with sync_playwright() as p:
     b = p.chromium.launch(headless=True)
     for k, name in enumerate(KEY):
         _, _, lg, nv = stores[name][:4]
-        print(f"\n■ {name} (정답 네이버 {KEY[name][0]} / 홈페이지 {KEY[name][1]})")
+        print(f"\n■ {name} (본사 합계 {KEY[name][1]})")
         pg = b.new_page(user_agent=rc.MOBILE_UA, locale="ko-KR")
         bag = {}
         def walk(o):
@@ -53,7 +53,7 @@ with sync_playwright() as p:
                 except Exception: pass
         pg.on("response", on_resp)
         pg.goto(f"https://m.place.naver.com/place/{nv}/review/visitor?reviewSort=recent", wait_until="domcontentloaded", timeout=30000); pg.wait_for_timeout(3000)
-        expand(pg, kd, "네이버 방문자", k == 0)
+        print("   네이버 장소 이름:", pg.title()[:60]); expand(pg, kd, "네이버 방문자", k == 0)
         body = pg.inner_text("body"); ds = kd(body)
         n = sum(1 for d in ds if SINCE <= d <= UNTIL)
         print(f"   네이버 방문자 11/1~11/19 = {n}  (11/20 {ds.count('2026-11-20')}, 날짜별 {sorted({d: ds.count(d) for d in set(ds) if d >= SINCE}.items())})")
@@ -73,7 +73,7 @@ with sync_playwright() as p:
         pg.close()
         pg = b.new_page(locale="ko-KR")
         pg.goto(f"https://bestshop.lge.co.kr/storehub/dtl-{lg}/review", wait_until="networkidle", timeout=40000); pg.wait_for_timeout(1500)
-        expand(pg, lgd, "홈페이지", k == 0)
+        print("   LG 매장 이름:", pg.title()[:60], "|", pg.inner_text("body")[:80].replace("\n"," ")); expand(pg, lgd, "홈페이지", k == 0)
         body = pg.inner_text("body")
         ms = list(re.finditer(rc.DATE_RE, body)); cnt = {}; kinds = {}
         for i, m in enumerate(ms):
