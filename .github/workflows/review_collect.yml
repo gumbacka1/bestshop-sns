@@ -17,7 +17,7 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install playwright openpyxl && python -m playwright install --with-deps chromium
       - run: python scripts/review_gh.py collect ${{ matrix.part }} 8
-        env: { TEAM: "${{ github.event_name == 'schedule' && github.event.schedule != '10 22 * * *' && '경북' || github.event.inputs.team }}" }
+        env: { TEAM: "${{ github.event.inputs.team }}" }   # 6시 자동 실행 = 전국 297곳, 수동 실행만 담당 지정 가능 (261120)
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: "part${{ matrix.part }}", path: parts/, if-no-files-found: ignore }
