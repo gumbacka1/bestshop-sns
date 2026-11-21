@@ -50,6 +50,7 @@ jobs:
       - name: 수집
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_PAUSE: '1'   # 261121 인스타 중지(메타 차단). 키 재승인 후 '0'으로
           IG_USER_ID: '17841464921962064'
           IG_MAX: ${{ steps.plan.outputs.ig_max }}
           SKIP_KAKAO: ${{ steps.plan.outputs.skip_kakao }}

@@ -35,6 +35,9 @@ def kakao(cid):
 
 
 IG_TOKEN, IG_USER = os.environ.get('IG_TOKEN'), os.environ.get('IG_USER_ID')
+if os.environ.get('IG_PAUSE') == '1':   # 261121 메타 차단으로 인스타 일시 중지 (키 재승인 후 워크플로에서 IG_PAUSE 를 '0'으로)
+    IG_TOKEN = None
+    print('인스타 일시 중지 중 (IG_PAUSE=1) — 카톡만 수집')
 FIELDS = 'followers_count,follows_count,media_count,media.limit(25){timestamp,media_product_type,view_count,permalink,like_count,comments_count}'   # 261120 전국도 게시글별 좋아요·댓글(요청 횟수 같음)
 ENGAGE_TEAM = os.environ.get('ENGAGE_TEAM', '경북담당').strip()   # 이 담당만 전체 게시물 누적 좋아요·댓글을 셈 (261120 사용자 요청)
 EFIELDS = 'followers_count,follows_count,media_count,media.limit(50){timestamp,media_product_type,view_count,permalink,like_count,comments_count}'
