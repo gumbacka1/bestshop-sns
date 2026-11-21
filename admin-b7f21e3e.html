@@ -52,7 +52,7 @@ const KEY_END=new Date('2027-02-18T02:16:00+09:00');
  const card=(t,v,cls,s)=>`<div class="c"><small>${t}</small><b class="${cls||''}">${v}</b><small>${s||''}</small></div>`;
  document.getElementById('cards').innerHTML=
   card('마지막 갱신',last.slice(5)||'—','', last.slice(0,10)===today?'오늘':'<span class="bad">오늘 갱신 없음</span>')+
-  card('인스타 오늘 수집',hasIgDate?igToday+' / '+L.length:'—',igToday===L.length?'ok':(hasIgDate?'warn':''),hasIgDate?'오전 6·7·8시에 나눠 받아요(9시 전 완료)':'직접 수집 전(경인담당 값)')+
+  card('인스타 오늘 수집',hasIgDate?igToday+' / '+L.length:'—',igToday===L.length?'ok':(hasIgDate?'warn':''),hasIgDate?'오전 5·6·7·8시에 나눠 받아요(9시 전 완료)':'직접 수집 전(경인담당 값)')+
   card('카톡 값 있음',kk+' / '+L.length,kk===L.length?'ok':'warn')+
   card('일부 실패 지점',part,part?'warn':'ok');
  const days=Math.ceil((KEY_END-Date.now())/864e5);
