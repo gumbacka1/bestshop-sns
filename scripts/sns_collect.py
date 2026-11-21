@@ -144,8 +144,10 @@ for s in stores:
             except Exception:
                 c = str(e.code)
             ig_codes[c] = ig_codes.get(c, 0) + 1
-            if c == '190':
-                ig_stop = True   # 키 만료·무효
+            if c == '190' or '5258005' in body:
+                ig_stop = True   # 키 만료·무효, 또는 메타가 앱 접근 차단(API access blocked) → 더 부르지 않음
+                if '5258005' in body:
+                    ig_codes['차단'] = 1
             if '"code":4' in body or '"code":17' in body or '"code":32' in body:
                 ig_stop = True   # 한도 도달 → 다음 실행 때 이어서
             errs['ig'] += 1; rec['status'] = 'partial'
