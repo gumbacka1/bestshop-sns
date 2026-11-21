@@ -54,7 +54,7 @@ jobs:
       - name: 수집
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
-          IG_PAUSE: ${{ github.event.inputs.ig_on == '1' && '0' || '1' }}   # 261121 인스타 중지(자동 수집). 수동 실행에서 ig_on=1 이면 이번만 수집. 재개 시 '0'으로
+          IG_PAUSE: '0'   # 261121 22시 재개(1이면 인스타 중지)
           IG_USER_ID: '17841464921962064'
           IG_MAX: ${{ steps.plan.outputs.ig_max }}
           SKIP_KAKAO: ${{ steps.plan.outputs.skip_kakao }}
