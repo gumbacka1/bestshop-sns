@@ -38,6 +38,10 @@ window.addEventListener('load',()=>dash._load());
 .ig-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); margin: 0 0 var(--cds-gap-md); }
 .ig-tab { border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: var(--cds-font-size-caption); cursor: pointer; }
 .ig-tab-gb { border-color: #C8102E; color: #C8102E; font-weight: 600; }
+.ig-teamrow { cursor: pointer; }
+.ig-teamrow:hover td { background: #F5F5F5; }
+.ig-table tr.ig-picked td { font-weight: 700; }
+.ig-table tr.ig-picked td:first-child { box-shadow: inset 4px 0 0 #C8102E; }
 .ig-tab.is-on { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
 .rv-bars { display: flex; align-items: flex-end; gap: 3px; height: 120px; margin: 4px 0 2px; border-bottom: 1px solid var(--color-border-line); }
 .rv-bars .b { flex: 1; display: flex; flex-direction: column-reverse; min-width: 0; position: relative; height: 100%; justify-content: flex-start; }
@@ -135,17 +139,6 @@ window.addEventListener('load',()=>dash._load());
     <button class="ig-sec" role="tab" data-sec="sec-rv" type="button">💬 온라인 리뷰</button>
   </div>
 
-  <div class="ig-tabs" id="tabs" role="tablist" aria-label="담당 선택">
-    <button class="ig-tab ig-tab-gb" role="tab" data-team="경북담당">★ 경북담당</button>
-    <button class="ig-tab" role="tab" data-team="">전체</button>
-    <button class="ig-tab" role="tab" data-team="강남담당">강남담당</button>
-    <button class="ig-tab" role="tab" data-team="경원담당">경원담당</button>
-    <button class="ig-tab" role="tab" data-team="경인담당">경인담당</button>
-    <button class="ig-tab" role="tab" data-team="중부담당">중부담당</button>
-    <button class="ig-tab" role="tab" data-team="서부담당">서부담당</button>
-    <button class="ig-tab" role="tab" data-team="경남담당">경남담당</button>
-    <button class="ig-tab" role="tab" data-team="백화점담당">백화점담당</button>
-  </div>
 
   <section id="sec-ig">
   <div class="ig-cards" id="cards">
@@ -162,7 +155,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">표 머리를 누르면 정렬돼요(전체 줄은 맨 위 고정)</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
@@ -259,7 +252,7 @@ window.addEventListener('load',()=>dash._load());
   </div>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 주간 기준 <span data-draw="period">—</span></p>
 
-  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">표 머리를 누르면 정렬돼요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
+  <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="rv-team-table" data-source="rvteams" data-row-key="team">
       <thead>
@@ -568,7 +561,8 @@ dash.draw('team-body', (tb) => {
   rows.forEach((r) => {
     const tr = document.createElement('tr'); tr.setAttribute('data-key', r.team);
     if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
-    if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
+    if (r.team === t) tr.classList.add('ig-picked');
+    tr.classList.add('ig-teamrow'); tr.addEventListener('click', () => { IG.igpick = null; dash.setParams({ team: r.team === '전체' ? '' : r.team }); });
     td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
     td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
     td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff)); rateCell(tr, r.fl_rate);
@@ -846,13 +840,14 @@ dash.calc('rvkpi', {
     [all[0], ...all.slice(1).sort(sorter(IG.rvtsort || {}))].forEach((r) => {
       const tr = document.createElement('tr'); tr.setAttribute('data-key', r.team);
       if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
-      if (r.team === t && t !== '전체') tr.style.outline = '2px solid var(--color-fg)';
+      if (r.team === t) tr.classList.add('ig-picked');
+      tr.classList.add('ig-teamrow');
       td(tr, r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
       td(tr, IG.fmt(r.buyers)); td(tr, IG.fmt(r.on_today));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
-      tr.addEventListener('click', () => { IG.rvpick = null; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
+      tr.addEventListener('click', () => { IG.rvpick = null; IG.igpick = null; dash.setParams({ team: r.team === '전체' ? '' : r.team }); });
       tb.appendChild(tr);
     });
   });
