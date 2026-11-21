@@ -39,6 +39,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-tab { border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: var(--cds-font-size-caption); cursor: pointer; }
 .ig-tab-gb { border-color: #C8102E; color: #C8102E; font-weight: 600; }
 .ig-teamrow { cursor: pointer; }
+.ig-star { color: #C8102E; }
 .ig-teamrow:hover td { background: #F5F5F5; }
 .ig-table tr.ig-picked td { font-weight: 700; }
 .ig-table tr.ig-picked td:first-child { border-left: 4px solid #C8102E; }
@@ -563,7 +564,7 @@ dash.draw('team-body', (tb) => {
     if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
     if (r.team === t) tr.classList.add('ig-picked');
     tr.classList.add('ig-teamrow'); tr.addEventListener('click', () => { IG.igpick = null; dash.setParams({ team: r.team === '전체' ? '' : r.team }); });
-    td(tr, r.team === '경북담당' ? '👑 경북담당' : r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
+    { const c = td(tr, r.team, 'ig-c'); if (r.team === '경북담당') { const st = document.createElement('span'); st.className = 'ig-star'; st.textContent = '★ '; c.prepend(st); } } td(tr, IG.fmt(r.accounts));
     td(tr, IG.fmt(r.followers)); td(tr, IG.sfmt(r.f_diff), IG.cls(r.f_diff)); rateCell(tr, r.f_rate);
     td(tr, IG.fmt(r.following)); td(tr, IG.sfmt(r.fl_diff), IG.cls(r.fl_diff)); rateCell(tr, r.fl_rate);
     td(tr, IG.fmt(r.posts)); td(tr, IG.fmt(r.stale), r.stale > 0 ? 'ig-bad' : '');
@@ -842,7 +843,7 @@ dash.calc('rvkpi', {
       if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
       if (r.team === t) tr.classList.add('ig-picked');
       tr.classList.add('ig-teamrow');
-      td(tr, r.team === '경북담당' ? '👑 경북담당' : r.team, 'ig-c'); td(tr, IG.fmt(r.accounts));
+      { const c = td(tr, r.team, 'ig-c'); if (r.team === '경북담당') { const st = document.createElement('span'); st.className = 'ig-star'; st.textContent = '★ '; c.prepend(st); } } td(tr, IG.fmt(r.accounts));
       td(tr, IG.fmt(r.buyers)); td(tr, IG.fmt(r.on_today));
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate)); td(tr, IG.fmt(r.nv_month)); td(tr, IG.fmt(r.lg_month));
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
