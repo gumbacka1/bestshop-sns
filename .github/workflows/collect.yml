@@ -14,6 +14,10 @@ on:
         description: '이 시각 일정으로 실행 (비우면 지금 시각)'
         required: false
         default: ''
+      ig_on:
+        description: '인스타 일시 중지 중에도 이번 수동 실행만 인스타 수집 (1=수집)'
+        required: false
+        default: '0'
 
 permissions:
   contents: write
@@ -50,7 +54,7 @@ jobs:
       - name: 수집
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
-          IG_PAUSE: '1'   # 261121 인스타 중지(메타 차단). 키 재승인 후 '0'으로
+          IG_PAUSE: ${{ github.event.inputs.ig_on == '1' && '0' || '1' }}   # 261121 인스타 중지(자동 수집). 수동 실행에서 ig_on=1 이면 이번만 수집. 재개 시 '0'으로
           IG_USER_ID: '17841464921962064'
           IG_MAX: ${{ steps.plan.outputs.ig_max }}
           SKIP_KAKAO: ${{ steps.plan.outputs.skip_kakao }}
