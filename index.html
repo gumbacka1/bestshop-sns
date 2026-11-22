@@ -55,6 +55,16 @@ window.addEventListener('load',()=>dash._load());
 .ig-card-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .ig-card-num { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 28px; font-variant-numeric: tabular-nums; margin: 2px 0; }
 .ig-card-chg { font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ig-mini { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0 0 4px; }
+.ig-mini.two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
+.ig-mc { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 6px; padding: 6px 10px; display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+.ig-ml { font-size: 12px; color: var(--color-fg-muted); white-space: nowrap; }
+.ig-mv { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ig-mn { font-size: 17px; font-weight: 600; }
+.ig-ms { font-size: 11px; margin-left: 3px; }
+.ig-mn.bad { color: #E24B4A; }
+.ig-mini-note { font-size: 11px; color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); }
+@media (max-width: 720px) { .ig-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; } }
 .ig-up { color: var(--color-ok); } .ig-down { color: var(--color-bad); } .ig-flat { color: var(--color-fg-muted); }
 .ig-h { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-lg) 0 var(--cds-gap-xs); }
 .ig-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); }
@@ -145,17 +155,9 @@ window.addEventListener('load',()=>dash._load());
 
 
   <section id="sec-ig">
-  <div class="ig-cards" id="cards">
-    <div class="ig-card" id="card-fol">
-      <div class="ig-card-label">인스타 팔로워</div>
-      <div class="ig-card-num" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</div>
-      <div class="ig-card-chg">주간 증가 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span> · 증가율 <span data-draw="k-folr" data-source="kpi" data-field="f_rate" data-row="0">—</span></div>
-    </div>
-    <div class="ig-card" id="card-stale">
-      <div class="ig-card-label">30일 이상 게시 없음</div>
-      <div class="ig-card-num" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</div>
-      <div class="ig-card-chg ig-flat"><span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>개 지점 중</div>
-    </div>
+  <div class="ig-mini two" id="cards">
+    <div class="ig-mc" id="card-fol"><span class="ig-ml">팔로워</span><span class="ig-mv"><span class="ig-mn" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</span><span class="ig-ms">주 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span></span></span></div>
+    <div class="ig-mc" id="card-stale"><span class="ig-ml">30일+ 게시 없음</span><span class="ig-mv"><span class="ig-mn bad" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</span><span class="ig-ms">/ <span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>곳</span></span></div>
   </div>
   <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
 
@@ -227,33 +229,13 @@ window.addEventListener('load',()=>dash._load());
   </section>
 
   <section id="sec-rv" hidden>
-  <div class="ig-cards" id="rv-cards">
-    <div class="ig-card" id="card-on">
-      <div class="ig-card-label">온라인 리뷰 건수 · 당월</div>
-      <div class="ig-card-num" data-draw="rv-onm">—</div>
-      <div class="ig-card-chg">네이버 <span data-draw="rv-nvm">—</span> · 홈페이지 <span data-draw="rv-lgm">—</span></div>
-    </div>
-    <div class="ig-card" id="card-rate">
-      <div class="ig-card-label">구매고객 · 리뷰 비중</div>
-      <div class="ig-card-num" data-draw="rv-rate">—</div>
-      <div class="ig-card-chg">구매고객 <span data-draw="rv-buy">—</span></div>
-    </div>
-    <div class="ig-card" id="card-today">
-      <div class="ig-card-label">리뷰건수 (당일)</div>
-      <div class="ig-card-num" data-draw="rv-ont">—</div>
-      <div class="ig-card-chg">네이버 <span data-draw="rv-nvt">—</span> · 홈페이지 <span data-draw="rv-lgtd">—</span></div>
-    </div>
-    <div class="ig-card" id="card-yday">
-      <div class="ig-card-label">어제 새 리뷰</div>
-      <div class="ig-card-num" data-draw="rv-ony">—</div>
-      <div class="ig-card-chg">네이버 <span data-draw="rv-nvy">—</span> · 홈페이지 <span data-draw="rv-lgy">—</span></div>
-    </div>
-    <div class="ig-card" id="card-kakao">
-      <div class="ig-card-label">카톡 친구</div>
-      <div class="ig-card-num" data-draw="k-kak" data-source="kpi" data-field="kakao" data-row="0">—</div>
-      <div class="ig-card-chg">주간 증가 <span data-draw="k-kakd" data-source="kpi" data-field="k_diff" data-row="0">—</span> · 증가율 <span data-draw="k-kakr" data-source="kpi" data-field="k_rate" data-row="0">—</span></div>
-    </div>
+  <div class="ig-mini" id="rv-cards">
+    <div class="ig-mc" id="card-today"><span class="ig-ml">당일</span><span class="ig-mv"><span class="ig-mn" data-draw="rv-ont">—</span><span class="ig-ms" data-draw="rv-ont-cmp"></span></span></div>
+    <div class="ig-mc" id="card-yday"><span class="ig-ml">어제</span><span class="ig-mv"><span class="ig-mn" data-draw="rv-ony">—</span><span class="ig-ms" data-draw="rv-ony-cmp"></span></span></div>
+    <div class="ig-mc" id="card-on"><span class="ig-ml">당월</span><span class="ig-mv"><span class="ig-mn" data-draw="rv-onm">—</span><span class="ig-ms ig-flat" data-draw="rv-onm-avg"></span></span></div>
+    <div class="ig-mc" id="card-zero"><span class="ig-ml">3일+ 0건</span><span class="ig-mv"><span class="ig-mn bad" data-draw="rv-zero">—</span></span></div>
   </div>
+  <p class="ig-mini-note" data-draw="rv-avg-note">—</p>
   <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 주간 기준 <span data-draw="period">—</span></p>
 
   <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
@@ -816,6 +798,30 @@ dash.calc('rvkpi', {
   const setv = (key, f, colored) => (el) => { const r = rk(); el.textContent = r ? f(r[key]) : '—'; if (colored) el.className = r ? IG.cls(r[key]) : ''; };
   IG.rate = (v) => (v === null || v === undefined) ? '-' : (v * 100).toFixed(1) + '%';
   dash.draw('rv-onm', setv('on_month', IG.fmt));
+  const rvStats = () => {
+    if (!okd('rvsnap')) return null;
+    const t = dash.params().team || '';
+    const rs = dash.data('rvsnap').data.filter((r) => !t || r.team === t);
+    const mu = ((dash.data('reviews').meta || {}).updated || '').slice(0, 10);
+    if (!mu) return null;
+    const day = (d) => d3.sum(rs, (r) => +((r.nv_daily || {})[d] || 0) + +((r.lg_daily || {})[d] || 0));
+    const back = (n) => { const x = new Date(mu + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() - n); return x.toISOString().slice(0, 10); };
+    const prev7 = [1, 2, 3, 4, 5, 6, 7].map((n) => day(back(n)));
+    const avg = d3.mean(prev7);
+    const zero = rs.filter((r) => { if (!r.last_review) return false; return (Date.parse(mu + 'T00:00:00Z') - Date.parse(r.last_review + 'T00:00:00Z')) / 864e5 >= 3; }).length;
+    return { avg, zero, dom: +mu.slice(8, 10) };
+  };
+  const cmp = (key) => (el) => {
+    const st = rvStats(), r = rk(); el.textContent = ''; el.className = 'ig-ms';
+    if (!st || !r || r[key] === null || r[key] === undefined) return;
+    const d = Math.round(r[key] - st.avg); el.textContent = d > 0 ? '▲' + d : d < 0 ? '▼' + (-d) : '평균';
+    el.className = 'ig-ms ' + IG.cls(d);
+  };
+  dash.draw('rv-ont-cmp', cmp('on_today'));
+  dash.draw('rv-ony-cmp', cmp('on_yday'));
+  dash.draw('rv-onm-avg', (el) => { const st = rvStats(), r = rk(); el.textContent = st && r && r.on_month !== null ? '일 ' + Math.round(r.on_month / st.dom) : ''; });
+  dash.draw('rv-zero', (el) => { const st = rvStats(); el.textContent = st ? st.zero + '곳' : '—'; el.className = 'ig-mn' + (st && st.zero ? ' bad' : ''); });
+  dash.draw('rv-avg-note', (el) => { const st = rvStats(); el.textContent = st ? '▲▼ = 최근 7일 하루 평균(' + Math.round(st.avg) + '건)과 비교 · 당일은 수집 시각까지 숫자라 낮에는 적게 보여요 · 일 = 이번 달 하루 평균' : ''; });
   dash.draw('rv-nvm', setv('nv_month', IG.fmt));
   dash.draw('rv-lgm', setv('lg_month', IG.fmt));
   dash.draw('rv-rate', setv('on_rate', IG.rate));
