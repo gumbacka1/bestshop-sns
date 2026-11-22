@@ -208,10 +208,12 @@ def _count_list(page, url, since_day, sort_recent=False):
 def _visitor_by_created(page, nv_id, since_day):
     """방문자 리뷰를 작성일(created) 기준으로 셈 → ({날짜: 개수}, 전체 개수)"""
     bag = {}
+    NV_BODIES.clear()
     def walk(o):
         if isinstance(o, dict):
             if "visited" in o and "created" in o and o.get("id"):
                 bag[o["id"]] = _md_to_date(o["created"])
+                NV_BODIES[o["id"]] = (bag[o["id"]], o.get("body") or "")   # 매니저 이름 찾기용(경북)
             for x in o.values():
                 walk(x)
         elif isinstance(o, list):
@@ -343,6 +345,53 @@ def _blog_by_date(page, nv_id, since_day, debug=False):
         print("   [블로그 점검] 원본 예시:", json.dumps(samples, ensure_ascii=False)[:600])
         print("   [블로그 점검] 화면 앞부분:", body[:500].replace("\n", " / "))
     return out, total
+
+
+NV_BODIES = {}   # 마지막으로 읽은 지점의 네이버 방문자 리뷰 {id: (날짜, 본문)}
+UA_PC = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+
+
+def _get(url):
+    from urllib.request import Request, urlopen
+    with urlopen(Request(url, headers={"User-Agent": UA_PC, "Accept-Language": "ko-KR"}), timeout=30) as r:
+        return r.read().decode("utf-8", "ignore")
+
+
+def read_managers(lg_id, since_day):
+    """LG 홈페이지 매니저 명단 + 매니저 개인 페이지의 매니저 리뷰를 날짜별로 셈
+    → [{"id", "name", "hp": {날짜: 개수}}]  (개인 페이지 첫 화면 최근 10개 기준)"""
+    t = _get(f"https://bestshop.lge.co.kr/storehub/dtl-{lg_id}/manager")
+    out, seen = [], set()
+    for mid, nm in re.findall(r"data-manager-code='(MA\d+)'[^>]*data-manager-name='([^']+)'", t):
+        if mid in seen:
+            continue
+        seen.add(mid)
+        hp = {}
+        try:
+            body = re.sub(r"<script.*?</script>", "", _get(f"https://bestshop.lge.co.kr/manage/page/{mid}"), flags=re.S)
+            for d in re.findall(r">\s*(20\d\d-\d\d-\d\d)\s*<", body):
+                if d >= since_day:
+                    hp[d] = hp.get(d, 0) + 1
+        except Exception as e:
+            print("   매니저 페이지 못 읽음:", nm, str(e)[:80])
+        out.append({"id": mid, "name": html.unescape(nm).strip(), "hp": hp})
+        time.sleep(random.uniform(0.3, 0.8))
+    return out
+
+
+def mention_counts(mgrs, bodies, since_day):
+    """네이버 방문자 리뷰 본문에서 매니저 이름(성+이름, 또는 이름+매니저/님) 찾기 → 매니저마다 {날짜: 개수}"""
+    out = {m["name"]: {} for m in mgrs}
+    for d, txt in bodies.values():
+        if not d or d < since_day or not txt:
+            continue
+        t = re.sub(r"\s+", "", txt)
+        for m in mgrs:
+            n = re.sub(r"\s+", "", m["name"])
+            given = n[1:] if len(n) == 3 else ""
+            if n in t or (given and re.search(re.escape(given) + r"(매니|메니|님|실장|팀장)", t)):
+                out[m["name"]][d] = out[m["name"]].get(d, 0) + 1
+    return out
 
 
 def read_nv_dates(page, nv_id, since_day, debug=False):

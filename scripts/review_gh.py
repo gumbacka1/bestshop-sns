@@ -65,6 +65,14 @@ def collect(part, parts):
                         break
                     except Exception as e:
                         print("   LG 다시 시도:", s["name"], str(e)[:120]); time.sleep(5)
+            if s["team"] == "경북" and s["lg"]:      # 경북만: 매니저별 홈페이지 매니저 리뷰 + 네이버 이름 언급
+                try:
+                    ms = rc.read_managers(s["lg"], nv_t)
+                    nvm = rc.mention_counts(ms, rc.NV_BODIES, nv_t) if "nv" in r else {}
+                    r.update(mgr=[{"name": m["name"], "hp": m["hp"], "nv": nvm.get(m["name"], {})} for m in ms],
+                             mgr_since=nv_t, mgr_nv="nv" in r)
+                except Exception as e:
+                    print("   매니저 못 읽음:", s["name"], str(e)[:120])
             res[s["name"]] = r
             sm = lambda key: sum(sum(x) for x in r[key].values()) if key in r else "-"
             print(f"[{k}/{len(ss)}] {s['name']} 방문자 {r.get('visit')} 블로그 {r.get('blog')} | 네이버 {sm('nv')} LG {sm('lg')}", flush=True)
@@ -94,6 +102,22 @@ def merge():
                 days = h[key].setdefault(n, {})
                 for d in set(r[key]) | {x for x in days if x >= r[key + "_since"]}:
                     days[d] = r[key].get(d, [0, 0])
+        if "mgr" in r:                       # 매니저별 기록 {매니저: {"hp": {날짜: n}, "nv": {날짜: n}}}, 최근 14일 보관
+            keep = (now - timedelta(days=14)).strftime("%Y-%m-%d")
+            md = h.setdefault("mgr", {})
+            old_m = md.get(n, {})
+            new_m = {}
+            for m in r["mgr"]:
+                o = old_m.get(m["name"], {})
+                e = {}
+                for k in ("hp", "nv"):
+                    prev_k = {d: v for d, v in o.get(k, {}).items() if keep <= d < r["mgr_since"]}
+                    if k == "nv" and not r.get("mgr_nv"):      # 네이버 못 읽은 날은 이전 값 유지
+                        prev_k = {d: v for d, v in o.get(k, {}).items() if d >= keep}
+                    prev_k.update({d: v for d, v in m[k].items() if d >= keep})
+                    e[k] = prev_k
+                new_m[m["name"]] = e
+            md[n] = new_m
         if r.get("blog_v2") and n not in h.setdefault("blog_v2", []):
             h["blog_v2"].append(n)
         cum = h["cum"].setdefault(n, {})
@@ -112,6 +136,12 @@ def merge():
                    {"lg_total": None, "lg_month": None, "lg_yday": None, "lg_today": None, "lg_mgr_month": None, "lg_daily": {}})
         row.update(rc.nv_summary(nvd, today, yday, ms) if nvd is not None else
                    {"nv_v_month": None, "nv_b_month": None, "nv_month": None, "nv_yday": None, "nv_today": None, "nv_daily": {}})
+        # 마지막 리뷰 날짜 = 네이버 방문자·홈페이지 리뷰가 있었던 가장 최근 날
+        lastd = [d for d, x in (nvd or {}).items() if x[0] > 0] + [d for d, x in (lgd or {}).items() if sum(x) > 0]
+        row["last_review"] = max(lastd) if lastd else None
+        if n in h.get("mgr", {}):
+            row["mgr_today"] = [{"name": k, "hp": v.get("hp", {}).get(today, 0), "nv": v.get("nv", {}).get(today, 0)}
+                                for k, v in h["mgr"][n].items()]
         row["on_today"] = None if row["nv_today"] is None and row["lg_today"] is None else (row["nv_today"] or 0) + (row["lg_today"] or 0)
         # 자동 점검
         iss = []

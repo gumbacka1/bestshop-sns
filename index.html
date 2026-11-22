@@ -74,6 +74,9 @@ window.addEventListener('load',()=>dash._load());
 .ig-table tr.ig-age1 .ig-dv, .ig-table tr.ig-age2 .ig-dv { color: #E24B4A; font-weight: 600; }
 .ig-table tr.ig-age2 .ig-dv { border-color: #E24B4A; }
 .ig-table tr.ig-age3 .ig-dv { background: #A32D2D; border-color: #A32D2D; color: #fff; font-weight: 600; }
+.ig-table td.rv-age1 .ig-dv, .ig-table td.rv-age2 .ig-dv { color: #E24B4A; font-weight: 600; }
+.ig-table td.rv-age2 .ig-dv { border-color: #E24B4A; }
+.ig-table td.rv-age3 .ig-dv { background: #A32D2D; border-color: #A32D2D; color: #fff; font-weight: 600; }
 .ig-table .ig-hid { font-size: 11px; color: #854F0B; line-height: 1.2; }
 .ig-warn { display: inline-block; margin-right: 4px; animation: ig-blink 1.2s infinite; }
 @keyframes ig-blink { 50% { opacity: .3; } }
@@ -293,13 +296,14 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-field="team" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-field="store" data-k="store">지점</th>
           <th rowspan="2" class="ig-sort ig-grp" data-field="buyers" data-k="buyers">구매고객</th>
-          <th class="ig-grp ig-g1">당일</th>
+          <th colspan="2" class="ig-grp ig-g1">당일</th>
           <th colspan="4" class="ig-grp ig-g1">온라인 리뷰 (당월)</th>
           <th colspan="2" class="ig-grp ig-g1">누적</th>
           <th colspan="2" class="ig-grp ig-g1">카톡</th>
         </tr>
         <tr>
           <th class="ig-sort ig-grp" data-field="on_today" data-k="on_today">리뷰 건수</th>
+          <th class="ig-sort" data-field="rv_days" data-k="rv_days">마지막 리뷰</th>
           <th class="ig-sort ig-grp" data-field="on_month" data-k="on_month" aria-sort="descending">건수</th>
           <th class="ig-sort" data-field="on_rate" data-k="on_rate">비중</th>
           <th class="ig-sort" data-field="nv_month" data-k="nv_month">네이버</th>
@@ -321,6 +325,7 @@ window.addEventListener('load',()=>dash._load());
       <tbody data-draw="rv-bars"></tbody>
     </table>
   </div>
+  <div data-draw="rv-mgr"></div>
   <p class="ig-note">위 지점별 표에서 지점 줄을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 최근 7일(최신 날짜가 위) · 네이버는 방문자 리뷰만</p>
 
   <h2 class="ig-h" id="h-rv-comment">▶ 코멘트</h2>
@@ -331,6 +336,8 @@ window.addEventListener('load',()=>dash._load());
     <p>· 당월 네이버 = 네이버 방문자 리뷰만 세요(블로그 리뷰는 건수에 넣지 않아요). 온라인 리뷰 건수 = 네이버(방문자) + 홈페이지. 지점별 표의 당월 네이버·홈페이지 숫자를 누르면 그 지점 리뷰 페이지가 열려요.</p>
     <p>· 네이버 리뷰·블로그 리뷰는 네이버 플레이스에 보이는 누적 숫자예요. 전일비 = 오늘 수집 − 지난 수집(비교일은 위 기준 줄에 나와요).</p>
     <p>· 홈페이지(LG) 리뷰는 LG 베스트샵 매장 리뷰 중 '네이버 플레이스 방문자'를 뺀 매장 리뷰 + 매니저 리뷰예요. 리뷰에 적힌 날짜로 세요: 누적 = 2026년 11월 1일부터, 당월 = 이번 달 1일부터, 어제 = 어제 날짜 리뷰 수. 하루쯤 늦게 올라오는 경우가 있어서 매일 최근 7일을 다시 세요(그래서 어제 숫자가 다음 날 조금 늘 수 있어요).</p>
+    <p>· 마지막 리뷰 = 네이버 방문자·홈페이지 리뷰가 달린 가장 최근 날(블로그 제외). 3~4일 빨간 글자, 5~6일 빨간 테두리, 7일 이상 빨간 바탕 ⚠.</p>
+    <p>· 매니저별 리뷰(경북담당만, 지점 줄을 누르면 보여요): 홈페이지 매니저 리뷰 = 매니저 개인 페이지 첫 화면 최근 10개 기준, 네이버 이름 언급 = 방문자 리뷰 본문에 매니저 이름이 적힌 리뷰. 당일 숫자만 보여요.</p>
     <p>· 리뷰(네이버·홈페이지)는 매일 아침 6시에 전국을 모아 9시 전에 마무리하고, 경북담당 29곳은 15·18·20시에 당일 숫자를 다시 세요. 카톡 친구는 매일 9시에 1번 갱신돼요.</p>
   </details>
   </section>
@@ -726,6 +733,7 @@ dash.calc('rvsnap', {
         on_month: add(nvm, lgm), on_yday: add(num(r.nv_yday), num(r.lg_yday)),
         on_rate: buy ? add(nvm, lgm) / buy : null,
         on_today: num(r.on_today), nv_today: num(r.nv_today), lg_today: num(r.lg_today), check: r.check || '',
+        last_review: r.last_review || null, mgr_today: Array.isArray(r.mgr_today) ? r.mgr_today : null,
         nv_id: /^\d+$/.test(r.nv_id || '') ? r.nv_id : '', lg_id: /^[A-Za-z0-9]+$/.test(r.lg_id || '') ? r.lg_id : '',
       };
     });
@@ -856,6 +864,8 @@ dash.calc('rvkpi', {
   const rvRows = () => {
     if (!okd('rvsnap')) return [];
     const t = dash.params().team || '', q = IG.rvq || '';
+    const mu = (dash.data('reviews').meta || {}).updated || '';
+    dash.data('rvsnap').data.forEach((r) => { r.rv_days = (r.last_review && mu) ? Math.max(0, Math.round((Date.parse(mu.slice(0, 10) + 'T00:00:00Z') - Date.parse(r.last_review + 'T00:00:00Z')) / 864e5)) : null; });
     return dash.data('rvsnap').data.filter((r) => (!t || r.team === t) && (!q || (r.store || '').toLowerCase().includes(q)))
       .slice().sort((a, b) => {
         if (!t && (a.team === '경북담당') !== (b.team === '경북담당')) return a.team === '경북담당' ? -1 : 1;
@@ -871,6 +881,10 @@ dash.calc('rvkpi', {
       { const q = document.createElement('a'); q.href = 'qr.html#' + encodeURIComponent(r.store); q.target = '_blank'; q.rel = 'noopener'; q.className = 'rv-qr'; q.textContent = 'QR'; q.title = '고객용 후기 QR 화면 열기'; q.addEventListener('click', (e) => e.stopPropagation()); sc.appendChild(q); }
       if (IG.rvpick === r.store) tr.style.outline = '2px solid var(--color-fg)';
       td(tr, IG.fmt(r.buyers)); td(tr, IG.fmt(r.on_today));
+      { const g = r.rv_days === null ? 0 : r.rv_days >= 7 ? 3 : r.rv_days >= 5 ? 2 : r.rv_days >= 3 ? 1 : 0;
+        const dc = td(tr, '', 'ig-days' + (g ? ' rv-age' + g : '')); const sp = document.createElement('span'); sp.className = 'ig-dv';
+        if (g === 3) { const w = document.createElement('span'); w.className = 'ig-warn'; w.textContent = '⚠'; sp.appendChild(w); }
+        sp.appendChild(document.createTextNode(r.rv_days === null ? '—' : (r.rv_days === 0 ? '오늘' : r.rv_days + '일 전'))); dc.appendChild(sp); }
       td(tr, IG.fmt(r.on_month)); td(tr, IG.rate(r.on_rate));
       [[r.nv_month, r.nv_id && 'https://m.place.naver.com/place/' + r.nv_id + '/review/visitor?reviewSort=recent'],
        [r.lg_month, r.lg_id && 'https://bestshop.lge.co.kr/storehub/dtl-' + r.lg_id + '/review']].forEach(([v, url]) => {
@@ -879,7 +893,7 @@ dash.calc('rvkpi', {
       });
       td(tr, IG.fmt(r.visit)); td(tr, IG.fmt(r.blog));
       td(tr, IG.fmt(r.kakao)); td(tr, IG.sfmt(r.k_diff), IG.cls(r.k_diff));
-      tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); });
+      tr.addEventListener('click', () => { IG.rvpick = IG.rvpick === r.store ? null : r.store; dash.draw('rv-bars'); dash.draw('rv-bar-title'); dash.draw('rv-store-body'); dash.draw('rv-mgr'); });
       tb.appendChild(tr);
     });
   });
@@ -908,6 +922,24 @@ dash.calc('rvkpi', {
     const row = (label, n, l, cls) => { const tr = document.createElement('tr'); if (cls) tr.className = cls; cell(tr, label, 'ig-c'); cell(tr, f(n)); cell(tr, f(l)); cell(tr, f(n + l)); el.appendChild(tr); };
     row('당월', d3.sum(v, (x) => x[0]), d3.sum(v, (x) => x[1]), 'ig-total');
     days.map((d, k) => [d, v[k]]).slice(-7).reverse().forEach(([d, x]) => row(IG.md(d), x[0], x[1]));
+  });
+  dash.draw('rv-mgr', (el) => {
+    el.replaceChildren();
+    const rs = barRows();
+    if (!IG.rvpick || rs.length !== 1 || !rs[0].mgr_today) return;
+    const r = rs[0], m = (dash.data('reviews').meta || {}).updated || '';
+    const h = document.createElement('h2'); h.className = 'ig-h'; h.textContent = '매니저별 리뷰 ';
+    const n = document.createElement('span'); n.className = 'ig-note'; n.textContent = r.store + ' · 당일 ' + (m ? IG.md(m.slice(0, 10)) : ''); h.appendChild(n); el.appendChild(h);
+    const w = document.createElement('div'); w.className = 'ig-wrap'; w.style.maxWidth = '520px';
+    const t = document.createElement('table'); t.className = 'ig-table';
+    t.innerHTML = '<thead><tr><th>매니저</th><th>홈페이지 매니저 리뷰</th><th>네이버 이름 언급</th><th>계</th></tr></thead>';
+    const tb = document.createElement('tbody'); const f = (v) => v ? IG.fmt(v) : '-';
+    const row = (a, b, c, cls) => { const tr = document.createElement('tr'); if (cls) tr.className = cls; [[a, 'ig-l'], [f(b)], [f(c)], [f(b + c)]].forEach(([v, k]) => { const d = document.createElement('td'); d.textContent = v; if (k) d.className = k; tr.appendChild(d); }); tb.appendChild(tr); };
+    r.mgr_today.slice().sort((a, b) => (b.hp + b.nv) - (a.hp + a.nv)).forEach((x) => row(x.name, +x.hp || 0, +x.nv || 0));
+    row('합계', d3.sum(r.mgr_today, (x) => +x.hp || 0), d3.sum(r.mgr_today, (x) => +x.nv || 0), 'ig-total');
+    t.appendChild(tb); w.appendChild(t); el.appendChild(w);
+    const p = document.createElement('p'); p.className = 'ig-note'; p.textContent = '경북담당만 · 홈페이지 매니저 리뷰 = 매니저 개인 페이지 기준 · 네이버 이름 언급 = 방문자 리뷰에 매니저 이름(성+이름, 또는 이름+매니저·님)이 적힌 리뷰 · 성이나 직급만 쓴 리뷰는 빠져요';
+    el.appendChild(p);
   });
   dash.draw('rv-store-count', (el) => { el.textContent = okd('rvsnap') ? rvRows().length + '개' : '—'; });
 
