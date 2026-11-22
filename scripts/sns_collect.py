@@ -74,7 +74,9 @@ def engage(handle, bd):   # 전체 게시물 좋아요·댓글 합계 (50개씩 
 def instagram(handle, full=False):
     bd = bd_get(handle, EFIELDS if full else FIELDS)
     media = ((bd.get('media') or {}).get('data') or [])[:25]   # 릴스·최근 게시는 다른 담당과 같게 최근 25개 기준
-    reels = [m for m in media if m.get('media_product_type') == 'REELS' and m.get('view_count') is not None]
+    r30 = (now - dt.timedelta(days=30)).strftime('%Y-%m-%d')   # 261122 릴스는 최근 30일 안에 올린 것만(전국 같은 기준)
+    reels = [m for m in media if m.get('media_product_type') == 'REELS' and m.get('view_count') is not None
+             and kst(m.get('timestamp') or '')[:10] >= r30]
     top = max(reels, key=lambda m: m['view_count']) if reels else None
     return {'followers': bd.get('followers_count'), 'following': bd.get('follows_count'), 'posts': bd.get('media_count'),
             'lastPost': media[0]['timestamp'][:10] if media else None,
