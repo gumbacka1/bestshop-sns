@@ -1,60 +1,143 @@
 {
- "at": "2026-11-22 20:42",
- "date": "2026-11-22",
+ "at": "2026-11-23 05:45",
+ "date": "2026-11-23",
  "total": 297,
- "api_today": 296,
- "ok": true,
- "problems": [],
- "missing": [],
+ "api_today": 74,
+ "ok": false,
+ "problems": [
+  "오늘 공식 수집 안 된 곳 222개",
+  "전일비 10% 넘게 바뀐 곳 8개"
+ ],
+ "missing": [
+  "상계점",
+  "중랑점",
+  "동대문점",
+  "은평점",
+  "불광본점",
+  "동교점",
+  "마포점",
+  "미아사거리점",
+  "염리점",
+  "의정부점",
+  "별내점",
+  "송우점",
+  "금오본점",
+  "진접오남점",
+  "동두천점",
+  "양주점",
+  "인동점",
+  "상주점",
+  "문경점",
+  "김천점",
+  "구미본점",
+  "안동본점",
+  "영주점",
+  "송현점",
+  "서대구본점",
+  "달서본점",
+  "칠곡점",
+  "북대구본점",
+  "이도본점",
+  "황금본점"
+ ],
  "temp_left": 0,
  "empty": [],
- "jump": [],
+ "jump": [
+  {
+   "store": "덕양본점",
+   "from": 626,
+   "to": 721,
+   "rate": 15.2
+  },
+  {
+   "store": "시흥아울렛점",
+   "from": 419,
+   "to": 511,
+   "rate": 22.0
+  },
+  {
+   "store": "이수점",
+   "from": 121,
+   "to": 146,
+   "rate": 20.7
+  },
+  {
+   "store": "미사본점",
+   "from": 144,
+   "to": 161,
+   "rate": 11.8
+  },
+  {
+   "store": "고덕점",
+   "from": 129,
+   "to": 158,
+   "rate": 22.5
+  },
+  {
+   "store": "LG전자 플래그십 D5",
+   "from": 107,
+   "to": 122,
+   "rate": 14.0
+  },
+  {
+   "store": "문정본점",
+   "from": 355,
+   "to": 493,
+   "rate": 38.9
+  },
+  {
+   "store": "수지점",
+   "from": 36,
+   "to": 40,
+   "rate": 11.1
+  }
+ ],
  "week": {
-  "base": "2026-11-16",
-  "prev": "2026-11-10",
-  "is_monday": false,
+  "base": "2026-11-23",
+  "prev": "2026-11-16",
+  "is_monday": true,
   "rows": [
    {
     "store": "황금본점",
-    "base": 131,
-    "prev": 113,
-    "diff": 18,
-    "rate": 15.9
+    "base": null,
+    "prev": 131,
+    "diff": null,
+    "rate": null
    },
    {
     "store": "율하점",
-    "base": 120,
-    "prev": 113,
-    "diff": 7,
-    "rate": 6.2
+    "base": null,
+    "prev": 120,
+    "diff": null,
+    "rate": null
    },
    {
     "store": "범어점",
-    "base": 1261,
-    "prev": 758,
-    "diff": 503,
-    "rate": 66.4
+    "base": null,
+    "prev": 1261,
+    "diff": null,
+    "rate": null
    },
    {
     "store": "제주본점",
-    "base": 872,
-    "prev": 718,
-    "diff": 154,
-    "rate": 21.4
+    "base": null,
+    "prev": 872,
+    "diff": null,
+    "rate": null
    },
    {
     "store": "이도본점",
-    "base": 1137,
-    "prev": 819,
-    "diff": 318,
-    "rate": 38.8
+    "base": null,
+    "prev": 1137,
+    "diff": null,
+    "rate": null
    },
    {
     "store": "서귀포점",
-    "base": 111,
-    "prev": 103,
-    "diff": 8,
-    "rate": 7.8
+    "base": null,
+    "prev": 111,
+    "diff": null,
+    "rate": null
    }
   ]
  }
