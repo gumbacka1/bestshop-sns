@@ -63,7 +63,7 @@ window.addEventListener('load',()=>dash._load());
 .ig-mn { font-size: 17px; font-weight: 600; }
 .ig-ms { font-size: 11px; margin-left: 3px; }
 .ig-mn.bad { color: #E24B4A; }
-.ig-mini-note { font-size: 11px; color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); }
+.ig-mini-note { white-space: pre-line; font-size: 11px; color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); }
 @media (max-width: 720px) { .ig-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; } }
 .ig-up { color: var(--color-ok); } .ig-down { color: var(--color-bad); } .ig-flat { color: var(--color-fg-muted); }
 .ig-h { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-lg) 0 var(--cds-gap-xs); }
@@ -159,7 +159,7 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-mc" id="card-fol"><span class="ig-ml">팔로워</span><span class="ig-mv"><span class="ig-mn" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</span><span class="ig-ms">주 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span></span></span></div>
     <div class="ig-mc" id="card-stale"><span class="ig-ml">30일+ 게시 없음</span><span class="ig-mv"><span class="ig-mn bad" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</span><span class="ig-ms">/ <span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>곳</span></span></div>
   </div>
-  <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span> · 원본 갱신 <span data-draw="lastrun">—</span></p>
+  <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span><br>원본 갱신 <span data-draw="lastrun">—</span></p>
 
   <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
   <div class="ig-wrap">
@@ -184,7 +184,7 @@ window.addEventListener('load',()=>dash._load());
   <div class="ig-tools">
     <input class="ig-search" id="store-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
     <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-store" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span>
-    <span class="ig-note">표 머리를 누르면 정렬돼요 · 지점명을 누르면 인스타로 가요</span>
+    <span class="ig-note">표 머리를 누르면 정렬되고, 지점명을 누르면 인스타로 가요</span>
   </div>
   <div class="ig-wrap">
     <table class="ig-table" id="store-table" data-source="snap" data-row-key="handle">
@@ -213,7 +213,7 @@ window.addEventListener('load',()=>dash._load());
       <tbody data-draw="post-body"></tbody>
     </table>
   </div>
-  <p class="ig-note">위 지점별 현황 표에서 지점명 말고 그 줄의 다른 곳을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 조회수는 릴스만 나와요 · 좋아요를 숨긴 글은 '숨김' · 이 목록은 경북 최근 게시물 25개, 다른 담당 10개 (릴스 최다 조회 기준과 따로)</p>
+  <p class="ig-note">위 지점별 현황 표에서 지점명 말고 그 줄의 다른 곳을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요<br>조회수는 릴스만 나와요<br>좋아요를 숨긴 글은 '숨김'으로 보여요<br>이 목록은 경북 최근 게시물 25개, 다른 담당 10개예요 (릴스 최다 조회 기준과 따로)</p>
 
   <h2 class="ig-h" id="h-comment">▶ 코멘트</h2>
   <div class="ig-comment" id="comment" data-draw="comment">—</div>
@@ -236,7 +236,7 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-mc" id="card-zero"><span class="ig-ml">3일+ 0건</span><span class="ig-mv"><span class="ig-mn bad" data-draw="rv-zero">—</span></span></div>
   </div>
   <p class="ig-mini-note" data-draw="rv-avg-note">—</p>
-  <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span> · 네이버 전일비 비교일 <span data-draw="rv-prev">—</span> · 카톡 주간 기준 <span data-draw="period">—</span></p>
+  <p class="ig-note" id="rv-period-note">리뷰 수집 <span data-draw="rv-upd">—</span><br>네이버 전일비 비교일 <span data-draw="rv-prev">—</span><br>카톡 주간 기준 <span data-draw="period">—</span></p>
 
   <h2 class="ig-h" id="h-rv-team">담당별 온라인 리뷰 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="rv-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-rv-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="rv-upd-at">—</span></h2>
   <div class="ig-wrap">
@@ -308,7 +308,7 @@ window.addEventListener('load',()=>dash._load());
     </table>
   </div>
   <div data-draw="rv-mgr"></div>
-  <p class="ig-note">위 지점별 표에서 지점 줄을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요 · 최근 7일(최신 날짜가 위) · 네이버는 방문자 리뷰만</p>
+  <p class="ig-note">위 지점별 표에서 지점 줄을 누르면 그 지점으로 바뀌고, 한 번 더 누르면 돌아와요<br>최근 7일, 최신 날짜가 위예요<br>네이버는 방문자 리뷰만 세요</p>
 
   <h2 class="ig-h" id="h-rv-comment">▶ 코멘트</h2>
   <div class="ig-comment" id="rv-comment" data-draw="rv-comment">—</div>
@@ -821,7 +821,7 @@ dash.calc('rvkpi', {
   dash.draw('rv-ony-cmp', cmp('on_yday'));
   dash.draw('rv-onm-avg', (el) => { const st = rvStats(), r = rk(); el.textContent = st && r && r.on_month !== null ? '일 ' + Math.round(r.on_month / st.dom) : ''; });
   dash.draw('rv-zero', (el) => { const st = rvStats(); el.textContent = st ? st.zero + '곳' : '—'; el.className = 'ig-mn' + (st && st.zero ? ' bad' : ''); });
-  dash.draw('rv-avg-note', (el) => { const st = rvStats(); el.textContent = st ? '▲▼ = 최근 7일 하루 평균(' + Math.round(st.avg) + '건)과 비교 · 당일은 수집 시각까지 숫자라 낮에는 적게 보여요 · 일 = 이번 달 하루 평균' : ''; });
+  dash.draw('rv-avg-note', (el) => { const st = rvStats(); el.textContent = st ? '▲▼ = 최근 7일 하루 평균(' + Math.round(st.avg) + '건)과 비교\n당일은 수집 시각까지 숫자라 낮에는 적게 보여요\n일 = 이번 달 하루 평균' : ''; });
   dash.draw('rv-nvm', setv('nv_month', IG.fmt));
   dash.draw('rv-lgm', setv('lg_month', IG.fmt));
   dash.draw('rv-rate', setv('on_rate', IG.rate));
@@ -832,12 +832,12 @@ dash.calc('rvkpi', {
   dash.draw('rv-ont', setv('on_today', IG.fmt));
   dash.draw('rv-nvt', setv('nv_today', IG.fmt));
   dash.draw('rv-lgtd', setv('lg_today', IG.fmt));
-  dash.draw('rv-upd', (el) => { const d = dash.data('reviews'); el.textContent = d.status === 'ok' ? ((d.meta && d.meta.updated ? d.meta.updated + ' · ' : '') + d.data.length + '개 지점') : '—'; });
+  dash.draw('rv-upd', (el) => { const d = dash.data('reviews'); el.textContent = d.status === 'ok' ? ((d.meta && d.meta.updated ? d.meta.updated + ', ' : '') + d.data.length + '개 지점') : '—'; });
   dash.draw('rv-prev', (el) => {
     if (!okd('rvsnap')) { el.textContent = '—'; return; }
     const n = dash.data('rvsnap').data.filter((r) => r.visit_diff !== null).length;
     const d = dash.data('reviews');
-    el.textContent = n ? ((d.meta && d.meta.prev_day ? IG.md(d.meta.prev_day) + ' · ' : '지난 수집 · ') + n + '개 지점 비교') : '다음 수집부터 나와요';
+    el.textContent = n ? ((d.meta && d.meta.prev_day ? IG.md(d.meta.prev_day) + ', ' : '지난 수집, ') + n + '개 지점 비교') : '다음 수집부터 나와요';
   });
 
   const td = (tr, txt, cls, bg) => { const c = document.createElement('td'); c.textContent = txt; if (cls) c.className = cls; if (bg) { c.style.background = bg; c.style.color = '#222'; } tr.appendChild(c); return c; };
@@ -945,7 +945,7 @@ dash.calc('rvkpi', {
     r.mgr_today.slice().sort((a, b) => (b.hp + b.nv) - (a.hp + a.nv)).forEach((x) => row(x.name, +x.hp || 0, +x.nv || 0));
     row('합계', d3.sum(r.mgr_today, (x) => +x.hp || 0), d3.sum(r.mgr_today, (x) => +x.nv || 0), 'ig-total');
     t.appendChild(tb); w.appendChild(t); el.appendChild(w);
-    const p = document.createElement('p'); p.className = 'ig-note'; p.textContent = '경북담당만 · 홈페이지 매니저 리뷰 = 매니저 개인 페이지 기준 · 네이버 이름 언급 = 방문자 리뷰에 매니저 이름(성+이름, 또는 이름+매니저·님)이 적힌 리뷰 · 성이나 직급만 쓴 리뷰는 빠져요';
+    const p = document.createElement('p'); p.className = 'ig-note'; p.style.whiteSpace = 'pre-line'; p.textContent = '경북담당만 보여요\n홈페이지 매니저 리뷰 = 매니저 개인 페이지 기준\n네이버 이름 언급 = 방문자 리뷰에 매니저 이름(성+이름, 또는 이름+매니저/님)이 적힌 리뷰\n성이나 직급만 쓴 리뷰는 빠져요';
     el.appendChild(p);
   });
   dash.draw('rv-store-count', (el) => { el.textContent = okd('rvsnap') ? rvRows().length + '개' : '—'; });
