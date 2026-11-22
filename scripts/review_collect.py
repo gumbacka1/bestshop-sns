@@ -362,7 +362,9 @@ def read_managers(lg_id, since_day):
     → [{"id", "name", "hp": {날짜: 개수}}]  (개인 페이지 첫 화면 최근 10개 기준)"""
     t = _get(f"https://bestshop.lge.co.kr/storehub/dtl-{lg_id}/manager")
     out, seen = [], set()
-    for mid, nm in re.findall(r"data-manager-code='(MA\d+)'[^>]*data-manager-name='([^']+)'", t):
+    pairs = re.findall(r'"managerId":"(MA\d+)","managerName":"([^"]+)"', t)      # 페이지 데이터 = 전체 명단
+    pairs += re.findall(r"data-manager-code='(MA\d+)'[^>]*data-manager-name='([^']+)'", t)  # 화면 목록(첫 10명)
+    for mid, nm in pairs:
         if mid in seen:
             continue
         seen.add(mid)
