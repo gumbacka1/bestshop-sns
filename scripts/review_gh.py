@@ -120,9 +120,14 @@ def merge():
         if s["lg"] and lgd is None:
             iss.append("홈페이지 못 읽음")
         if row["visit_diff"] is not None and nvd is not None and prev:
-            new_v = sum(x[0] for d, x in nvd.items() if prev < d <= (last or today))
-            if abs(row["visit_diff"] - new_v) > 3:
-                iss.append(f"네이버 누적 변화 {row['visit_diff']} vs 새 리뷰 {new_v}")
+            # 누적은 그날 수집 시각 값이라, 전날(prev) 수집 뒤에 쓴 리뷰도 변화에 들어감
+            # → 전날을 뺀 합(lo) ~ 전날을 넣은 합(hi) 사이면 정상
+            end = last or today
+            lo = sum(x[0] for d, x in nvd.items() if prev < d <= end)
+            hi = sum(x[0] for d, x in nvd.items() if prev <= d <= end)
+            vd = row["visit_diff"]
+            if vd < lo - 3 or vd > hi + 3:
+                iss.append(f"네이버 누적 변화 {vd} vs 새 리뷰 {lo}~{hi}")
         row["check"] = ", ".join(iss)
         rows.append(row)
     caps = [r["name"] for r in rows if r.get("nv_v_month") == 10 or r.get("lg_month") == 10]
