@@ -94,7 +94,7 @@ def rows_from_grid(grid):
         for k, v in zip(head, r):
             if k and k not in d:
                 d[k] = '' if v is None else str(v).strip()
-        if d.get('store') and d.get('status'):
+        if d.get('store') and d.get('status') and hkey(d.get('status')) != '고객상태':
             out.append(d)
     return out
 
@@ -119,6 +119,11 @@ def read_file(path):
     except Exception as e:
         log('  엑셀 읽기 실패:', type(e).__name__, str(e)[:200])
         return None
+    if DEBUG:
+        for g in grids:
+            log('  [엑셀] 크기', len(g), 'x', len(g[0]) if g else 0, '| 앞 줄:', [str(c)[:12] for c in (g[0] if g else [])][:16])
+            hi = next((i for i, r in enumerate(g) if any(hkey(c) == '매장명' for c in r)), None)
+            log('  [엑셀] 머리 줄 위치:', hi, [str(c)[:12] for c in (g[hi] if hi is not None else [])][:20])
     best = []
     for g in grids:
         r = rows_from_grid(g)
@@ -379,9 +384,13 @@ def main():
     if not any(s.get('ok') for s in sites.values()) and prev:
         sys.exit('두 사이트 모두 실패 — 이전 자료 유지')
     OUT.write_text(json.dumps(enc(data, apw), ensure_ascii=False), encoding='utf-8')
+    import difflib
+    names = [st for _, st in stores]
     for k, s in sites.items():
         un = s.get('unmatched') or {}
-        log(SITES[k]['label'], '상태별 줄 수:', s.get('status'), '| 못 맞춘 매장:', len(un), list(un)[:30])
+        log(SITES[k]['label'], '상태별 줄 수:', s.get('status'), '| 못 맞춘 매장:', len(un))
+        for n, q in sorted(un.items(), key=lambda x: -x[1]):
+            log('   못맞춤', n, q, '구좌 → 비슷한 우리 지점:', difflib.get_close_matches(n, names, n=2, cutoff=0.5))
     log('저장:', OUT)
 
 
