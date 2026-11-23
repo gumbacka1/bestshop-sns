@@ -318,7 +318,7 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday):
         # 261123 사용자 결정: 완료 = 신청완료일자 기준(조회 조건 '신청완료'), 예약 = 접수일자 기준
         done = [r for r in grab('3', '신청완료일자 기준') if r.get('status') in DONE]
         rsv = [r for r in grab('1', '접수일자 기준') if r.get('status') in RSV]
-        rows = done + rsv
+        rows, how = done + rsv, 'excel'
         if not done and not rsv:
             raise RuntimeError('표를 못 읽음')
         agg, un, st = aggregate(rows, match, today, yday)
