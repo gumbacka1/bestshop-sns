@@ -118,6 +118,9 @@ window.addEventListener('load',()=>dash._load());
 .kw-bar .v { width: 44px; text-align: right; font-weight: 600; }
 .kw-bar .a { width: 58px; text-align: right; font-size: 11px; color: var(--color-fg-muted); }
 .kw-up { color: #1e8e3e; } .kw-dn { color: #E24B4A; }
+#kw-v-team .ig-mc, #kw-v-store .ig-mc { flex-direction: column; align-items: flex-start; gap: 2px; }
+#kw-v-team .ig-mv, #kw-v-store .ig-mv { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; min-width: 0; }
+#kw-v-team .ig-ms, #kw-v-store .ig-ms { white-space: normal; }
 .ig-table a { color: inherit; text-decoration: none; }
 .ig-table a:hover { text-decoration: underline; }
 .ig-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; margin: 0 0 var(--cds-gap-sm); }
@@ -354,7 +357,7 @@ window.addEventListener('load',()=>dash._load());
   <section id="sec-kw" hidden>
   <span data-draw="kw-all" hidden></span>
   <div class="kw-tg" role="tablist" aria-label="교원 화면 고르기">
-    <button type="button" data-v="team">담당 요약</button><button type="button" data-v="store">지점 요약</button><button type="button" data-v="detail" class="on">상세</button>
+    <button type="button" data-v="detail" class="on">상세</button><button type="button" data-v="team">담당 요약</button><button type="button" data-v="store">지점 요약</button>
   </div>
 
   <div id="kw-v-team" hidden>
@@ -687,7 +690,7 @@ window.addEventListener('load',()=>dash._load());
   }
   function sumTeam(t, T) {
     const name = t || '전체'; $('kw-s-name').textContent = name;
-    $('kw-s-d').textContent = f(T.td); $('kw-s-dsub').textContent = '구독' + f(T.cd) + '·일반' + f(T.ld);
+    $('kw-s-d').textContent = f(T.td); $('kw-s-dsub').textContent = '구독 ' + f(T.cd) + ' · 일반 ' + f(T.ld);
     $('kw-s-dt').textContent = f(T.dt); $('kw-s-r').textContent = f(T.tr);
     const yh = yHist(); let yv = null;
     if (yh) { yv = 0; ROWS.forEach((r) => { if (!t || r.team === t) yv += yh[r.store] || 0; }); }
@@ -696,7 +699,7 @@ window.addEventListener('load',()=>dash._load());
     const me = teams.findIndex((x) => x.team === t);
     $('kw-s-rank').textContent = me >= 0 ? (me + 1) + '위' : '—';
     $('kw-s-per').textContent = me >= 0 ? '/ ' + teams.length : '';
-    $('kw-s-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' · 완료 = 신청완료일자 기준, 대기 = 접수일자 기준(예약 + 콜대기중) · 숫자는 모두 구좌 · 어제 같은 시각 = 어제 ' + KD.slot + '시 무렵 수집값';
+    $('kw-s-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' · 완료 = 신청완료일자 기준, 대기 = 접수일자 기준(예약 + 콜대기중) · 숫자는 모두 구좌' + (KD.slot ? ' · 오늘 칸의 "어제" = 어제 ' + KD.slot + '시 무렵 같은 시각 수집값' : ' · 어제 비교는 다음 수집부터 쌓여요');
     const rs = ROWS.filter((r) => !t || r.team === t);
     chip($('kw-s-zero'), '이번 달 0구좌', rs.filter((r) => !r.td).map((r) => [r.store, '']), 'bad');
     chip($('kw-s-today'), '오늘 완료', rs.filter((r) => r.dt).sort((a, b) => b.dt - a.dt).slice(0, 10).map((r) => [r.store, f(r.dt)]), 'good');
@@ -728,7 +731,7 @@ window.addEventListener('load',()=>dash._load());
     sel.innerHTML = ''; opts.forEach((r) => { const o = document.createElement('option'); o.value = r.store; o.textContent = r.store + ' (' + r.team + ')'; if (r.store === stPick) o.selected = true; sel.appendChild(o); });
     const R = ROWS.find((r) => r.store === stPick); if (!R) return;
     $('kw-st-name').textContent = R.store + ' · ' + R.team;
-    $('kw-st-d').textContent = f(R.td); $('kw-st-dsub').textContent = '구독' + f(R.cd) + '·일반' + f(R.ld);
+    $('kw-st-d').textContent = f(R.td); $('kw-st-dsub').textContent = '구독 ' + f(R.cd) + ' · 일반 ' + f(R.ld);
     const inTeam = ROWS.filter((r) => r.team === R.team).sort((a, b) => b.td - a.td), nat = ROWS.slice().sort((a, b) => b.td - a.td);
     const rk = (arr) => arr.findIndex((r) => r.td === R.td) + 1;
     $('kw-st-rank').textContent = rk(inTeam) + '위'; $('kw-st-nat').textContent = '/' + inTeam.length + ' · 전국 ' + rk(nat);
