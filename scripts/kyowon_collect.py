@@ -174,6 +174,7 @@ def search(page, base, d1, d2, cond='1'):
       const ins = [...document.querySelectorAll('input')].filter(i => /^\\d{4}-\\d{2}-\\d{2}$/.test(i.value) || /date|sdate|edate|start|end/i.test(i.name + i.id));
       if (ins.length < 2) return 'no-date';
       ins[0].value = a; ins[1].value = b;
+      ['calValue1', 'calValue2'].forEach((id, i) => { const el = document.getElementById(id); if (el) { el.value = i ? b : a; if (el._flatpickr) el._flatpickr.setDate(i ? b : a, true); } });
       ['input','change'].forEach(e => { ins[0].dispatchEvent(new Event(e, {bubbles:true})); ins[1].dispatchEvent(new Event(e, {bubbles:true})); });
       const td = ins[1].closest('td') || ins[1].parentElement;
       const ls = [...td.querySelectorAll('a, button, input[type=image]')];
@@ -330,8 +331,8 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday, months=(), gb=())
             try:
                 cnt = {}
                 for r in grab('3', ym + ' 신청완료', a, b):
-                    if r.get('status') not in DONE:
-                        continue
+                    if r.get('status') not in DONE or not str(r.get('done_at') or '').startswith(ym):
+                        continue   # 사이트가 끝 날짜를 무시할 때가 있어서 신청완료일자로 한 번 더 거름
                     sname = match(r.get('store'))
                     if sname in gb:
                         cnt[sname] = cnt.get(sname, 0) + qty(r.get('qty'))
