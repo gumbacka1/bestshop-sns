@@ -78,13 +78,13 @@ def hkey(h):
     return re.sub(r'\s+', '', str(h or ''))
 
 
-COLS = {'매장명': 'store', '담당매니져': 'mgr', '담당매니저': 'mgr', '담당매니져사번': 'mid', '담당매니저사번': 'mid',
+COLS = {'매장명': 'store', '지점명': 'store', '접수일자': 'at', '담당매니져': 'mgr', '담당매니저': 'mgr', '담당매니져사번': 'mid', '담당매니저사번': 'mid',
         '가입상품': 'prod', '가입구좌': 'qty', '고객상태': 'status', '접수일시': 'at', '신청완료일자': 'done_at', '조직구분': 'org'}
 
 
 def rows_from_grid(grid):
     """2차원 표(머리 줄 포함) → [{store,mgr,...}]"""
-    hi = next((i for i, r in enumerate(grid) if any(hkey(c) == '매장명' for c in r)), None)
+    hi = next((i for i, r in enumerate(grid) if any(hkey(c) in ('매장명', '지점명') for c in r)), None)
     if hi is None:
         return []
     head = [COLS.get(hkey(c)) for c in grid[hi]]
@@ -122,7 +122,7 @@ def read_file(path):
     if DEBUG:
         for g in grids:
             log('  [엑셀] 크기', len(g), 'x', len(g[0]) if g else 0, '| 앞 줄:', [str(c)[:12] for c in (g[0] if g else [])][:16])
-            hi = next((i for i, r in enumerate(g) if any(hkey(c) == '매장명' for c in r)), None)
+            hi = next((i for i, r in enumerate(g) if any(hkey(c) in ('매장명', '지점명') for c in r)), None)
             log('  [엑셀] 머리 줄 위치:', hi, [str(c)[:12] for c in (g[hi] if hi is not None else [])][:20])
     best = []
     for g in grids:
