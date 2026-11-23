@@ -115,7 +115,8 @@ window.addEventListener('load',()=>dash._load());
 .kw-bar .b i { position: absolute; left: 0; top: 0; bottom: 0; background: #C8102E; }
 .kw-bar .b i.g { background: #5F5E5A; }
 .kw-bar .b em { position: absolute; top: -2px; bottom: -2px; width: 2px; background: #222; }
-.kw-bar .v { width: 44px; text-align: right; font-weight: 600; }
+.kw-bar .q { width: 34px; text-align: right; font-weight: 600; }
+.kw-bar .v { width: 38px; text-align: right; color: var(--color-fg-muted); }
 .kw-bar .a { width: 58px; text-align: right; font-size: 11px; color: var(--color-fg-muted); }
 .kw-up { color: #1e8e3e; } .kw-dn { color: #E24B4A; }
 #kw-v-team .ig-mc, #kw-v-store .ig-mc { flex-direction: column; align-items: flex-start; gap: 2px; }
@@ -701,13 +702,13 @@ window.addEventListener('load',()=>dash._load());
     const prodOf = (stores) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; stores.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d, r]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d + r; })); }); return P; };
     const mine = prodOf([R.store]), avg = prodOf(ROWS.filter((r) => r.team === R.team).map((r) => r.store));
     const sm = Object.values(mine).reduce((a, b) => a + b, 0), sa = Object.values(avg).reduce((a, b) => a + b, 0);
-    $('kw-st-pnote').textContent = '완료+예약 구좌 비중 · 오른쪽은 ' + R.team + ' 평균';
+    $('kw-st-pnote').textContent = '완료+예약 구좌 · 비중 · 오른쪽은 ' + R.team + ' 평균 비중';
     const box = $('kw-st-prod'); box.innerHTML = '';
     if (!sm) { box.innerHTML = '<p class="ig-note">이번 달 접수가 없어요</p>'; return; }
     Object.keys(mine).sort((a, b) => mine[b] - mine[a]).forEach((k) => {
       const [lab, p] = k.split('|'), me = mine[k] / sm * 100, av = sa ? (avg[k] || 0) / sa * 100 : 0;
       const d = document.createElement('div'); d.className = 'kw-bar';
-      d.innerHTML = '<span class="n"></span><span class="b"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i><em style="left:' + av.toFixed(1) + '%"></em></span><span class="v">' + me.toFixed(0) + '%</span><span class="a ' + (me >= av ? 'kw-up' : 'kw-dn') + '">평균 ' + av.toFixed(0) + '%</span>';
+      d.innerHTML = '<span class="n"></span><span class="b"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i><em style="left:' + av.toFixed(1) + '%"></em></span><span class="q">' + f(mine[k]) + '</span><span class="v">' + me.toFixed(0) + '%</span><span class="a ' + (me >= av ? 'kw-up' : 'kw-dn') + '">평균 ' + av.toFixed(0) + '%</span>';
       d.children[0].textContent = lab === '구독' ? '구독교원 ' + p.replace(/^구독\s*/, '') : '일반교원 ' + p; box.appendChild(d);
     });
   }
