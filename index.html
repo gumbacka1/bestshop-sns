@@ -369,6 +369,7 @@ window.addEventListener('load',()=>dash._load());
         <div class="ig-mc"><span class="ig-ml">담당 내 순위</span><span class="ig-mv"><span class="ig-mn" id="kw-st-rank">—</span><span class="ig-ms ig-flat" id="kw-st-nat"></span></span></div>
         <div class="ig-mc"><span class="ig-ml">오늘 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-st-dt">—</span><span class="ig-ms" id="kw-st-cmp"></span></span></div>
         <div class="ig-mc"><span class="ig-ml">전환 대기(예약)</span><span class="ig-mv"><span class="ig-mn" id="kw-st-r">—</span><span class="ig-ms ig-flat">구좌</span></span></div>
+        <div class="ig-mc" id="kw-st-cumcard"><span class="ig-ml">올해 누적 순위(경북)</span><span class="ig-mv"><span class="ig-mn" id="kw-st-cum">—</span><span class="ig-ms ig-flat" id="kw-st-cumsub"></span></span></div>
       </div>
       <p class="kw-subh">매니저별 <span class="ig-note">0구좌 매니저는 빨간 글씨</span></p>
       <table class="ig-table kw-table" id="kw-st-mgr">
@@ -377,7 +378,7 @@ window.addEventListener('load',()=>dash._load());
       </table>
       <p class="kw-subh">상품 구성 <span class="ig-note" id="kw-st-pnote">완료+예약 구좌 비중 · 오른쪽은 담당 평균</span></p>
       <div id="kw-st-prod" style="padding:0 10px 10px"></div>
-      <p class="kw-subh">월별 신청완료 <span class="ig-note" id="kw-st-mnote">경북담당 지점만 · 구좌 · 순위는 경북 29곳 중</span></p>
+      <p class="kw-subh">월별 신청완료 <span class="ig-note" id="kw-st-mnote">경북담당 지점만 · 구좌 · 순위는 경북 29곳 중, 누계 줄은 올해 누적 순위</span></p>
       <table class="ig-table kw-table" id="kw-st-mon">
         <thead><tr><th>월</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th><th class="ig-grp">경북 순위</th></tr></thead>
         <tbody id="kw-st-mon-body"></tbody>
@@ -713,6 +714,7 @@ window.addEventListener('load',()=>dash._load());
 
   function monTable(R) {
     const body = $('kw-st-mon-body'); body.innerHTML = '';
+    $('kw-st-cumcard').hidden = R.team !== '경북담당'; $('kw-st-cum').textContent = '—'; $('kw-st-cumsub').textContent = '';
     if (R.team !== '경북담당') { body.innerHTML = '<tr><td colspan="5" class="ig-c">경북담당 지점만 보여요</td></tr>'; return; }
     const C = (KD.sites.care || {}).mon || {}, L = (KD.sites.life || {}).mon || {};
     const yms = [...new Set([...Object.keys(C), ...Object.keys(L)])].sort();
@@ -729,9 +731,18 @@ window.addEventListener('load',()=>dash._load());
       tr.innerHTML = '<td class="ig-c">' + Number(ym.slice(5)) + '월' + (cur ? '(진행 중)' : '') + '</td><td class="kw-sum ig-grp' + (t ? '' : ' kw-zero') + '">' + (t ? f(t) : '0') + '</td><td>' + f(c) + '</td><td>' + f(l) + '</td><td class="ig-grp">' + rk + '위</td>';
       body.appendChild(tr);
     });
+    // 누적 순위: 1월~지금까지 합계로 경북 지점끼리 줄 세움
+    const cum = (s) => yms.reduce((a, ym) => a + ((C[ym] || {})[s] || 0) + ((L[ym] || {})[s] || 0), 0);
+    const cums = gb.map(cum).sort((a, b) => b - a), crk = cums.indexOf(tot.t) + 1;
     const tr = document.createElement('tr'); tr.className = 'ig-total';
-    tr.innerHTML = '<td class="ig-c">누계</td><td class="ig-grp">' + f(tot.t) + '</td><td>' + f(tot.c) + '</td><td>' + f(tot.l) + '</td><td class="ig-grp">월평균 ' + (tot.t / yms.length).toFixed(1) + '</td>';
+    tr.innerHTML = '<td class="ig-c">누계</td><td class="ig-grp">' + f(tot.t) + '</td><td>' + f(tot.c) + '</td><td>' + f(tot.l) + '</td><td class="ig-grp">' + crk + '위</td>';
     body.appendChild(tr);
+    const n = yms.length, av = (v) => (v / n).toFixed(1);
+    const tr2 = document.createElement('tr');
+    tr2.innerHTML = '<td class="ig-c">월평균</td><td class="kw-sum ig-grp">' + av(tot.t) + '</td><td>' + av(tot.c) + '</td><td>' + av(tot.l) + '</td><td class="ig-grp">-</td>';
+    body.appendChild(tr2);
+    $('kw-st-cum').textContent = crk + '위';
+    $('kw-st-cumsub').textContent = '/' + gb.length + ' · ' + f(tot.t) + '구좌';
   }
   $('kw-st-pick').addEventListener('change', (e) => { stPick = e.target.value; render(); });
   dash.draw('kw-all', () => render());
