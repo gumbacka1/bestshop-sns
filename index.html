@@ -349,8 +349,8 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-k="n">지점</th>
           <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
-          <th colspan="2" class="ig-grp ig-g1">라이프</th>
-          <th colspan="2" class="ig-grp ig-g1">케어</th>
+          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
+          <th colspan="2" class="ig-grp ig-g1">구독교원</th>
         </tr>
         <tr>
           <th class="ig-sort ig-grp" data-k="td">완료</th><th class="ig-sort" data-k="tr">예약</th>
@@ -374,8 +374,8 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-k="store">지점</th>
           <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
-          <th colspan="2" class="ig-grp ig-g1">라이프</th>
-          <th colspan="2" class="ig-grp ig-g1">케어</th>
+          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
+          <th colspan="2" class="ig-grp ig-g1">구독교원</th>
           <th colspan="2" class="ig-grp ig-g1">오늘</th>
         </tr>
         <tr>
@@ -389,18 +389,26 @@ window.addEventListener('load',()=>dash._load());
     </table>
   </div>
 
+  <h2 class="ig-h" id="h-kw-tprod">상품별 교원 <span class="ig-note" id="kw-tprod-title">—</span><button class="ig-reset" data-snap="h-kw-tprod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+  <div class="ig-wrap" style="max-width:520px">
+    <table class="ig-table kw-table" id="kw-tprod-table">
+      <thead><tr><th>구분</th><th>상품</th><th class="ig-grp">합계</th><th>완료</th><th>예약</th></tr></thead>
+      <tbody id="kw-tprod-body"></tbody>
+    </table>
+  </div>
+
   <div id="kw-detail" hidden>
     <h2 class="ig-h" id="h-kw-mgr">매니저별 교원 <span class="ig-note" id="kw-mgr-title">—</span><button class="ig-reset" data-snap="h-kw-mgr" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
     <div class="ig-wrap" style="max-width:640px">
       <table class="ig-table kw-table" id="kw-mgr-table">
         <thead>
-          <tr><th rowspan="2">매니저</th><th colspan="2" class="ig-grp">합계</th><th colspan="2" class="ig-grp">라이프</th><th colspan="2" class="ig-grp">케어</th></tr>
+          <tr><th rowspan="2">매니저</th><th colspan="2" class="ig-grp">합계</th><th colspan="2" class="ig-grp">일반교원</th><th colspan="2" class="ig-grp">구독교원</th></tr>
           <tr><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th></tr>
         </thead>
         <tbody id="kw-mgr-body"></tbody>
       </table>
     </div>
-    <h2 class="ig-h" id="h-kw-prod">상품별 교원 <span class="ig-note" id="kw-prod-title">—</span><button class="ig-reset" data-snap="h-kw-prod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+    <h2 class="ig-h" id="h-kw-prod">지점 상품별 교원 <span class="ig-note" id="kw-prod-title">—</span><button class="ig-reset" data-snap="h-kw-prod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
     <div class="ig-wrap" style="max-width:520px">
       <table class="ig-table kw-table" id="kw-prod-table">
         <thead><tr><th>구분</th><th>상품</th><th class="ig-grp">합계</th><th>완료</th><th>예약</th></tr></thead>
@@ -414,7 +422,7 @@ window.addEventListener('load',()=>dash._load());
 
   <details class="ig-note" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
-    <p>· 교원라이프(라이프)와 LG교원 구독(케어) 접수현황을 이번 달 1일부터 오늘까지 접수일자 기준으로 모아요. 숫자는 모두 구좌예요.</p>
+    <p>· 교원라이프(일반교원)와 LG교원 구독(구독교원) 접수현황을 이번 달 1일부터 오늘까지 접수일자 기준으로 모아요. 숫자는 모두 구좌예요.</p>
     <p>· 완료 = 고객상태 '신청완료', 예약 = '예약' + '콜대기중'. 취소 등 다른 상태는 넣지 않아요. 오늘 완료는 신청완료일자, 오늘 예약은 접수일시 기준이에요.</p>
     <p>· 우리 297개 지점 이름과 맞는 매장만 세요(다른 운영사 매장은 빠져요). 매니저 이름은 가운데를 가리고, 고객 정보는 저장하지 않아요.</p>
     <p>· 매일 8:10·14:10·17:10·19:10에 수집을 시작해서 9시·15시·18시·20시에 볼 수 있게 맞췄어요(깃허브 사정으로 조금 늦을 수 있어요).</p>
@@ -491,7 +499,7 @@ window.addEventListener('load',()=>dash._load());
     document.querySelectorAll('.kw-upd').forEach((el) => { el.textContent = '🕒 ' + KD.updated.slice(5).replace('-', '/') + ' 업데이트'; });
     const S = KD.sites, st = (k, n) => { const s = S[k] || {}; return n + ' ' + (s.ok ? (s.at || '').slice(11) + ' 수집' : (s.stale ? '수집 실패(이전 값)' : '수집 실패')); };
     const un = (k) => Object.values((S[k] || {}).unmatched || {}).reduce((a, b) => a + b, 0);
-    say('교원 수집 ' + KD.updated + ' · ' + st('life', '라이프') + ' · ' + st('care', '케어') + ' · 우리 지점 외 매장 제외(라이프 ' + f(un('life')) + '·케어 ' + f(un('care')) + '구좌)');
+    say('교원 수집 ' + KD.updated + ' · ' + st('life', '일반교원') + ' · ' + st('care', '구독교원') + ' · 우리 지점 외 매장 제외(일반교원 ' + f(un('life')) + '·구독교원 ' + f(un('care')) + '구좌)');
     $('kw-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' 접수 기준 · 숫자는 모두 구좌 · 예약 = 예약 + 콜대기중';
     const t = team(), T = TEAMS.find((x) => x.team === (t || '전체')) || TEAMS[0];
     $('kw-c-d').textContent = f(T.td); $('kw-c-r').textContent = f(T.tr);
@@ -526,8 +534,26 @@ window.addEventListener('load',()=>dash._load());
       tr.addEventListener('click', () => { pick = pick === r.store ? null : r.store; render(); if (pick) $('h-kw-mgr').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
       sb.appendChild(tr);
     });
+    tprod(t);
     detail();
     comment(T, rs);
+  }
+  function prodRows(body, list) {
+    body.innerHTML = '';
+    if (!list.length) { body.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>'; return; }
+    const tot = { d: 0, r: 0 };
+    list.forEach(([lab, p, d, r]) => { tot.d += d; tot.r += r; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; body.appendChild(tr); });
+    const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.d + tot.r) + '</td><td>' + f(tot.d) + '</td><td>' + f(tot.r) + '</td>'; body.appendChild(tr);
+  }
+  function tprod(t) {
+    $('kw-tprod-title').textContent = t || '전체';
+    const out = [];
+    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => {
+      const S = (KD.sites[k] || {}).stores || {}, P = {};
+      ROWS.forEach((r) => { if (t && r.team !== t) return; ((S[r.store] || {}).prod || []).forEach(([p, d, v]) => { const x = P[p] = P[p] || [0, 0]; x[0] += d; x[1] += v; }); });
+      Object.keys(P).sort((a, b) => (P[b][0] + P[b][1]) - (P[a][0] + P[a][1])).forEach((p) => out.push([lab, p, P[p][0], P[p][1]]));
+    });
+    prodRows($('kw-tprod-body'), out);
   }
   function detail() {
     $('kw-detail').hidden = !pick;
@@ -541,7 +567,7 @@ window.addEventListener('load',()=>dash._load());
     [...ms, tot].forEach((m, i) => { const tr = document.createElement('tr'); if (i === ms.length) tr.className = 'ig-total'; const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = m.n; tr.appendChild(a); cells(tr, m, KS); mb.appendChild(tr); });
     if (!ms.length) mb.innerHTML = '<tr><td colspan="7" class="ig-c">이번 달 접수가 없어요</td></tr>';
     const pb = $('kw-prod-body'); pb.innerHTML = ''; let any = false;
-    [['life', '라이프'], ['care', '케어']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => { any = true; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; pb.appendChild(tr); }); });
+    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => { any = true; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; pb.appendChild(tr); }); });
     if (!any) pb.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>';
   }
   function comment(T, rs) {
@@ -549,7 +575,7 @@ window.addEventListener('load',()=>dash._load());
     const top = rs.slice().sort((a, b) => b.td - a.td).filter((r) => r.td).slice(0, 3).map((r) => r.store + ' ' + f(r.td));
     const zero = rs.filter((r) => !r.td).length;
     const share = T.td ? Math.round(T.cd / T.td * 100) : 0;
-    el.textContent = name + ' 당월 신청완료 ' + f(T.td) + '구좌(라이프 ' + f(T.ld) + ' · 케어 ' + f(T.cd) + ', 케어 비중 ' + share + '%), 예약 ' + f(T.tr) + '구좌 남아 있어요.' +
+    el.textContent = name + ' 당월 신청완료 ' + f(T.td) + '구좌(일반교원 ' + f(T.ld) + ' · 구독교원 ' + f(T.cd) + ', 구독교원 비중 ' + share + '%), 예약 ' + f(T.tr) + '구좌 남아 있어요.' +
       (top.length ? '\n완료 상위: ' + top.join(' / ') : '') + (zero ? '\n이번 달 완료 0구좌 지점 ' + zero + '곳' : '');
   }
 
