@@ -284,12 +284,14 @@ def aggregate(rows, match, today, yday):
         elif day == yday:
             a[kind + 'y'] += q
         mk = (r.get('mid') or '') + '|' + mask(r.get('mgr'))
-        m = a['mgr'].setdefault(mk, [0, 0])
+        m = a['mgr'].setdefault(mk, [0, 0, 0])
         m[0 if kind == 'd' else 1] += q
+        if kind == 'd' and day == today:
+            m[2] += q
         p = a['prod'].setdefault(r.get('prod') or '-', [0, 0])
         p[0 if kind == 'd' else 1] += q
     for a in agg.values():   # 사번은 묶는 데만 쓰고 저장 안 함
-        a['mgr'] = [[k.split('|', 1)[1], v[0], v[1]] for k, v in sorted(a['mgr'].items(), key=lambda x: -(x[1][0] + x[1][1]))]
+        a['mgr'] = [[k.split('|', 1)[1], v[0], v[1], v[2]] for k, v in sorted(a['mgr'].items(), key=lambda x: -(x[1][0] + x[1][1]))]
         a['prod'] = [[k, v[0], v[1]] for k, v in sorted(a['prod'].items())]
     return agg, unmatched, status
 
@@ -385,8 +387,18 @@ def main():
                 else:
                     sites[key] = {'ok': False, 'stores': {}, 'unmatched': {}, 'status': {}}
             sites[key]['month'] = d1[:7]
+    # 시각별 기록(어제 이 시각 비교용): 보는 시각 9·15·18·20시 칸에 그때까지의 오늘 완료(지점별 합) 저장, 최근 3일
+    h = now.hour + now.minute / 60
+    slot = next((x for x in (20, 18, 15, 9) if h >= x - 1), 9)
+    hist = {d: v for d, v in (prev.get('hist') or {}).items() if d >= (now - dt.timedelta(days=3)).strftime('%Y-%m-%d')}
+    snap = {}
+    for k in sites:
+        for st_name, a in (sites[k].get('stores') or {}).items():
+            if a.get('dt'):
+                snap[st_name] = snap.get(st_name, 0) + a['dt']
+    hist.setdefault(today, {})[str(slot)] = snap
     data = {'updated': now.strftime('%Y-%m-%d %H:%M'), 'from': d1, 'to': today, 'today': today, 'yday': yday,
-            'teams': order, 'stores': [[t, s] for t, s in stores], 'sites': sites}
+            'slot': slot, 'hist': hist, 'teams': order, 'stores': [[t, s] for t, s in stores], 'sites': sites}
     if not any(s.get('ok') for s in sites.values()) and prev:
         sys.exit('두 사이트 모두 실패 — 이전 자료 유지')
     OUT.write_text(json.dumps(enc(data, apw), ensure_ascii=False), encoding='utf-8')
