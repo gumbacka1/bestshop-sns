@@ -172,7 +172,7 @@ def main():
         sub = [item(key, p, i + 1, True) for i, p in enumerate(subl)]
         sub_url = {p['modelName']: BASE + p['modelUrlPath'] for p in subl if p.get('modelUrlPath')}
         time.sleep(0.5)
-        cat = {'key': key, 'name': name, 'groups': groups, 'buy': {}, 'sub': {}, 'n_buy': len(buy), 'n_sub': len(sub)}
+        cat = {'key': key, 'name': name, 'groups': groups, 'buy': {}, 'sub': {}, 'n_buy': len(buy), 'n_sub': len(sub), 'all': buy}
         for g in groups:
             cat['buy'][g] = [x for x in buy if x['g'] == g][:10]
             cat['sub'][g] = [x for x in sub if x['g'] == g][:10]

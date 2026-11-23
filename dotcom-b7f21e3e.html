@@ -70,7 +70,7 @@ const won=x=>x||x===0?Number(x).toLocaleString('ko-KR'):'-';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const signed=x=>(x>0?'+':'')+won(x);
 const allBuy=c=>c.groups.flatMap(g=>c.buy[g]);
-function findItem(c,m){for(const g of c.groups){const x=[...c.buy[g],...c.sub[g]].find(i=>i.m===m);if(x)return x}return null}
+function findItem(c,m,sub){if(!sub){const a=(c.all||[]).find(i=>i.m===m);if(a)return a;for(const g of c.groups){const x=c.buy[g].find(i=>i.m===m);if(x)return x}}for(const g of c.groups){const x=c.sub[g].find(i=>i.m===m);if(x)return x}return null}
 function care6(m){const c=D.care[m];return c&&c.terms&&c.terms['72']?c.terms['72'].p:null}
 async function load(){
   try{D=await fetch('data/lge_dotcom.json?v='+Date.now()).then(r=>r.json())}catch(e){document.getElementById('app').innerHTML='<p class="note">아직 수집된 데이터가 없어요. 매일 오전 9시에 자동으로 받아와요.</p>';return}
@@ -103,7 +103,7 @@ function buyRow(c,x,j){
 }
 function subRow(c,x,j){
   const has=D.care[x.m]&&D.care[x.m].terms;
-  return `<div class="it" ${has?`onclick="go({type:'one',m:'${x.m}'})"`:''}><div class="rk">${j+1}</div><img loading="lazy" src="${esc(x.img)}" alt=""><div class="tx"><div class="nm">${esc(x.n)}</div>
+  return `<div class="it" ${has?`onclick="go({type:'one',m:'${x.m}',sub:1})"`:''}><div class="rk">${j+1}</div><img loading="lazy" src="${esc(x.img)}" alt=""><div class="tx"><div class="nm">${esc(x.n)}</div>
   <div class="md">${esc(x.m)} · ${esc(x.sz)}${x.gr?' · '+esc(x.gr):''}</div>
   <div class="pr"><span class="lb">월</span> ${won(x.price)}<span class="lb"> ${esc(x.desc)}</span><span class="all">전체 ${x.r}위</span></div>
   ${x.max&&x.max<x.price?`<div class="md">최대 혜택 시 월 ${won(x.max)} (제휴카드 등 조건)</div>`:''}</div></div>`;
@@ -137,11 +137,11 @@ function vsView(){
       const m=Math.round(st.max/72/100)*100;h+=careBox(st.m)+`<div class="calc"><b>"일시불이 더 싸지 않아요?" 물으면</b><br>일시불 ${won(st.max)} ÷ 72개월 = 월 약 ${won(m)}원 → 구독 ${won(b6)}원과 월 약 ${won(b6-m)}원 차이가 6년간 방문 케어·무상 A/S 값이라고 솔직하게 설명</div>`;}
     h+=`</div><button class="cta" style="background:#555" onclick="back()">일시불 비교로 돌아가기</button>`;
   }
-  h+=`<div class="foot">가격·사양: ${esc(D.updated)} 엘지닷컴 표시 기준. 구독 요금은 회원할인 반영·기본 방문주기 기준, 제휴카드 할인 제외. 매장 행사가 미포함.</div>`;
+  h+=`<div class="foot">최대혜택가 = 엘지닷컴 표시 그대로(판매가 − 쿠폰 할인 − 제휴카드 청구할인, 카드 실적 조건). 가격·사양: ${esc(D.updated)} 엘지닷컴 표시 기준. 구독 요금은 회원할인 반영·기본 방문주기 기준, 제휴카드 할인 제외. 매장 행사가 미포함.</div>`;
   return h;
 }
 function oneView(){
-  const c=D.cats[S.cat],x=findItem(c,S.view.m),b6=care6(x.m);
+  const c=D.cats[S.cat],x=findItem(c,S.view.m,S.view.sub),b6=care6(x.m);
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
   h+=`<div class="vs" style="grid-template-columns:1fr"><div class="cd st"><span class="lab">매장에서도 판매</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.n)}</div><div class="u">${esc(x.sz)}${x.gr?' · '+esc(x.gr):''}</div></div></div>`;
   h+=`<div class="sec"><div class="st2">일시불</div><table><tr><td class="k">판매가</td><td>${won(x.sub?0:x.price)}</td></tr><tr class="on"><td class="k">최대혜택가</td><td>${x.sub?'-':won(x.max)}</td></tr></table></div>`;
