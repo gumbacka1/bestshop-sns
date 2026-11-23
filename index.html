@@ -119,6 +119,8 @@ window.addEventListener('load',()=>dash._load());
 .kw-bar .v { width: 38px; text-align: right; color: var(--color-fg-muted); }
 .kw-bar .a { width: 58px; text-align: right; font-size: 11px; color: var(--color-fg-muted); }
 .kw-up { color: #1e8e3e; } .kw-dn { color: #E24B4A; }
+.kw-monmgr { padding: 4px 6px 8px 18px !important; background: #FAFAFA; }
+.kw-monmgr .ig-table { font-size: 12px; }
 .kw-ptab td.ig-l { padding-left: 10px; }
 .kw-ptab td.kw-up { color: #1e8e3e; } .kw-ptab td.kw-dn { color: #E24B4A; }
 .kw-mbar { height: 4px; background: #EDEDED; border-radius: 2px; margin-top: 3px; overflow: hidden; }
@@ -372,7 +374,7 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-wrap kw-stbox">
       <div class="ig-mini" style="margin:8px">
         <div class="ig-mc"><span class="ig-ml">당월 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-st-d">—</span><span class="ig-ms ig-flat" id="kw-st-dsub"></span></span></div>
-        <div class="ig-mc"><span class="ig-ml">담당 내 순위</span><span class="ig-mv"><span class="ig-mn" id="kw-st-rank">—</span><span class="ig-ms ig-flat" id="kw-st-nat"></span></span></div>
+        <div class="ig-mc"><span class="ig-ml" id="kw-st-rlab">담당 내 순위</span><span class="ig-mv"><span class="ig-mn" id="kw-st-rank">—</span><span class="ig-ms ig-flat" id="kw-st-nat"></span></span></div>
         <div class="ig-mc"><span class="ig-ml">오늘 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-st-dt">—</span><span class="ig-ms" id="kw-st-cmp"></span></span></div>
         <div class="ig-mc"><span class="ig-ml">전환 대기(예약)</span><span class="ig-mv"><span class="ig-mn" id="kw-st-r">—</span><span class="ig-ms ig-flat">구좌</span></span></div>
         <div class="ig-mc" id="kw-st-cumcard"><span class="ig-ml">올해 누적 순위(경북)</span><span class="ig-mv"><span class="ig-mn" id="kw-st-cum">—</span><span class="ig-ms ig-flat" id="kw-st-cumsub"></span></span></div>
@@ -386,7 +388,7 @@ window.addEventListener('load',()=>dash._load());
       <div id="kw-st-prod"></div>
       <p class="kw-subh">월별 신청완료 <span class="ig-note" id="kw-st-mnote">경북담당 지점만 · 구좌 · 순위는 경북 29곳 중, 누계 줄은 올해 누적 순위</span></p>
       <table class="ig-table kw-table" id="kw-st-mon">
-        <thead><tr><th>월</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th><th class="ig-grp">경북 순위</th></tr></thead>
+        <thead><tr><th>월</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th><th class="ig-grp" id="kw-st-mlast">경북 순위</th></tr></thead>
         <tbody id="kw-st-mon-body"></tbody>
       </table>
     </div>
@@ -679,40 +681,56 @@ window.addEventListener('load',()=>dash._load());
     chip($('kw-s-zero'), '이번 달 0구좌', rs.filter((r) => !r.td).map((r) => [r.store, '']), 'bad');
     chip($('kw-s-today'), '오늘 완료', rs.filter((r) => r.dt).sort((a, b) => b.dt - a.dt).slice(0, 12).map((r) => [r.store, f(r.dt)]), 'good');
   }
+  const TEAMKEY = '@';
   function sumStore() {
-    const t = team(); const rs = ROWS.filter((r) => !t || r.team === t);
+    const t = team() || '경북담당'; const rs = ROWS.filter((r) => r.team === t);
     const sel = $('kw-st-pick');
-    if (!stPick || !ROWS.some((r) => r.store === stPick)) stPick = (rs.slice().sort((a, b) => b.td - a.td)[0] || ROWS[0] || {}).store;
+    if (!stPick || (stPick[0] !== TEAMKEY && !ROWS.some((r) => r.store === stPick))) stPick = (rs.slice().sort((a, b) => b.td - a.td)[0] || ROWS[0] || {}).store;
+    if (stPick[0] === TEAMKEY && stPick.slice(1) !== t) stPick = TEAMKEY + t;
     const opts = rs.slice().sort((a, b) => a.store.localeCompare(b.store, 'ko'));
-    if (!opts.some((r) => r.store === stPick)) { const me = ROWS.find((r) => r.store === stPick); if (me) opts.unshift(me); }
-    sel.innerHTML = ''; opts.forEach((r) => { const o = document.createElement('option'); o.value = r.store; o.textContent = r.store + ' (' + r.team + ')'; if (r.store === stPick) o.selected = true; sel.appendChild(o); });
-    const R = ROWS.find((r) => r.store === stPick); if (!R) return;
-    $('kw-st-name').textContent = R.store + ' · ' + R.team;
+    if (stPick[0] !== TEAMKEY && !opts.some((r) => r.store === stPick)) { const me = ROWS.find((r) => r.store === stPick); if (me) opts.unshift(me); }
+    sel.innerHTML = '';
+    const ot = document.createElement('option'); ot.value = TEAMKEY + t; ot.textContent = '★ ' + t + ' 전체 (' + rs.length + '곳)'; if (stPick === ot.value) ot.selected = true; sel.appendChild(ot);
+    opts.forEach((r) => { const o = document.createElement('option'); o.value = r.store; o.textContent = r.store + ' (' + r.team + ')'; if (r.store === stPick) o.selected = true; sel.appendChild(o); });
+    const isTeam = stPick[0] === TEAMKEY;
+    const R = isTeam ? TEAMS.find((x) => x.team === t) : ROWS.find((r) => r.store === stPick); if (!R) return;
+    const stores = isTeam ? rs.map((r) => r.store) : [R.store];
+    $('kw-st-name').textContent = isTeam ? t + ' 전체 · ' + rs.length + '곳' : R.store + ' · ' + R.team;
     $('kw-st-d').textContent = f(R.td); $('kw-st-dsub').textContent = '구독 ' + f(R.cd) + ' · 일반 ' + f(R.ld);
-    const inTeam = ROWS.filter((r) => r.team === R.team).sort((a, b) => b.td - a.td), nat = ROWS.slice().sort((a, b) => b.td - a.td);
-    const rk = (arr) => arr.findIndex((r) => r.td === R.td) + 1;
-    $('kw-st-rank').textContent = rk(inTeam) + '위'; $('kw-st-nat').textContent = '/' + inTeam.length + ' · 전국 ' + rk(nat);
+    if (isTeam) {
+      const ts = TEAMS.slice(1).slice().sort((a, b) => b.per - a.per);
+      $('kw-st-rlab').textContent = '담당 순위(지점당)';
+      $('kw-st-rank').textContent = (ts.findIndex((x) => x.team === t) + 1) + '위'; $('kw-st-nat').textContent = '/' + ts.length + ' · 지점당 ' + R.per.toFixed(1);
+    } else {
+      const inTeam = ROWS.filter((r) => r.team === R.team).sort((a, b) => b.td - a.td), nat = ROWS.slice().sort((a, b) => b.td - a.td);
+      const rk = (arr) => arr.findIndex((r) => r.td === R.td) + 1;
+      $('kw-st-rlab').textContent = '담당 내 순위';
+      $('kw-st-rank').textContent = rk(inTeam) + '위'; $('kw-st-nat').textContent = '/' + inTeam.length + ' · 전국 ' + rk(nat);
+    }
     $('kw-st-dt').textContent = f(R.dt); $('kw-st-r').textContent = f(R.tr);
-    const yh = yHist(), yv = yh ? (yh[R.store] || 0) : null;
+    const yh = yHist(); let yv = null; if (yh) { yv = 0; stores.forEach((n) => { yv += yh[n] || 0; }); }
     const c = $('kw-st-cmp'); c.textContent = cmpTxt(R.dt, yv); c.className = cmpCls(R.dt, yv);
+    // 매니저별 (전체면 지점 이름을 붙여 한 줄로)
     const M = {};
-    [['care', 'c'], ['life', 'l']].forEach(([k, p]) => { const s = ((KD.sites[k] || {}).stores || {})[R.store]; ((s && s.mgr) || []).forEach(([n, d, r, dt]) => { const m = M[n] = M[n] || { n, cd: 0, cr: 0, ld: 0, lr: 0, dt: 0 }; m[p + 'd'] += d; m[p + 'r'] += r; m.dt += dt || 0; }); });
-    const ms = Object.values(M).map((m) => Object.assign(m, { td: m.cd + m.ld, tr: m.cr + m.lr })).sort((a, b) => b.td - a.td || b.tr - a.tr);
+    [['care', 'c'], ['life', 'l']].forEach(([k, p]) => { stores.forEach((sn) => { const s = ((KD.sites[k] || {}).stores || {})[sn]; ((s && s.mgr) || []).forEach(([n, d, r, dt]) => { const key = sn + '|' + n; const m = M[key] = M[key] || { n: isTeam ? n + ' · ' + sn : n, cd: 0, cr: 0, ld: 0, lr: 0, dt: 0 }; m[p + 'd'] += d; m[p + 'r'] += r; m.dt += dt || 0; }); }); });
+    let ms = Object.values(M).map((m) => Object.assign(m, { td: m.cd + m.ld, tr: m.cr + m.lr })).sort((a, b) => b.td - a.td || b.tr - a.tr);
+    if (isTeam) ms = ms.filter((m) => m.td || m.tr);
     const mb = $('kw-st-mgr-body'); mb.innerHTML = '';
     if (!ms.length) mb.innerHTML = '<tr><td colspan="7" class="ig-c">이번 달 접수가 없어요</td></tr>';
     const tot = { td: 0, cd: 0, ld: 0, dt: 0, tr: 0 };
     ms.forEach((m, i) => { Object.keys(tot).forEach((k) => { tot[k] += m[k]; }); const tr = document.createElement('tr'); const z = m.td ? '' : ' kw-zero'; tr.innerHTML = '<td class="ig-c">' + (i + 1) + '</td><td class="ig-c' + z + '"></td><td class="kw-sum ig-grp' + z + '">' + (m.td ? f(m.td) : '0') + '</td><td>' + f(m.cd) + '</td><td>' + f(m.ld) + '</td><td>' + f(m.dt) + '</td><td>' + f(m.tr) + '</td>'; tr.children[1].textContent = m.n; mb.appendChild(tr); });
     if (ms.length) { const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.td) + '</td><td>' + f(tot.cd) + '</td><td>' + f(tot.ld) + '</td><td>' + f(tot.dt) + '</td><td>' + f(tot.tr) + '</td>'; mb.appendChild(tr); }
-    monTable(R);
-    const prodOf = (stores) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; stores.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d, r]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d; })); }); return P; };
-    const mine = prodOf([R.store]), avg = prodOf(ROWS.filter((r) => r.team === R.team).map((r) => r.store));
+    monTable(isTeam, t, stores, R);
+    // 상품 구성 (신청완료) — 지점이면 담당 평균, 담당 전체면 전국 평균과 비교
+    const prodOf = (list) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; list.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d; })); }); return P; };
+    const mine = prodOf(stores), avg = prodOf(isTeam ? ROWS.map((r) => r.store) : rs.map((r) => r.store));
     const sm = Object.values(mine).reduce((a, b) => a + b, 0), sa = Object.values(avg).reduce((a, b) => a + b, 0);
-    $('kw-st-pnote').textContent = '이번 달 신청완료 · 지점 비중이 ' + R.team.replace('담당', '') + ' 비중보다 높으면 초록, 낮으면 빨강';
+    const cmpName = isTeam ? '전국' : t.replace('담당', '');
+    $('kw-st-pnote').textContent = '이번 달 신청완료 · ' + (isTeam ? t.replace('담당', '') : '지점') + ' 비중이 ' + cmpName + ' 비중보다 높으면 초록, 낮으면 빨강';
     const box = $('kw-st-prod'); box.innerHTML = '';
-    if (!sm) { box.innerHTML = '<p class="ig-note">이번 달 신청완료가 없어요</p>'; return; }
+    if (!sm) { box.innerHTML = '<p class="ig-note" style="margin:0 10px 10px">이번 달 신청완료가 없어요</p>'; return; }
     const tb = document.createElement('table'); tb.className = 'ig-table kw-table kw-ptab';
-    const tn = R.team.replace('담당', '');
-    tb.innerHTML = '<colgroup><col style="width:40%"><col style="width:18%"><col style="width:21%"><col style="width:21%"></colgroup><thead><tr><th>상품</th><th class="ig-grp">실적(구좌)</th><th>지점 비중</th><th>' + tn + ' 비중</th></tr></thead><tbody></tbody>';
+    tb.innerHTML = '<colgroup><col style="width:40%"><col style="width:18%"><col style="width:21%"><col style="width:21%"></colgroup><thead><tr><th>상품</th><th class="ig-grp">실적(구좌)</th><th>' + (isTeam ? t.replace('담당', '') : '지점') + ' 비중</th><th>' + cmpName + ' 비중</th></tr></thead><tbody></tbody>';
     const tbody = tb.querySelector('tbody');
     Object.keys(mine).filter((k) => mine[k]).sort((a, b) => mine[b] - mine[a]).forEach((k) => {
       const [lab, p] = k.split('|'), me = mine[k] / sm * 100, av = sa ? (avg[k] || 0) / sa * 100 : 0;
@@ -726,40 +744,60 @@ window.addEventListener('load',()=>dash._load());
     tbody.appendChild(tr);
     box.appendChild(tb);
   }
-
-  function monTable(R) {
+  let monOpen = null;
+  function monMgr(ym, stores, isTeam) {
+    const M = {};
+    [['care', 'c'], ['life', 'l']].forEach(([k, p]) => { const mm = (((KD.sites[k] || {}).monm || {})[ym]) || {}; stores.forEach((sn) => (mm[sn] || []).forEach(([n, v]) => { const key = sn + '|' + n; const m = M[key] = M[key] || { n: isTeam ? n + ' · ' + sn : n, c: 0, l: 0 }; m[p] += v; })); });
+    return Object.values(M).map((m) => Object.assign(m, { t: m.c + m.l })).filter((m) => m.t).sort((a, b) => b.t - a.t);
+  }
+  function monTable(isTeam, t, stores, R) {
     const body = $('kw-st-mon-body'); body.innerHTML = '';
-    $('kw-st-cumcard').hidden = R.team !== '경북담당'; $('kw-st-cum').textContent = '—'; $('kw-st-cumsub').textContent = '';
-    if (R.team !== '경북담당') { body.innerHTML = '<tr><td colspan="5" class="ig-c">경북담당 지점만 보여요</td></tr>'; return; }
+    const isGb = t === '경북담당';
+    $('kw-st-cumcard').hidden = isTeam || !isGb; $('kw-st-cum').textContent = '—'; $('kw-st-cumsub').textContent = '';
+    $('kw-st-mlast').textContent = isTeam ? '지점당' : '경북 순위';
+    $('kw-st-mnote').textContent = '경북담당만 · 신청완료 구좌 · 달을 누르면 그 달 매니저 실적이 펼쳐져요' + (isTeam ? '' : ' · 누계 줄은 올해 누적 순위');
+    if (!isGb) { body.innerHTML = '<tr><td colspan="5" class="ig-c">경북담당만 보여요</td></tr>'; return; }
     const C = (KD.sites.care || {}).mon || {}, L = (KD.sites.life || {}).mon || {};
     const yms = [...new Set([...Object.keys(C), ...Object.keys(L)])].sort();
     if (!yms.length) { body.innerHTML = '<tr><td colspan="5" class="ig-c">지난달 자료를 받는 중이에요 (다음 수집 뒤에 나와요)</td></tr>'; return; }
     const gb = ROWS.filter((r) => r.team === '경북담당').map((r) => r.store);
+    const val = (M, ym, list) => list.reduce((a, sn) => a + ((M[ym] || {})[sn] || 0), 0);
     const tot = { t: 0, c: 0, l: 0 };
     yms.forEach((ym) => {
-      const c = (C[ym] || {})[R.store] || 0, l = (L[ym] || {})[R.store] || 0, t = c + l;
-      const all = gb.map((s) => ((C[ym] || {})[s] || 0) + ((L[ym] || {})[s] || 0)).sort((a, b) => b - a);
-      const rk = all.indexOf(t) + 1;
-      tot.t += t; tot.c += c; tot.l += l;
-      const cur = ym === KD.from.slice(0, 7);
-      const tr = document.createElement('tr');
-      tr.innerHTML = '<td class="ig-c">' + Number(ym.slice(5)) + '월' + (cur ? '(진행 중)' : '') + '</td><td class="kw-sum ig-grp' + (t ? '' : ' kw-zero') + '">' + (t ? f(t) : '0') + '</td><td>' + f(c) + '</td><td>' + f(l) + '</td><td class="ig-grp">' + rk + '위</td>';
+      const c = val(C, ym, stores), l = val(L, ym, stores), tt = c + l;
+      let last;
+      if (isTeam) last = (tt / gb.length).toFixed(1);
+      else { const all = gb.map((sn) => val(C, ym, [sn]) + val(L, ym, [sn])).sort((a, b) => b - a); last = (all.indexOf(tt) + 1) + '위'; }
+      tot.t += tt; tot.c += c; tot.l += l;
+      const cur = ym === KD.from.slice(0, 7), open = monOpen === ym;
+      const tr = document.createElement('tr'); tr.className = 'kw-click' + (open ? ' ig-picked' : '');
+      tr.innerHTML = '<td class="ig-c">' + (open ? '▾ ' : '▸ ') + Number(ym.slice(5)) + '월' + (cur ? '(진행 중)' : '') + '</td><td class="kw-sum ig-grp' + (tt ? '' : ' kw-zero') + '">' + (tt ? f(tt) : '0') + '</td><td>' + f(c) + '</td><td>' + f(l) + '</td><td class="ig-grp">' + last + '</td>';
+      tr.addEventListener('click', () => { monOpen = monOpen === ym ? null : ym; render(); });
       body.appendChild(tr);
+      if (open) {
+        const ms = monMgr(ym, stores, isTeam);
+        const sub = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 5; td.className = 'kw-monmgr'; sub.appendChild(td);
+        if (!ms.length) td.innerHTML = '<p class="ig-note">이 달 매니저 자료가 없어요</p>';
+        else {
+          let h = '<table class="ig-table kw-table"><thead><tr><th>순</th><th>매니저</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th></tr></thead><tbody>';
+          ms.forEach((m, i) => { h += '<tr><td class="ig-c">' + (i + 1) + '</td><td class="ig-c">' + m.n.replace(/[<>&]/g, '') + '</td><td class="kw-sum ig-grp">' + f(m.t) + '</td><td>' + f(m.c) + '</td><td>' + f(m.l) + '</td></tr>'; });
+          td.innerHTML = h + '</tbody></table>';
+        }
+        body.appendChild(sub);
+      }
     });
-    // 누적 순위: 1월~지금까지 합계로 경북 지점끼리 줄 세움
-    const cum = (s) => yms.reduce((a, ym) => a + ((C[ym] || {})[s] || 0) + ((L[ym] || {})[s] || 0), 0);
-    const cums = gb.map(cum).sort((a, b) => b - a), crk = cums.indexOf(tot.t) + 1;
     const tr = document.createElement('tr'); tr.className = 'ig-total';
-    tr.innerHTML = '<td class="ig-c">누계</td><td class="ig-grp">' + f(tot.t) + '</td><td>' + f(tot.c) + '</td><td>' + f(tot.l) + '</td><td class="ig-grp">' + crk + '위</td>';
+    let lastTot = '-';
+    if (!isTeam) { const cum = (sn) => yms.reduce((a, ym) => a + val(C, ym, [sn]) + val(L, ym, [sn]), 0); const cums = gb.map(cum).sort((a, b) => b - a), crk = cums.indexOf(tot.t) + 1; lastTot = crk + '위'; $('kw-st-cum').textContent = crk + '위'; $('kw-st-cumsub').textContent = '/' + gb.length + ' · ' + f(tot.t) + '구좌'; }
+    else lastTot = (tot.t / gb.length).toFixed(1);
+    tr.innerHTML = '<td class="ig-c">누계</td><td class="ig-grp">' + f(tot.t) + '</td><td>' + f(tot.c) + '</td><td>' + f(tot.l) + '</td><td class="ig-grp">' + lastTot + '</td>';
     body.appendChild(tr);
     const n = yms.length, av = (v) => (v / n).toFixed(1);
     const tr2 = document.createElement('tr');
-    tr2.innerHTML = '<td class="ig-c">월평균</td><td class="kw-sum ig-grp">' + av(tot.t) + '</td><td>' + av(tot.c) + '</td><td>' + av(tot.l) + '</td><td class="ig-grp">-</td>';
+    tr2.innerHTML = '<td class="ig-c">월평균</td><td class="kw-sum ig-grp">' + av(tot.t) + '</td><td>' + av(tot.c) + '</td><td>' + av(tot.l) + '</td><td class="ig-grp">' + (isTeam ? (tot.t / n / gb.length).toFixed(1) : '-') + '</td>';
     body.appendChild(tr2);
-    $('kw-st-cum').textContent = crk + '위';
-    $('kw-st-cumsub').textContent = '/' + gb.length + ' · ' + f(tot.t) + '구좌';
   }
-  $('kw-st-pick').addEventListener('change', (e) => { stPick = e.target.value; render(); });
+  $('kw-st-pick').addEventListener('change', (e) => { stPick = e.target.value; monOpen = null; render(); });
   dash.draw('kw-all', () => render());
   $('kw-search').addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); render(); });
   const bindSort = (tbl, s, reset, def) => {

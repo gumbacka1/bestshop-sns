@@ -326,21 +326,25 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday, months=(), gb=())
             raise RuntimeError('표를 못 읽음')
         agg, un, st = aggregate(rows, match, today, yday)
         # 지난달들 신청완료(경북만, 지점별 구좌) — 한 번 받아 두고 계속 씀 (261123 사용자 요청: 1~10월)
-        mon = {}
+        mon, monm = {}, {}
         for ym, a, b in months:
             try:
-                cnt = {}
+                cnt, mg = {}, {}
                 for r in grab('3', ym + ' 신청완료', a, b):
                     if r.get('status') not in DONE or not str(r.get('done_at') or '').startswith(ym):
                         continue   # 사이트가 끝 날짜를 무시할 때가 있어서 신청완료일자로 한 번 더 거름
                     sname = match(r.get('store'))
                     if sname in gb:
-                        cnt[sname] = cnt.get(sname, 0) + qty(r.get('qty'))
+                        q = qty(r.get('qty'))
+                        cnt[sname] = cnt.get(sname, 0) + q
+                        mk = (r.get('mid') or '') + '|' + mask(r.get('mgr'))
+                        mg.setdefault(sname, {})[mk] = mg.setdefault(sname, {}).get(mk, 0) + q
                 mon[ym] = cnt
+                monm[ym] = {st_: [[k.split('|', 1)[1], v, ''] for k, v in sorted(d.items(), key=lambda x: -x[1])] for st_, d in mg.items()}
             except Exception as e:
                 log('  ', ym, '월별 받기 실패:', type(e).__name__, str(e)[:120])
         return {'ok': True, 'at': dt.datetime.now(KST).strftime('%Y-%m-%d %H:%M'), 'how': how, 'n': len(rows),
-                'stores': agg, 'unmatched': un, 'status': st, 'mon_new': mon}
+                'stores': agg, 'unmatched': un, 'status': st, 'mon_new': mon, 'monm_new': monm}
     finally:
         ctx.close(); br.close()
 
@@ -394,7 +398,8 @@ def main():
         for key, cfg in SITES.items():
             log('▶', cfg['label'])
             old_mon = ((prev.get('sites') or {}).get(key) or {}).get('mon') or {}
-            need = [x for x in past if os.environ.get('KW_BACKFILL') == '1' or x[0] not in old_mon]
+            old_monm = ((prev.get('sites') or {}).get(key) or {}).get('monm') or {}
+            need = [x for x in past if os.environ.get('KW_BACKFILL') == '1' or x[0] not in old_mon or x[0] not in old_monm]
             if need:
                 log('  지난달 받기:', [x[0] for x in need])
             for t in range(2):
@@ -413,9 +418,13 @@ def main():
                     sites[key] = {'ok': False, 'stores': {}, 'unmatched': {}, 'status': {}}
             sites[key]['month'] = d1[:7]
             mon = dict(old_mon); mon.update(sites[key].pop('mon_new', {}) or {})
+            monm = dict(old_monm); monm.update(sites[key].pop('monm_new', {}) or {})
             if sites[key].get('ok'):
-                mon[d1[:7]] = {s: a.get('d', 0) for s, a in (sites[key].get('stores') or {}).items() if s in gb and a.get('d')}
+                cur = {s: a for s, a in (sites[key].get('stores') or {}).items() if s in gb}
+                mon[d1[:7]] = {s: a.get('d', 0) for s, a in cur.items() if a.get('d')}
+                monm[d1[:7]] = {s: [[m[0], m[1], ''] for m in (a.get('mgr') or []) if m[1]] for s, a in cur.items()}
             sites[key]['mon'] = mon
+            sites[key]['monm'] = monm
     # 시각별 기록(어제 이 시각 비교용): 보는 시각 9·15·18·20시 칸에 그때까지의 오늘 완료(지점별 합) 저장, 최근 3일
     h = now.hour + now.minute / 60
     slot = next((x for x in (20, 18, 15, 9) if h >= x - 1), 9)
