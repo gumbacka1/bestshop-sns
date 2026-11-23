@@ -119,6 +119,11 @@ window.addEventListener('load',()=>dash._load());
 .kw-bar .v { width: 38px; text-align: right; color: var(--color-fg-muted); }
 .kw-bar .a { width: 58px; text-align: right; font-size: 11px; color: var(--color-fg-muted); }
 .kw-up { color: #1e8e3e; } .kw-dn { color: #E24B4A; }
+.kw-ptab td.ig-l { padding-left: 10px; }
+.kw-ptab td.kw-up { color: #1e8e3e; } .kw-ptab td.kw-dn { color: #E24B4A; }
+.kw-mbar { height: 4px; background: #EDEDED; border-radius: 2px; margin-top: 3px; overflow: hidden; }
+.kw-mbar i { display: block; height: 100%; background: #C8102E; }
+.kw-mbar i.g { background: #5F5E5A; }
 #kw-v-team .ig-mc, #kw-v-store .ig-mc { flex-direction: column; align-items: flex-start; gap: 2px; }
 #kw-v-team .ig-mv, #kw-v-store .ig-mv { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; min-width: 0; }
 #kw-v-team .ig-ms, #kw-v-store .ig-ms { white-space: normal; }
@@ -378,7 +383,7 @@ window.addEventListener('load',()=>dash._load());
         <tbody id="kw-st-mgr-body"></tbody>
       </table>
       <p class="kw-subh">상품 구성 <span class="ig-note" id="kw-st-pnote">완료+예약 구좌 비중 · 오른쪽은 담당 평균</span></p>
-      <div id="kw-st-prod" style="padding:0 10px 10px"></div>
+      <div id="kw-st-prod"></div>
       <p class="kw-subh">월별 신청완료 <span class="ig-note" id="kw-st-mnote">경북담당 지점만 · 구좌 · 순위는 경북 29곳 중, 누계 줄은 올해 누적 순위</span></p>
       <table class="ig-table kw-table" id="kw-st-mon">
         <thead><tr><th>월</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th><th class="ig-grp">경북 순위</th></tr></thead>
@@ -699,18 +704,27 @@ window.addEventListener('load',()=>dash._load());
     ms.forEach((m, i) => { Object.keys(tot).forEach((k) => { tot[k] += m[k]; }); const tr = document.createElement('tr'); const z = m.td ? '' : ' kw-zero'; tr.innerHTML = '<td class="ig-c">' + (i + 1) + '</td><td class="ig-c' + z + '"></td><td class="kw-sum ig-grp' + z + '">' + (m.td ? f(m.td) : '0') + '</td><td>' + f(m.cd) + '</td><td>' + f(m.ld) + '</td><td>' + f(m.dt) + '</td><td>' + f(m.tr) + '</td>'; tr.children[1].textContent = m.n; mb.appendChild(tr); });
     if (ms.length) { const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.td) + '</td><td>' + f(tot.cd) + '</td><td>' + f(tot.ld) + '</td><td>' + f(tot.dt) + '</td><td>' + f(tot.tr) + '</td>'; mb.appendChild(tr); }
     monTable(R);
-    const prodOf = (stores) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; stores.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d, r]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d + r; })); }); return P; };
+    const prodOf = (stores) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; stores.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d, r]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d; })); }); return P; };
     const mine = prodOf([R.store]), avg = prodOf(ROWS.filter((r) => r.team === R.team).map((r) => r.store));
     const sm = Object.values(mine).reduce((a, b) => a + b, 0), sa = Object.values(avg).reduce((a, b) => a + b, 0);
-    $('kw-st-pnote').textContent = '완료+예약 구좌 · 비중 · 오른쪽은 ' + R.team + ' 평균 비중';
+    $('kw-st-pnote').textContent = '이번 달 신청완료 · 지점 비중이 ' + R.team.replace('담당', '') + ' 비중보다 높으면 초록, 낮으면 빨강';
     const box = $('kw-st-prod'); box.innerHTML = '';
-    if (!sm) { box.innerHTML = '<p class="ig-note">이번 달 접수가 없어요</p>'; return; }
-    Object.keys(mine).sort((a, b) => mine[b] - mine[a]).forEach((k) => {
+    if (!sm) { box.innerHTML = '<p class="ig-note">이번 달 신청완료가 없어요</p>'; return; }
+    const tb = document.createElement('table'); tb.className = 'ig-table kw-table kw-ptab';
+    const tn = R.team.replace('담당', '');
+    tb.innerHTML = '<colgroup><col style="width:40%"><col style="width:18%"><col style="width:21%"><col style="width:21%"></colgroup><thead><tr><th>상품</th><th class="ig-grp">실적(구좌)</th><th>지점 비중</th><th>' + tn + ' 비중</th></tr></thead><tbody></tbody>';
+    const tbody = tb.querySelector('tbody');
+    Object.keys(mine).filter((k) => mine[k]).sort((a, b) => mine[b] - mine[a]).forEach((k) => {
       const [lab, p] = k.split('|'), me = mine[k] / sm * 100, av = sa ? (avg[k] || 0) / sa * 100 : 0;
-      const d = document.createElement('div'); d.className = 'kw-bar';
-      d.innerHTML = '<span class="n"></span><span class="b"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i><em style="left:' + av.toFixed(1) + '%"></em></span><span class="q">' + f(mine[k]) + '</span><span class="v">' + me.toFixed(0) + '%</span><span class="a ' + (me >= av ? 'kw-up' : 'kw-dn') + '">평균 ' + av.toFixed(0) + '%</span>';
-      d.children[0].textContent = lab === '구독' ? '구독교원 ' + p.replace(/^구독\s*/, '') : '일반교원 ' + p; box.appendChild(d);
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td class="ig-l"><span class="nm"></span><div class="kw-mbar"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i></div></td><td class="kw-sum ig-grp">' + f(mine[k]) + '</td><td class="kw-sum ' + (me > av + 0.5 ? 'kw-up' : me < av - 0.5 ? 'kw-dn' : '') + '">' + me.toFixed(0) + '%</td><td>' + av.toFixed(0) + '%</td>';
+      tr.querySelector('.nm').textContent = lab === '구독' ? '구독교원 ' + p.replace(/^구독\s*/, '') : '일반교원 ' + p;
+      tbody.appendChild(tr);
     });
+    const tr = document.createElement('tr'); tr.className = 'ig-total';
+    tr.innerHTML = '<td class="ig-l">합계</td><td class="ig-grp">' + f(sm) + '</td><td>100%</td><td>100%</td>';
+    tbody.appendChild(tr);
+    box.appendChild(tb);
   }
 
   function monTable(R) {
