@@ -110,7 +110,7 @@ window.addEventListener('load',()=>dash._load());
 .kw-subh { font-size: 13px; font-weight: 600; margin: 10px 10px 4px; }
 .kw-stbox .ig-table { border-top: 1px solid var(--color-border-line); }
 .kw-bar { display: flex; align-items: center; gap: 6px; margin: 4px 0; font-size: 12px; }
-.kw-bar .n { width: 92px; color: var(--color-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kw-bar .n { width: 112px; color: var(--color-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kw-bar .b { flex: 1; height: 10px; background: #EDEDED; border-radius: 3px; overflow: hidden; position: relative; }
 .kw-bar .b i { position: absolute; left: 0; top: 0; bottom: 0; background: #C8102E; }
 .kw-bar .b i.g { background: #5F5E5A; }
@@ -708,7 +708,7 @@ window.addEventListener('load',()=>dash._load());
       const [lab, p] = k.split('|'), me = mine[k] / sm * 100, av = sa ? (avg[k] || 0) / sa * 100 : 0;
       const d = document.createElement('div'); d.className = 'kw-bar';
       d.innerHTML = '<span class="n"></span><span class="b"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i><em style="left:' + av.toFixed(1) + '%"></em></span><span class="v">' + me.toFixed(0) + '%</span><span class="a ' + (me >= av ? 'kw-up' : 'kw-dn') + '">평균 ' + av.toFixed(0) + '%</span>';
-      d.children[0].textContent = lab + ' ' + p; box.appendChild(d);
+      d.children[0].textContent = lab === '구독' ? '구독교원 ' + p.replace(/^구독\s*/, '') : '일반교원 ' + p; box.appendChild(d);
     });
   }
 
