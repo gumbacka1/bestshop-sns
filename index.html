@@ -357,39 +357,7 @@ window.addEventListener('load',()=>dash._load());
   <section id="sec-kw" hidden>
   <span data-draw="kw-all" hidden></span>
   <div class="kw-tg" role="tablist" aria-label="교원 화면 고르기">
-    <button type="button" data-v="detail" class="on">상세</button><button type="button" data-v="team">담당 요약</button><button type="button" data-v="store">지점 요약</button>
-  </div>
-
-  <div id="kw-v-team" hidden>
-    <h2 class="ig-h" id="h-kw-sum">한눈 요약 <span class="ig-note" id="kw-s-name">—</span><span class="snap-upd kw-upd">—</span></h2>
-    <div class="ig-mini">
-      <div class="ig-mc"><span class="ig-ml">당월 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-s-d">—</span><span class="ig-ms ig-flat" id="kw-s-dsub"></span></span></div>
-      <div class="ig-mc"><span class="ig-ml">오늘 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-s-dt">—</span><span class="ig-ms" id="kw-s-cmp"></span></span></div>
-      <div class="ig-mc"><span class="ig-ml">전환 대기(예약)</span><span class="ig-mv"><span class="ig-mn" id="kw-s-r">—</span><span class="ig-ms ig-flat">구좌</span></span></div>
-      <div class="ig-mc"><span class="ig-ml">담당 순위(지점당)</span><span class="ig-mv"><span class="ig-mn" id="kw-s-rank">—</span><span class="ig-ms ig-flat" id="kw-s-per"></span></span></div>
-    </div>
-    <p class="ig-mini-note" id="kw-s-note">—</p>
-
-    <h2 class="ig-h">오늘 챙길 지점</h2>
-    <div class="kw-chips" id="kw-s-zero"></div>
-    <div class="kw-chips" id="kw-s-today"></div>
-
-    <h2 class="ig-h" id="h-kw-cmp">담당 비교 <span class="ig-note">담당마다 지점 수가 달라서 지점당 평균으로 줄 세워요 · 담당을 누르면 바뀌어요</span><button class="ig-reset" data-snap="h-kw-cmp" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
-    <div class="ig-wrap" style="max-width:640px">
-      <table class="ig-table kw-table" id="kw-cmp-table">
-        <thead><tr><th>순</th><th>담당</th><th>지점</th><th class="ig-grp">지점당 완료</th><th>완료</th><th>오늘</th><th>대기</th></tr></thead>
-        <tbody id="kw-cmp-body"></tbody>
-      </table>
-    </div>
-
-    <h2 class="ig-h" id="h-kw-rank">지점 순위 <span class="ig-note" id="kw-rank-title">—</span><button class="ig-reset" data-snap="h-kw-rank" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
-    <p class="ig-note" style="margin:0 0 4px">완료 많은 순 · 이번 달 0구좌는 빨간 글씨 · 지점을 누르면 지점 요약으로 가요</p>
-    <div class="ig-wrap" style="max-width:640px">
-      <table class="ig-table kw-table" id="kw-rank-table">
-        <thead><tr><th>순</th><th>지점</th><th class="ig-grp">완료</th><th>구독</th><th>일반</th><th>오늘</th><th>대기</th></tr></thead>
-        <tbody id="kw-rank-body"></tbody>
-      </table>
-    </div>
+    <button type="button" data-v="detail" class="on">상세</button><button type="button" data-v="store">지점 요약</button>
   </div>
 
   <div id="kw-v-store" hidden>
@@ -409,6 +377,11 @@ window.addEventListener('load',()=>dash._load());
       </table>
       <p class="kw-subh">상품 구성 <span class="ig-note" id="kw-st-pnote">완료+예약 구좌 비중 · 오른쪽은 담당 평균</span></p>
       <div id="kw-st-prod" style="padding:0 10px 10px"></div>
+      <p class="kw-subh">월별 신청완료 <span class="ig-note" id="kw-st-mnote">경북담당 지점만 · 구좌 · 순위는 경북 29곳 중</span></p>
+      <table class="ig-table kw-table" id="kw-st-mon">
+        <thead><tr><th>월</th><th class="ig-grp">합계</th><th>구독</th><th>일반</th><th class="ig-grp">경북 순위</th></tr></thead>
+        <tbody id="kw-st-mon-body"></tbody>
+      </table>
     </div>
   </div>
 
@@ -429,6 +402,7 @@ window.addEventListener('load',()=>dash._load());
         <tr>
           <th rowspan="2" class="ig-sort" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-k="n">지점</th>
+          <th rowspan="2" class="ig-sort ig-grp" data-k="per">지점당<br>완료</th>
           <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
           <th colspan="2" class="ig-grp ig-g1">구독교원</th>
           <th colspan="2" class="ig-grp ig-g1">일반교원</th>
@@ -442,6 +416,10 @@ window.addEventListener('load',()=>dash._load());
       <tbody id="kw-team-body"></tbody>
     </table>
   </div>
+
+  <h2 class="ig-h">오늘 챙길 지점 <span class="ig-note">누르면 지점 요약으로 가요</span></h2>
+  <div class="kw-chips" id="kw-s-zero"></div>
+  <div class="kw-chips" id="kw-s-today"></div>
 
   <h2 class="ig-h" id="h-kw-store">지점별 교원 <span class="ig-note" id="kw-store-count">—</span><button class="ig-reset" id="kw-store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-kw-store" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
   <div class="ig-tools">
@@ -570,6 +548,7 @@ window.addEventListener('load',()=>dash._load());
     ROWS.forEach((r) => { add(all, r); (by[r.team] = by[r.team] || Object.assign(z(), { team: r.team, n: 0 })); add(by[r.team], r); by[r.team].n++; });
     const names = Object.keys(by).sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
     TEAMS = [all, ...names.map((n) => by[n])];
+    TEAMS.forEach((x) => { x.per = x.n ? x.td / x.n : 0; });
   }
   const team = () => dash.params().team || '';
   const cells = (tr, r, ks) => ks.forEach(([k, cls]) => { const td = document.createElement('td'); td.textContent = f(r[k]); if (cls) td.className = cls; tr.appendChild(td); });
@@ -596,7 +575,7 @@ window.addEventListener('load',()=>dash._load());
       if ((t || '전체') === r.team) tr.classList.add('ig-picked');
       tr.classList.add('ig-teamrow'); tr.style.cursor = 'pointer';
       const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = (r.team === '경북담당' ? '★ ' : '') + r.team; tr.appendChild(a);
-      cells(tr, r, [['n'], ...KS]);
+      cells(tr, r, [['n']]); const pc = document.createElement('td'); pc.className = 'ig-grp kw-sum'; pc.textContent = r.n ? (r.td / r.n).toFixed(1) : '-'; tr.appendChild(pc); cells(tr, r, KS);
       tr.addEventListener('click', () => { pick = null; dash.setParams({ team: r.team === '전체' ? '' : r.team }); });
       tb.appendChild(tr);
     });
@@ -619,7 +598,7 @@ window.addEventListener('load',()=>dash._load());
     tprod(t);
     detail();
     comment(T, rs);
-    sumTeam(t, T);
+    chipsDetail(t);
     sumStore();
   }
   const psort = { k: 't', dir: -1 };
@@ -675,10 +654,10 @@ window.addEventListener('load',()=>dash._load());
   function setView(v) {
     view = v; ss2.set('kwView', v);
     document.querySelectorAll('.kw-tg button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === v));
-    ['team', 'store', 'detail'].forEach((x) => { $('kw-v-' + x).hidden = x !== v; });
+    ['store', 'detail'].forEach((x) => { $('kw-v-' + x).hidden = x !== v; });
   }
   document.querySelectorAll('.kw-tg button').forEach((b) => b.addEventListener('click', () => setView(b.getAttribute('data-v'))));
-  setView(ss2.get('kwView') || 'detail');
+  setView(ss2.get('kwView') === 'store' ? 'store' : 'detail');
   const yHist = () => { if (!KD || !KD.hist) return null; const y = KD.hist[KD.yday] || {}; return y[String(KD.slot)] || null; };
   const cmpTxt = (now, prev) => prev === null || prev === undefined ? '어제 —' : '어제 ' + f(prev) + (now > prev ? ' ▲' + (now - prev) : now < prev ? ' ▼' + (prev - now) : '');
   const cmpCls = (now, prev) => prev === null || prev === undefined ? 'ig-ms ig-flat' : 'ig-ms ' + (now >= prev ? 'kw-up' : 'kw-dn');
@@ -688,39 +667,10 @@ window.addEventListener('load',()=>dash._load());
     if (!list.length) { const n = document.createElement('span'); n.className = 'kw-chip lab'; n.textContent = '없음'; box.appendChild(n); return; }
     list.forEach(([name, txt]) => { const c = document.createElement('span'); c.className = 'kw-chip ' + cls; c.textContent = name + (txt ? ' ' + txt : ''); c.addEventListener('click', () => { stPick = name; setView('store'); render(); }); box.appendChild(c); });
   }
-  function sumTeam(t, T) {
-    const name = t || '전체'; $('kw-s-name').textContent = name;
-    $('kw-s-d').textContent = f(T.td); $('kw-s-dsub').textContent = '구독 ' + f(T.cd) + ' · 일반 ' + f(T.ld);
-    $('kw-s-dt').textContent = f(T.dt); $('kw-s-r').textContent = f(T.tr);
-    const yh = yHist(); let yv = null;
-    if (yh) { yv = 0; ROWS.forEach((r) => { if (!t || r.team === t) yv += yh[r.store] || 0; }); }
-    const c = $('kw-s-cmp'); c.textContent = cmpTxt(T.dt, yv); c.className = cmpCls(T.dt, yv);
-    const teams = TEAMS.slice(1).map((x) => Object.assign({}, x, { per: x.n ? x.td / x.n : 0 })).sort((a, b) => b.per - a.per);
-    const me = teams.findIndex((x) => x.team === t);
-    $('kw-s-rank').textContent = me >= 0 ? (me + 1) + '위' : '—';
-    $('kw-s-per').textContent = me >= 0 ? '/ ' + teams.length : '';
-    $('kw-s-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' · 완료 = 신청완료일자 기준, 대기 = 접수일자 기준(예약 + 콜대기중) · 숫자는 모두 구좌' + (KD.slot ? ' · 오늘 칸의 "어제" = 어제 ' + KD.slot + '시 무렵 같은 시각 수집값' : ' · 어제 비교는 다음 수집부터 쌓여요');
+  function chipsDetail(t) {
     const rs = ROWS.filter((r) => !t || r.team === t);
     chip($('kw-s-zero'), '이번 달 0구좌', rs.filter((r) => !r.td).map((r) => [r.store, '']), 'bad');
-    chip($('kw-s-today'), '오늘 완료', rs.filter((r) => r.dt).sort((a, b) => b.dt - a.dt).slice(0, 10).map((r) => [r.store, f(r.dt)]), 'good');
-    const cb = $('kw-cmp-body'); cb.innerHTML = '';
-    teams.forEach((x, i) => {
-      const tr = document.createElement('tr'); tr.className = 'kw-click' + (x.team === '경북담당' ? ' ig-gb' : '') + (x.team === t ? ' ig-picked' : '');
-      tr.innerHTML = '<td class="ig-c">' + (i + 1) + '</td><td class="ig-c"></td><td>' + x.n + '</td><td class="kw-sum ig-grp">' + x.per.toFixed(1) + '</td><td>' + f(x.td) + '</td><td>' + f(x.dt) + '</td><td>' + f(x.tr) + '</td>';
-      tr.children[1].textContent = (x.team === '경북담당' ? '★ ' : '') + x.team;
-      tr.addEventListener('click', () => dash.setParams({ team: x.team }));
-      cb.appendChild(tr);
-    });
-    $('kw-rank-title').textContent = name + ' ' + rs.length + '곳';
-    const rb = $('kw-rank-body'); rb.innerHTML = '';
-    rs.slice().sort((a, b) => b.td - a.td || b.tr - a.tr).forEach((r, i) => {
-      const tr = document.createElement('tr'); tr.className = 'kw-click';
-      const z = r.td ? '' : ' kw-zero';
-      tr.innerHTML = '<td class="ig-c">' + (i + 1) + '</td><td class="ig-c"></td><td class="kw-sum ig-grp' + z + '">' + (r.td ? f(r.td) : '0') + '</td><td>' + f(r.cd) + '</td><td>' + f(r.ld) + '</td><td>' + f(r.dt) + '</td><td>' + f(r.tr) + '</td>';
-      tr.children[1].textContent = r.store;
-      tr.addEventListener('click', () => { stPick = r.store; setView('store'); render(); window.scrollTo({ top: $('kw-v-store').offsetTop - 10, behavior: 'smooth' }); });
-      rb.appendChild(tr);
-    });
+    chip($('kw-s-today'), '오늘 완료', rs.filter((r) => r.dt).sort((a, b) => b.dt - a.dt).slice(0, 12).map((r) => [r.store, f(r.dt)]), 'good');
   }
   function sumStore() {
     const t = team(); const rs = ROWS.filter((r) => !t || r.team === t);
@@ -746,6 +696,7 @@ window.addEventListener('load',()=>dash._load());
     const tot = { td: 0, cd: 0, ld: 0, dt: 0, tr: 0 };
     ms.forEach((m, i) => { Object.keys(tot).forEach((k) => { tot[k] += m[k]; }); const tr = document.createElement('tr'); const z = m.td ? '' : ' kw-zero'; tr.innerHTML = '<td class="ig-c">' + (i + 1) + '</td><td class="ig-c' + z + '"></td><td class="kw-sum ig-grp' + z + '">' + (m.td ? f(m.td) : '0') + '</td><td>' + f(m.cd) + '</td><td>' + f(m.ld) + '</td><td>' + f(m.dt) + '</td><td>' + f(m.tr) + '</td>'; tr.children[1].textContent = m.n; mb.appendChild(tr); });
     if (ms.length) { const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.td) + '</td><td>' + f(tot.cd) + '</td><td>' + f(tot.ld) + '</td><td>' + f(tot.dt) + '</td><td>' + f(tot.tr) + '</td>'; mb.appendChild(tr); }
+    monTable(R);
     const prodOf = (stores) => { const P = {}; [['care', '구독'], ['life', '일반']].forEach(([k, lab]) => { const S = (KD.sites[k] || {}).stores || {}; stores.forEach((n) => ((S[n] || {}).prod || []).forEach(([p, d, r]) => { const key = lab + '|' + p; P[key] = (P[key] || 0) + d + r; })); }); return P; };
     const mine = prodOf([R.store]), avg = prodOf(ROWS.filter((r) => r.team === R.team).map((r) => r.store));
     const sm = Object.values(mine).reduce((a, b) => a + b, 0), sa = Object.values(avg).reduce((a, b) => a + b, 0);
@@ -758,6 +709,29 @@ window.addEventListener('load',()=>dash._load());
       d.innerHTML = '<span class="n"></span><span class="b"><i class="' + (lab === '일반' ? 'g' : '') + '" style="width:' + me.toFixed(1) + '%"></i><em style="left:' + av.toFixed(1) + '%"></em></span><span class="v">' + me.toFixed(0) + '%</span><span class="a ' + (me >= av ? 'kw-up' : 'kw-dn') + '">평균 ' + av.toFixed(0) + '%</span>';
       d.children[0].textContent = lab + ' ' + p; box.appendChild(d);
     });
+  }
+
+  function monTable(R) {
+    const body = $('kw-st-mon-body'); body.innerHTML = '';
+    if (R.team !== '경북담당') { body.innerHTML = '<tr><td colspan="5" class="ig-c">경북담당 지점만 보여요</td></tr>'; return; }
+    const C = (KD.sites.care || {}).mon || {}, L = (KD.sites.life || {}).mon || {};
+    const yms = [...new Set([...Object.keys(C), ...Object.keys(L)])].sort();
+    if (!yms.length) { body.innerHTML = '<tr><td colspan="5" class="ig-c">지난달 자료를 받는 중이에요 (다음 수집 뒤에 나와요)</td></tr>'; return; }
+    const gb = ROWS.filter((r) => r.team === '경북담당').map((r) => r.store);
+    const tot = { t: 0, c: 0, l: 0 };
+    yms.forEach((ym) => {
+      const c = (C[ym] || {})[R.store] || 0, l = (L[ym] || {})[R.store] || 0, t = c + l;
+      const all = gb.map((s) => ((C[ym] || {})[s] || 0) + ((L[ym] || {})[s] || 0)).sort((a, b) => b - a);
+      const rk = all.indexOf(t) + 1;
+      tot.t += t; tot.c += c; tot.l += l;
+      const cur = ym === KD.from.slice(0, 7);
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td class="ig-c">' + Number(ym.slice(5)) + '월' + (cur ? '(진행 중)' : '') + '</td><td class="kw-sum ig-grp' + (t ? '' : ' kw-zero') + '">' + (t ? f(t) : '0') + '</td><td>' + f(c) + '</td><td>' + f(l) + '</td><td class="ig-grp">' + rk + '위</td>';
+      body.appendChild(tr);
+    });
+    const tr = document.createElement('tr'); tr.className = 'ig-total';
+    tr.innerHTML = '<td class="ig-c">누계</td><td class="ig-grp">' + f(tot.t) + '</td><td>' + f(tot.c) + '</td><td>' + f(tot.l) + '</td><td class="ig-grp">월평균 ' + (tot.t / yms.length).toFixed(1) + '</td>';
+    body.appendChild(tr);
   }
   $('kw-st-pick').addEventListener('change', (e) => { stPick = e.target.value; render(); });
   dash.draw('kw-all', () => render());

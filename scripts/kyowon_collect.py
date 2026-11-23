@@ -296,7 +296,7 @@ def aggregate(rows, match, today, yday):
     return agg, unmatched, status
 
 
-def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday):
+def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday, months=(), gb=()):
     uid, pw = os.environ.get(cfg['id'], ''), os.environ.get(cfg['pw'], '')
     if not uid or not pw:
         raise RuntimeError(cfg['id'] + ' / ' + cfg['pw'] + ' 비밀 칸이 비어 있음')
@@ -307,13 +307,13 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday):
     try:
         login(page, cfg['base'], uid, pw)
         log(' ', cfg['label'], '로그인 됨')
-        def grab(cond, name):
-            search(page, cfg['base'], d1, d2, cond)
+        def grab(cond, name, a=d1, b=d2):
+            search(page, cfg['base'], a, b, cond)
             if DEBUG:
                 debug_dump(page)
             got, how = try_excel(page), 'excel'
             if not got:
-                search(page, cfg['base'], d1, d2, cond)
+                search(page, cfg['base'], a, b, cond)
                 got, how = try_pages(page), 'pages'
             log(' ', cfg['label'], name, how, len(got), '줄')
             return got
@@ -324,8 +324,22 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday):
         if not done and not rsv:
             raise RuntimeError('표를 못 읽음')
         agg, un, st = aggregate(rows, match, today, yday)
+        # 지난달들 신청완료(경북만, 지점별 구좌) — 한 번 받아 두고 계속 씀 (261123 사용자 요청: 1~10월)
+        mon = {}
+        for ym, a, b in months:
+            try:
+                cnt = {}
+                for r in grab('3', ym + ' 신청완료', a, b):
+                    if r.get('status') not in DONE:
+                        continue
+                    sname = match(r.get('store'))
+                    if sname in gb:
+                        cnt[sname] = cnt.get(sname, 0) + qty(r.get('qty'))
+                mon[ym] = cnt
+            except Exception as e:
+                log('  ', ym, '월별 받기 실패:', type(e).__name__, str(e)[:120])
         return {'ok': True, 'at': dt.datetime.now(KST).strftime('%Y-%m-%d %H:%M'), 'how': how, 'n': len(rows),
-                'stores': agg, 'unmatched': un, 'status': st}
+                'stores': agg, 'unmatched': un, 'status': st, 'mon_new': mon}
     finally:
         ctx.close(); br.close()
 
@@ -368,13 +382,23 @@ def main():
         except Exception as e:
             log('이전 자료 못 풂(처음이거나 비밀번호 바뀜):', type(e).__name__)
     from playwright.sync_api import sync_playwright
+    import calendar
+    gb = {s for t, s in stores if t == '경북담당'}
+    past = []
+    for m in range(1, now.month):
+        last = calendar.monthrange(now.year, m)[1]
+        past.append(('%d-%02d' % (now.year, m), '%d-%02d-01' % (now.year, m), '%d-%02d-%02d' % (now.year, m, last)))
     sites = {}
     with sync_playwright() as p:
         for key, cfg in SITES.items():
             log('▶', cfg['label'])
+            old_mon = ((prev.get('sites') or {}).get(key) or {}).get('mon') or {}
+            need = [x for x in past if os.environ.get('KW_BACKFILL') == '1' or x[0] not in old_mon]
+            if need:
+                log('  지난달 받기:', [x[0] for x in need])
             for t in range(2):
                 try:
-                    sites[key] = collect_site(p, key, cfg, d1, today, match, today, yday)
+                    sites[key] = collect_site(p, key, cfg, d1, today, match, today, yday, need, gb)
                     break
                 except Exception as e:
                     log('  실패', t + 1, ':', type(e).__name__, str(e)[:200])
@@ -387,6 +411,10 @@ def main():
                 else:
                     sites[key] = {'ok': False, 'stores': {}, 'unmatched': {}, 'status': {}}
             sites[key]['month'] = d1[:7]
+            mon = dict(old_mon); mon.update(sites[key].pop('mon_new', {}) or {})
+            if sites[key].get('ok'):
+                mon[d1[:7]] = {s: a.get('d', 0) for s, a in (sites[key].get('stores') or {}).items() if s in gb and a.get('d')}
+            sites[key]['mon'] = mon
     # 시각별 기록(어제 이 시각 비교용): 보는 시각 9·15·18·20시 칸에 그때까지의 오늘 완료(지점별 합) 저장, 최근 3일
     h = now.hour + now.minute / 60
     slot = next((x for x in (20, 18, 15, 9) if h >= x - 1), 9)

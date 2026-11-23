@@ -6,11 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       debug: { description: "화면 구조 점검 기록 남김 (1=예)", required: false, default: "" }
+      backfill: { description: "올해 지난달 신청완료 다시 받기 (1=예)", required: false, default: "" }
 concurrency: { group: kyowon-collect, cancel-in-progress: false }
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 70
     permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +26,7 @@ jobs:
           KW_CARE_PW: ${{ secrets.KW_CARE_PW }}
           KW_ADMIN_PW: ${{ secrets.KW_ADMIN_PW }}
           KW_DEBUG: ${{ github.event.inputs.debug }}
+          KW_BACKFILL: ${{ github.event.inputs.backfill }}
       - run: |
           git config user.name "kyowon-bot"; git config user.email "kyowon-bot@users.noreply.github.com"
           cp data/kyowon.json /tmp/kyowon.json
