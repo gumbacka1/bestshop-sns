@@ -349,13 +349,13 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-k="n">지점</th>
           <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
-          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
           <th colspan="2" class="ig-grp ig-g1">구독교원</th>
+          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
         </tr>
         <tr>
           <th class="ig-sort ig-grp" data-k="td">완료</th><th class="ig-sort" data-k="tr">예약</th>
-          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
           <th class="ig-sort ig-grp" data-k="cd">완료</th><th class="ig-sort" data-k="cr">예약</th>
+          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
         </tr>
       </thead>
       <tbody id="kw-team-body"></tbody>
@@ -374,14 +374,14 @@ window.addEventListener('load',()=>dash._load());
           <th rowspan="2" class="ig-sort" data-k="team">담당</th>
           <th rowspan="2" class="ig-sort" data-k="store">지점</th>
           <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
-          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
           <th colspan="2" class="ig-grp ig-g1">구독교원</th>
+          <th colspan="2" class="ig-grp ig-g1">일반교원</th>
           <th colspan="2" class="ig-grp ig-g1">오늘</th>
         </tr>
         <tr>
           <th class="ig-sort ig-grp" data-k="td" aria-sort="descending">완료</th><th class="ig-sort" data-k="tr">예약</th>
-          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
           <th class="ig-sort ig-grp" data-k="cd">완료</th><th class="ig-sort" data-k="cr">예약</th>
+          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
           <th class="ig-sort ig-grp" data-k="dt">완료</th><th class="ig-sort" data-k="rt">예약</th>
         </tr>
       </thead>
@@ -402,7 +402,7 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-wrap" style="max-width:640px">
       <table class="ig-table kw-table" id="kw-mgr-table">
         <thead>
-          <tr><th rowspan="2">매니저</th><th colspan="2" class="ig-grp">합계</th><th colspan="2" class="ig-grp">일반교원</th><th colspan="2" class="ig-grp">구독교원</th></tr>
+          <tr><th rowspan="2">매니저</th><th colspan="2" class="ig-grp">합계</th><th colspan="2" class="ig-grp">구독교원</th><th colspan="2" class="ig-grp">일반교원</th></tr>
           <tr><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th></tr>
         </thead>
         <tbody id="kw-mgr-body"></tbody>
@@ -422,7 +422,7 @@ window.addEventListener('load',()=>dash._load());
 
   <details class="ig-note" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
-    <p>· 교원라이프(일반교원)와 LG교원 구독(구독교원) 접수현황을 모아요. 완료는 이번 달 1일부터 오늘까지 신청완료일자 기준, 예약은 같은 기간 접수일자 기준이에요. 숫자는 모두 구좌예요.</p>
+    <p>· LG교원 구독(구독교원)과 교원라이프(일반교원) 접수현황을 모아요. 완료는 이번 달 1일부터 오늘까지 신청완료일자 기준, 예약은 같은 기간 접수일자 기준이에요. 숫자는 모두 구좌예요.</p>
     <p>· 완료 = 고객상태 '신청완료', 예약 = '예약' + '콜대기중'. 취소 등 다른 상태는 넣지 않아요. 오늘 완료는 신청완료일자, 오늘 예약은 접수일자 기준이에요.</p>
     <p>· 우리 297개 지점 이름과 맞는 매장만 세요(다른 운영사 매장은 빠져요). 매니저 이름은 가운데를 가리고, 고객 정보는 저장하지 않아요.</p>
     <p>· 매일 8:10·14:10·17:10·19:10에 수집을 시작해서 9시·15시·18시·20시에 볼 수 있게 맞췄어요(깃허브 사정으로 조금 늦을 수 있어요).</p>
@@ -491,7 +491,7 @@ window.addEventListener('load',()=>dash._load());
   }
   const team = () => dash.params().team || '';
   const cells = (tr, r, ks) => ks.forEach(([k, cls]) => { const td = document.createElement('td'); td.textContent = f(r[k]); if (cls) td.className = cls; tr.appendChild(td); });
-  const KS = [['td', 'kw-sum'], ['tr', 'kw-sum'], ['ld'], ['lr'], ['cd'], ['cr']];
+  const KS = [['td', 'kw-sum'], ['tr', 'kw-sum'], ['cd'], ['cr'], ['ld'], ['lr']];
   function srt(a, s) { if (!s.k) return a; return a.slice().sort((x, y) => { const p = x[s.k], o = y[s.k]; return (typeof p === 'string' ? p.localeCompare(o, 'ko') : (p - o)) * s.dir; }); }
 
   function render() {
@@ -499,7 +499,7 @@ window.addEventListener('load',()=>dash._load());
     document.querySelectorAll('.kw-upd').forEach((el) => { el.textContent = '🕒 ' + KD.updated.slice(5).replace('-', '/') + ' 업데이트'; });
     const S = KD.sites, st = (k, n) => { const s = S[k] || {}; return n + ' ' + (s.ok ? (s.at || '').slice(11) + ' 수집' : (s.stale ? '수집 실패(이전 값)' : '수집 실패')); };
     const un = (k) => Object.values((S[k] || {}).unmatched || {}).reduce((a, b) => a + b, 0);
-    say('교원 수집 ' + KD.updated + ' · ' + st('life', '일반교원') + ' · ' + st('care', '구독교원') + ' · 우리 지점 외 매장 제외(일반교원 ' + f(un('life')) + '·구독교원 ' + f(un('care')) + '구좌)');
+    say('교원 수집 ' + KD.updated + ' · ' + st('care', '구독교원') + ' · ' + st('life', '일반교원') + ' · 우리 지점 외 매장 제외(구독교원 ' + f(un('care')) + '·일반교원 ' + f(un('life')) + '구좌)');
     $('kw-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' · 완료 = 신청완료일자 기준, 예약 = 접수일자 기준(예약 + 콜대기중) · 숫자는 모두 구좌';
     const t = team(), T = TEAMS.find((x) => x.team === (t || '전체')) || TEAMS[0];
     $('kw-c-d').textContent = f(T.td); $('kw-c-r').textContent = f(T.tr);
@@ -553,7 +553,7 @@ window.addEventListener('load',()=>dash._load());
   function tprod(t) {
     $('kw-tprod-title').textContent = t || '전체';
     const out = [];
-    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => {
+    [['care', '구독교원'], ['life', '일반교원']].forEach(([k, lab]) => {
       const S = (KD.sites[k] || {}).stores || {}, P = {};
       ROWS.forEach((r) => { if (t && r.team !== t) return; ((S[r.store] || {}).prod || []).forEach(([p, d, v]) => { const x = P[p] = P[p] || [0, 0]; x[0] += d; x[1] += v; }); });
       Object.keys(P).sort((a, b) => (P[b][0] + P[b][1]) - (P[a][0] + P[a][1])).forEach((p) => out.push([lab, p, P[p][0], P[p][1]]));
@@ -565,14 +565,14 @@ window.addEventListener('load',()=>dash._load());
     if (!pick) return;
     $('kw-mgr-title').textContent = pick; $('kw-prod-title').textContent = pick;
     const M = {};
-    [['life', 'l'], ['care', 'c']].forEach(([k, p]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.mgr) || []).forEach(([n, d, r]) => { const m = M[n] = M[n] || { n, ld: 0, lr: 0, cd: 0, cr: 0 }; m[p + 'd'] += d; m[p + 'r'] += r; }); });
+    [['care', 'c'], ['life', 'l']].forEach(([k, p]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.mgr) || []).forEach(([n, d, r]) => { const m = M[n] = M[n] || { n, ld: 0, lr: 0, cd: 0, cr: 0 }; m[p + 'd'] += d; m[p + 'r'] += r; }); });
     const ms = Object.values(M).map((m) => Object.assign(m, { td: m.ld + m.cd, tr: m.lr + m.cr })).sort((a, b) => b.td - a.td || b.tr - a.tr);
     const tot = ms.reduce((a, m) => { ['td', 'tr', 'ld', 'lr', 'cd', 'cr'].forEach((k) => { a[k] += m[k]; }); return a; }, { n: '합계', td: 0, tr: 0, ld: 0, lr: 0, cd: 0, cr: 0 });
     const mb = $('kw-mgr-body'); mb.innerHTML = '';
     [...ms, tot].forEach((m, i) => { const tr = document.createElement('tr'); if (i === ms.length) tr.className = 'ig-total'; const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = m.n; tr.appendChild(a); cells(tr, m, KS); mb.appendChild(tr); });
     if (!ms.length) mb.innerHTML = '<tr><td colspan="7" class="ig-c">이번 달 접수가 없어요</td></tr>';
     const pl = [];
-    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => pl.push([lab, p, d, r])); });
+    [['care', '구독교원'], ['life', '일반교원']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => pl.push([lab, p, d, r])); });
     prodRows($('kw-prod-body'), pl);
   }
   function comment(T, rs) {
@@ -580,7 +580,7 @@ window.addEventListener('load',()=>dash._load());
     const top = rs.slice().sort((a, b) => b.td - a.td).filter((r) => r.td).slice(0, 3).map((r) => r.store + ' ' + f(r.td));
     const zero = rs.filter((r) => !r.td).length;
     const share = T.td ? Math.round(T.cd / T.td * 100) : 0;
-    el.textContent = name + ' 당월 신청완료 ' + f(T.td) + '구좌(일반교원 ' + f(T.ld) + ' · 구독교원 ' + f(T.cd) + ', 구독교원 비중 ' + share + '%), 예약 ' + f(T.tr) + '구좌 남아 있어요.' +
+    el.textContent = name + ' 당월 신청완료 ' + f(T.td) + '구좌(구독교원 ' + f(T.cd) + ' · 일반교원 ' + f(T.ld) + ', 구독교원 비중 ' + share + '%), 예약 ' + f(T.tr) + '구좌 남아 있어요.' +
       (top.length ? '\n완료 상위: ' + top.join(' / ') : '') + (zero ? '\n이번 달 완료 0구좌 지점 ' + zero + '곳' : '');
   }
 
