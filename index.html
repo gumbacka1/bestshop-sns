@@ -392,7 +392,7 @@ window.addEventListener('load',()=>dash._load());
   <h2 class="ig-h" id="h-kw-tprod">상품별 교원 <span class="ig-note" id="kw-tprod-title">—</span><button class="ig-reset" data-snap="h-kw-tprod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
   <div class="ig-wrap" style="max-width:520px">
     <table class="ig-table kw-table" id="kw-tprod-table">
-      <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
+      <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="sh">비중</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
       <tbody id="kw-tprod-body"></tbody>
     </table>
   </div>
@@ -411,7 +411,7 @@ window.addEventListener('load',()=>dash._load());
     <h2 class="ig-h" id="h-kw-prod">지점 상품별 교원 <span class="ig-note" id="kw-prod-title">—</span><button class="ig-reset" data-snap="h-kw-prod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
     <div class="ig-wrap" style="max-width:520px">
       <table class="ig-table kw-table" id="kw-prod-table">
-        <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
+        <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="sh">비중</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
         <tbody id="kw-prod-body"></tbody>
       </table>
     </div>
@@ -541,12 +541,14 @@ window.addEventListener('load',()=>dash._load());
   const psort = { k: 't', dir: -1 };
   function prodRows(body, list) {
     body.innerHTML = '';
-    const v = (x) => ({ lab: x[0], p: x[1], d: x[2], r: x[3], t: x[2] + x[3] })[psort.k];
+    const all = list.reduce((a, x) => a + x[2] + x[3], 0);
+    const pct = (t) => all ? (Math.round(t / all * 1000) / 10).toFixed(1) + '%' : '-';
+    const v = (x) => ({ lab: x[0], p: x[1], d: x[2], r: x[3], t: x[2] + x[3], sh: x[2] + x[3] })[psort.k];
     list = list.slice().sort((a, b) => { const x = v(a), y = v(b); return (typeof x === 'string' ? x.localeCompare(y, 'ko') : x - y) * psort.dir || (b[2] + b[3]) - (a[2] + a[3]); });
-    if (!list.length) { body.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>'; return; }
+    if (!list.length) { body.innerHTML = '<tr><td colspan="6" class="ig-c">이번 달 접수가 없어요</td></tr>'; return; }
     const tot = { d: 0, r: 0 };
-    list.forEach(([lab, p, d, r]) => { tot.d += d; tot.r += r; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; body.appendChild(tr); });
-    const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.d + tot.r) + '</td><td>' + f(tot.d) + '</td><td>' + f(tot.r) + '</td>'; body.appendChild(tr);
+    list.forEach(([lab, p, d, r]) => { tot.d += d; tot.r += r; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + pct(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; body.appendChild(tr); });
+    const tr = document.createElement('tr'); tr.className = 'ig-total'; tr.innerHTML = '<td class="ig-c" colspan="2">합계</td><td class="ig-grp">' + f(tot.d + tot.r) + '</td><td>' + (all ? '100%' : '-') + '</td><td>' + f(tot.d) + '</td><td>' + f(tot.r) + '</td>'; body.appendChild(tr);
   }
   function tprod(t) {
     $('kw-tprod-title').textContent = t || '전체';
