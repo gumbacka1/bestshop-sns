@@ -91,6 +91,12 @@ window.addEventListener('load',()=>dash._load());
 .ig-warn { display: inline-block; margin-right: 4px; animation: ig-blink 1.2s infinite; }
 @keyframes ig-blink { 50% { opacity: .3; } }
 .ig-table tr.ig-total td { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); }
+.kw-table td.kw-sum { font-weight: 600; }
+#kw-team-table td:first-child, #kw-team-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-bg); }
+#kw-team-table th:first-child { background: #EDEDED; }
+#kw-team-table tr.ig-total td:first-child { background: var(--color-panel); }
+#kw-team-table tr.ig-gb td:first-child { background: #FFF4D6; }
+#kw-store-table tbody tr { cursor: pointer; }
 .ig-table a { color: inherit; text-decoration: none; }
 .ig-table a:hover { text-decoration: underline; }
 .ig-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; margin: 0 0 var(--cds-gap-sm); }
@@ -151,6 +157,7 @@ window.addEventListener('load',()=>dash._load());
   <div class="ig-secs" id="sec-tabs" role="tablist" aria-label="화면 선택">
     <button class="ig-sec is-on" role="tab" data-sec="sec-ig" type="button">📸 인스타</button>
     <button class="ig-sec" role="tab" data-sec="sec-rv" type="button">💬 온라인 리뷰</button>
+    <button class="ig-sec" role="tab" data-sec="sec-kw" type="button" id="kw-tab" hidden>🤝 교원</button>
   </div>
 
 
@@ -323,7 +330,243 @@ window.addEventListener('load',()=>dash._load());
     <p>· 리뷰(네이버·홈페이지)는 매일 아침 6시에 전국을 모아 9시 전에 마무리하고, 경북담당 29곳은 15·18·20시에 당일 숫자를 다시 세요. 카톡 친구는 매일 9시에 1번 갱신돼요.</p>
   </details>
   </section>
+  <section id="sec-kw" hidden>
+  <span data-draw="kw-all" hidden></span>
+  <div class="ig-mini" id="kw-cards">
+    <div class="ig-mc"><span class="ig-ml">당월 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-c-d">—</span><span class="ig-ms ig-flat">구좌</span></span></div>
+    <div class="ig-mc"><span class="ig-ml">당월 예약</span><span class="ig-mv"><span class="ig-mn" id="kw-c-r">—</span><span class="ig-ms ig-flat">구좌</span></span></div>
+    <div class="ig-mc"><span class="ig-ml">오늘 신청완료</span><span class="ig-mv"><span class="ig-mn" id="kw-c-dt">—</span><span class="ig-ms ig-flat" id="kw-c-dy"></span></span></div>
+    <div class="ig-mc"><span class="ig-ml">오늘 예약</span><span class="ig-mv"><span class="ig-mn" id="kw-c-rt">—</span><span class="ig-ms ig-flat" id="kw-c-ry"></span></span></div>
+  </div>
+  <p class="ig-mini-note" id="kw-note">—</p>
+  <p class="ig-note" id="kw-status">교원 수집 —</p>
+
+  <h2 class="ig-h" id="h-kw-team">담당별 교원 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="kw-team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-kw-team" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+  <div class="ig-wrap">
+    <table class="ig-table kw-table" id="kw-team-table">
+      <thead>
+        <tr>
+          <th rowspan="2" class="ig-sort" data-k="team">담당</th>
+          <th rowspan="2" class="ig-sort" data-k="n">지점</th>
+          <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
+          <th colspan="2" class="ig-grp ig-g1">라이프</th>
+          <th colspan="2" class="ig-grp ig-g1">케어</th>
+        </tr>
+        <tr>
+          <th class="ig-sort ig-grp" data-k="td">완료</th><th class="ig-sort" data-k="tr">예약</th>
+          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
+          <th class="ig-sort ig-grp" data-k="cd">완료</th><th class="ig-sort" data-k="cr">예약</th>
+        </tr>
+      </thead>
+      <tbody id="kw-team-body"></tbody>
+    </table>
+  </div>
+
+  <h2 class="ig-h" id="h-kw-store">지점별 교원 <span class="ig-note" id="kw-store-count">—</span><button class="ig-reset" id="kw-store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-kw-store" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+  <div class="ig-tools">
+    <input class="ig-search" id="kw-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
+    <span class="ig-note">표 머리를 누르면 정렬되고, 지점 줄을 누르면 아래에 매니저별·상품별이 나와요</span>
+  </div>
+  <div class="ig-wrap">
+    <table class="ig-table kw-table" id="kw-store-table">
+      <thead>
+        <tr>
+          <th rowspan="2" class="ig-sort" data-k="team">담당</th>
+          <th rowspan="2" class="ig-sort" data-k="store">지점</th>
+          <th colspan="2" class="ig-grp ig-g1">합계 (당월)</th>
+          <th colspan="2" class="ig-grp ig-g1">라이프</th>
+          <th colspan="2" class="ig-grp ig-g1">케어</th>
+          <th colspan="2" class="ig-grp ig-g1">오늘</th>
+        </tr>
+        <tr>
+          <th class="ig-sort ig-grp" data-k="td" aria-sort="descending">완료</th><th class="ig-sort" data-k="tr">예약</th>
+          <th class="ig-sort ig-grp" data-k="ld">완료</th><th class="ig-sort" data-k="lr">예약</th>
+          <th class="ig-sort ig-grp" data-k="cd">완료</th><th class="ig-sort" data-k="cr">예약</th>
+          <th class="ig-sort ig-grp" data-k="dt">완료</th><th class="ig-sort" data-k="rt">예약</th>
+        </tr>
+      </thead>
+      <tbody id="kw-store-body"></tbody>
+    </table>
+  </div>
+
+  <div id="kw-detail" hidden>
+    <h2 class="ig-h" id="h-kw-mgr">매니저별 교원 <span class="ig-note" id="kw-mgr-title">—</span><button class="ig-reset" data-snap="h-kw-mgr" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+    <div class="ig-wrap" style="max-width:640px">
+      <table class="ig-table kw-table" id="kw-mgr-table">
+        <thead>
+          <tr><th rowspan="2">매니저</th><th colspan="2" class="ig-grp">합계</th><th colspan="2" class="ig-grp">라이프</th><th colspan="2" class="ig-grp">케어</th></tr>
+          <tr><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th><th class="ig-grp">완료</th><th>예약</th></tr>
+        </thead>
+        <tbody id="kw-mgr-body"></tbody>
+      </table>
+    </div>
+    <h2 class="ig-h" id="h-kw-prod">상품별 교원 <span class="ig-note" id="kw-prod-title">—</span><button class="ig-reset" data-snap="h-kw-prod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
+    <div class="ig-wrap" style="max-width:520px">
+      <table class="ig-table kw-table" id="kw-prod-table">
+        <thead><tr><th>구분</th><th>상품</th><th class="ig-grp">합계</th><th>완료</th><th>예약</th></tr></thead>
+        <tbody id="kw-prod-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="ig-h" id="h-kw-comment">▶ 코멘트</h2>
+  <div class="ig-comment" id="kw-comment" style="white-space:pre-line">—</div>
+
+  <details class="ig-note" style="margin-top: var(--cds-gap-lg)">
+    <summary>숫자 기준 보기</summary>
+    <p>· 교원라이프(라이프)와 LG교원 구독(케어) 접수현황을 이번 달 1일부터 오늘까지 접수일자 기준으로 모아요. 숫자는 모두 구좌예요.</p>
+    <p>· 완료 = 고객상태 '신청완료', 예약 = '예약' + '콜대기중'. 취소 등 다른 상태는 넣지 않아요. 오늘 완료는 신청완료일자, 오늘 예약은 접수일시 기준이에요.</p>
+    <p>· 우리 297개 지점 이름과 맞는 매장만 세요(다른 운영사 매장은 빠져요). 매니저 이름은 가운데를 가리고, 고객 정보는 저장하지 않아요.</p>
+    <p>· 매일 8:10·14:10·17:10·19:10에 수집을 시작해서 9시·15시·18시·20시에 볼 수 있게 맞췄어요(깃허브 사정으로 조금 늦을 수 있어요).</p>
+    <p>· 이 탭과 자료는 관리자 로그인 때만 열려요(자료 파일은 관리자 비밀번호로 잠겨 있어요).</p>
+  </details>
+  </section>
 </div>
+
+<script>
+/* 🤝 교원 탭 — 관리자 로그인 때만 보임 (261123). 자료는 data/kyowon.json(관리자 비밀번호로 잠김) */
+(() => {
+  const SALT = 'bestshop-sns-kyowon-v1';
+  const ORDER = ['경북담당', '강남담당', '경원담당', '경인담당', '중부담당', '서부담당', '경남담당', '백화점담당'];
+  const $ = (id) => document.getElementById(id);
+  const ss = { get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { sessionStorage.removeItem(k); } catch (e) {} } };
+  const f = (v) => (v === null || v === undefined) ? '—' : (v ? v.toLocaleString('ko-KR') : '-');
+  const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  let KD = null, ROWS = [], TEAMS = [], pick = null, q = '';
+  const sort = { s: { k: 'td', dir: -1 }, t: { k: null, dir: -1 } };
+  const say = (t) => { $('kw-status').textContent = t; };
+
+  async function derive(pw) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: new TextEncoder().encode(SALT), iterations: 200000, hash: 'SHA-256' }, base, 256);
+    return btoa(String.fromCharCode(...new Uint8Array(bits)));
+  }
+  async function load() {
+    const k = ss.get('kwKey');
+    if (!k) { say('관리자 로그아웃 후 다시 로그인하면 교원 자료가 열려요'); return; }
+    say('교원 자료 여는 중…');
+    const r = await fetch('data/kyowon.json?v=' + Date.now());
+    if (!r.ok) { say('아직 수집된 교원 자료가 없어요'); return; }
+    const box = await r.json();
+    const key = await crypto.subtle.importKey('raw', b64(k), 'AES-GCM', false, ['decrypt']);
+    try {
+      const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(box.iv) }, key, b64(box.ct));
+      KD = JSON.parse(new TextDecoder().decode(pt));
+    } catch (e) { say('교원 자료를 열지 못했어요 (수집 때 쓴 관리자 비밀번호와 달라요)'); return; }
+    build(); render();
+  }
+  window.kwUnlock = async (pw) => { try { ss.set('kwKey', await derive(pw)); await load(); } catch (e) { say('교원 자료를 열지 못했어요'); } };
+  window.kwMark = (on) => {
+    $('kw-tab').hidden = !on;
+    if (!on) {
+      ss.del('kwKey'); KD = null;
+      if (!$('sec-kw').hidden) document.querySelector('.ig-sec[data-sec="sec-ig"]').click();
+    } else if (!KD) load().catch(() => say('교원 자료를 열지 못했어요'));
+  };
+
+  const z = () => ({ ld: 0, lr: 0, cd: 0, cr: 0, td: 0, tr: 0, dt: 0, rt: 0, dy: 0, ry: 0 });
+  const NUM = ['ld', 'lr', 'cd', 'cr', 'td', 'tr', 'dt', 'rt', 'dy', 'ry'];
+  function add(a, b) { NUM.forEach((k) => { a[k] += b[k] || 0; }); return a; }
+  function build() {
+    const L = (KD.sites.life || {}).stores || {}, C = (KD.sites.care || {}).stores || {};
+    ROWS = KD.stores.map(([team, store]) => {
+      const l = L[store] || {}, c = C[store] || {};
+      const r = { team, store, ld: l.d || 0, lr: l.r || 0, cd: c.d || 0, cr: c.r || 0,
+        dt: (l.dt || 0) + (c.dt || 0), rt: (l.rt || 0) + (c.rt || 0), dy: (l.dy || 0) + (c.dy || 0), ry: (l.ry || 0) + (c.ry || 0) };
+      r.td = r.ld + r.cd; r.tr = r.lr + r.cr; return r;
+    });
+    const all = add(z(), {}); all.team = '전체'; all.n = ROWS.length;
+    const by = {};
+    ROWS.forEach((r) => { add(all, r); (by[r.team] = by[r.team] || Object.assign(z(), { team: r.team, n: 0 })); add(by[r.team], r); by[r.team].n++; });
+    const names = Object.keys(by).sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
+    TEAMS = [all, ...names.map((n) => by[n])];
+  }
+  const team = () => dash.params().team || '';
+  const cells = (tr, r, ks) => ks.forEach(([k, cls]) => { const td = document.createElement('td'); td.textContent = f(r[k]); if (cls) td.className = cls; tr.appendChild(td); });
+  const KS = [['td', 'kw-sum'], ['tr', 'kw-sum'], ['ld'], ['lr'], ['cd'], ['cr']];
+  function srt(a, s) { if (!s.k) return a; return a.slice().sort((x, y) => { const p = x[s.k], o = y[s.k]; return (typeof p === 'string' ? p.localeCompare(o, 'ko') : (p - o)) * s.dir; }); }
+
+  function render() {
+    if (!KD) return;
+    document.querySelectorAll('.kw-upd').forEach((el) => { el.textContent = '🕒 ' + KD.updated.slice(5).replace('-', '/') + ' 업데이트'; });
+    const S = KD.sites, st = (k, n) => { const s = S[k] || {}; return n + ' ' + (s.ok ? (s.at || '').slice(11) + ' 수집' : (s.stale ? '수집 실패(이전 값)' : '수집 실패')); };
+    const un = (k) => Object.values((S[k] || {}).unmatched || {}).reduce((a, b) => a + b, 0);
+    say('교원 수집 ' + KD.updated + ' · ' + st('life', '라이프') + ' · ' + st('care', '케어') + ' · 우리 지점 외 매장 제외(라이프 ' + f(un('life')) + '·케어 ' + f(un('care')) + '구좌)');
+    $('kw-note').textContent = KD.from.slice(5).replace('-', '/') + ' ~ ' + KD.to.slice(5).replace('-', '/') + ' 접수 기준 · 숫자는 모두 구좌 · 예약 = 예약 + 콜대기중';
+    const t = team(), T = TEAMS.find((x) => x.team === (t || '전체')) || TEAMS[0];
+    $('kw-c-d').textContent = f(T.td); $('kw-c-r').textContent = f(T.tr);
+    $('kw-c-dt').textContent = f(T.dt); $('kw-c-rt').textContent = f(T.rt);
+    $('kw-c-dy').textContent = '어제 ' + f(T.dy); $('kw-c-ry').textContent = '어제 ' + f(T.ry);
+    // 담당별
+    const tb = $('kw-team-body'); tb.innerHTML = '';
+    const head = TEAMS.slice(0, 1), rest = srt(TEAMS.slice(1), sort.t);
+    [...head, ...rest].forEach((r) => {
+      const tr = document.createElement('tr');
+      if (r.team === '전체') tr.className = 'ig-total'; else if (r.team === '경북담당') tr.className = 'ig-gb';
+      if ((t || '전체') === r.team) tr.classList.add('ig-picked');
+      tr.classList.add('ig-teamrow'); tr.style.cursor = 'pointer';
+      const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = (r.team === '경북담당' ? '★ ' : '') + r.team; tr.appendChild(a);
+      cells(tr, r, [['n'], ...KS]);
+      tr.addEventListener('click', () => { pick = null; dash.setParams({ team: r.team === '전체' ? '' : r.team }); });
+      tb.appendChild(tr);
+    });
+    // 지점별
+    let rs = ROWS.filter((r) => !t || r.team === t);
+    if (q) rs = rs.filter((r) => r.store.toLowerCase().includes(q));
+    rs = srt(rs, sort.s);
+    $('kw-store-count').textContent = rs.length + '개';
+    const sb = $('kw-store-body'); sb.innerHTML = '';
+    rs.forEach((r) => {
+      const tr = document.createElement('tr');
+      if (r.team === '경북담당' && !t) tr.className = 'ig-gb';
+      if (pick === r.store) tr.classList.add('ig-picked');
+      const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = r.team; tr.appendChild(a);
+      const b = document.createElement('td'); b.className = 'ig-c'; b.textContent = r.store; tr.appendChild(b);
+      cells(tr, r, [...KS, ['dt', 'ig-grp'], ['rt']]);
+      tr.addEventListener('click', () => { pick = pick === r.store ? null : r.store; render(); if (pick) $('h-kw-mgr').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      sb.appendChild(tr);
+    });
+    detail();
+    comment(T, rs);
+  }
+  function detail() {
+    $('kw-detail').hidden = !pick;
+    if (!pick) return;
+    $('kw-mgr-title').textContent = pick; $('kw-prod-title').textContent = pick;
+    const M = {};
+    [['life', 'l'], ['care', 'c']].forEach(([k, p]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.mgr) || []).forEach(([n, d, r]) => { const m = M[n] = M[n] || { n, ld: 0, lr: 0, cd: 0, cr: 0 }; m[p + 'd'] += d; m[p + 'r'] += r; }); });
+    const ms = Object.values(M).map((m) => Object.assign(m, { td: m.ld + m.cd, tr: m.lr + m.cr })).sort((a, b) => b.td - a.td || b.tr - a.tr);
+    const tot = ms.reduce((a, m) => { ['td', 'tr', 'ld', 'lr', 'cd', 'cr'].forEach((k) => { a[k] += m[k]; }); return a; }, { n: '합계', td: 0, tr: 0, ld: 0, lr: 0, cd: 0, cr: 0 });
+    const mb = $('kw-mgr-body'); mb.innerHTML = '';
+    [...ms, tot].forEach((m, i) => { const tr = document.createElement('tr'); if (i === ms.length) tr.className = 'ig-total'; const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = m.n; tr.appendChild(a); cells(tr, m, KS); mb.appendChild(tr); });
+    if (!ms.length) mb.innerHTML = '<tr><td colspan="7" class="ig-c">이번 달 접수가 없어요</td></tr>';
+    const pb = $('kw-prod-body'); pb.innerHTML = ''; let any = false;
+    [['life', '라이프'], ['care', '케어']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => { any = true; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; pb.appendChild(tr); }); });
+    if (!any) pb.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>';
+  }
+  function comment(T, rs) {
+    const el = $('kw-comment'); const name = T.team;
+    const top = rs.slice().sort((a, b) => b.td - a.td).filter((r) => r.td).slice(0, 3).map((r) => r.store + ' ' + f(r.td));
+    const zero = rs.filter((r) => !r.td).length;
+    const share = T.td ? Math.round(T.cd / T.td * 100) : 0;
+    el.textContent = name + ' 당월 신청완료 ' + f(T.td) + '구좌(라이프 ' + f(T.ld) + ' · 케어 ' + f(T.cd) + ', 케어 비중 ' + share + '%), 예약 ' + f(T.tr) + '구좌 남아 있어요.' +
+      (top.length ? '\n완료 상위: ' + top.join(' / ') : '') + (zero ? '\n이번 달 완료 0구좌 지점 ' + zero + '곳' : '');
+  }
+
+  dash.draw('kw-all', () => render());
+  $('kw-search').addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); render(); });
+  const bindSort = (tbl, s, reset, def) => {
+    document.querySelectorAll('#' + tbl + ' th.ig-sort').forEach((th) => th.addEventListener('click', () => {
+      const k = th.getAttribute('data-k'); s.dir = s.k === k ? -s.dir : (k === 'team' || k === 'store' ? 1 : -1); s.k = k;
+      document.querySelectorAll('#' + tbl + ' th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === s.k ? (s.dir < 0 ? 'descending' : 'ascending') : 'none'));
+      render();
+    }));
+    $(reset).addEventListener('click', () => { s.k = def; s.dir = -1; document.querySelectorAll('#' + tbl + ' th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === def ? 'descending' : 'none')); render(); });
+  };
+  bindSort('kw-store-table', sort.s, 'kw-store-reset', 'td');
+  bindSort('kw-team-table', sort.t, 'kw-team-reset', null);
+})();
+</script>
 
 <script>
 window.IG = window.IG || {};
@@ -766,7 +1009,7 @@ dash.calc('rvkpi', {
       const on = b.getAttribute('data-sec') === id;
       b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    ['sec-ig', 'sec-rv'].forEach((s) => document.querySelectorAll('#' + s).forEach((el) => { el.hidden = s !== id; }));
+    ['sec-ig', 'sec-rv', 'sec-kw'].forEach((s) => document.querySelectorAll('#' + s).forEach((el) => { el.hidden = s !== id; }));
     dash.setLink(id);
   };
   document.querySelectorAll('.ig-sec').forEach((b) => b.addEventListener('click', () => show(b.getAttribute('data-sec'))));
@@ -1092,7 +1335,7 @@ const say=(t,bad)=>{const m=$('admMsg');m.textContent=t;m.style.color=bad?'#d930
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const logged=()=>ss.get('admOK')==='1';
-function mark(){btn.textContent=logged()?'🔓 관리자':'🔒 관리자';btn.classList.toggle('on',logged());const d=$('rv-mgr-def');if(d)d.style.display=logged()?'':'none';try{dash.draw('rv-mgr')}catch(e){}}
+function mark(){btn.textContent=logged()?'🔓 관리자':'🔒 관리자';try{window.kwMark&&window.kwMark(logged())}catch(e){}btn.classList.toggle('on',logged());const d=$('rv-mgr-def');if(d)d.style.display=logged()?'':'none';try{dash.draw('rv-mgr')}catch(e){}}
 function open(){dim.classList.add('show');$('admLogin').style.display=logged()?'none':'block';$('admPanel').style.display=logged()?'block':'none';if(!logged())setTimeout(()=>$('admPw').focus(),50)}
 function close(){dim.classList.remove('show')}
 btn.onclick=open;$('admClose1').onclick=close;$('admClose2').onclick=close;
@@ -1100,7 +1343,7 @@ dim.addEventListener('click',e=>{if(e.target===dim)close()});
 async function login(){
  if(!$('admPw').value){$('admErr').textContent='비밀번호를 입력해 주세요.';return}
  let h='';try{h=await sha($('admPw').value)}catch(e){$('admErr').textContent='이 브라우저에서는 로그인이 안 돼요.';return}
- if(h===H){ss.set('admOK','1');$('admPw').value='';$('admErr').textContent='';mark();open()}else $('admErr').textContent='비밀번호가 달라요.';
+ if(h===H){ss.set('admOK','1');try{window.kwUnlock&&window.kwUnlock($('admPw').value)}catch(e){}$('admPw').value='';$('admErr').textContent='';mark();open()}else $('admErr').textContent='비밀번호가 달라요.';
 }
 $('admGo').onclick=login;$('admPw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 $('admOut').onclick=()=>{ss.del('admOK');mark();close()};
