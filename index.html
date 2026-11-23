@@ -392,7 +392,7 @@ window.addEventListener('load',()=>dash._load());
   <h2 class="ig-h" id="h-kw-tprod">상품별 교원 <span class="ig-note" id="kw-tprod-title">—</span><button class="ig-reset" data-snap="h-kw-tprod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
   <div class="ig-wrap" style="max-width:520px">
     <table class="ig-table kw-table" id="kw-tprod-table">
-      <thead><tr><th>구분</th><th>상품</th><th class="ig-grp">합계</th><th>완료</th><th>예약</th></tr></thead>
+      <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
       <tbody id="kw-tprod-body"></tbody>
     </table>
   </div>
@@ -411,7 +411,7 @@ window.addEventListener('load',()=>dash._load());
     <h2 class="ig-h" id="h-kw-prod">지점 상품별 교원 <span class="ig-note" id="kw-prod-title">—</span><button class="ig-reset" data-snap="h-kw-prod" type="button">📷 이미지 생성</button><span class="snap-upd kw-upd">—</span></h2>
     <div class="ig-wrap" style="max-width:520px">
       <table class="ig-table kw-table" id="kw-prod-table">
-        <thead><tr><th>구분</th><th>상품</th><th class="ig-grp">합계</th><th>완료</th><th>예약</th></tr></thead>
+        <thead><tr><th class="ig-sort" data-k="lab">구분</th><th class="ig-sort" data-k="p">상품</th><th class="ig-sort ig-grp" data-k="t" aria-sort="descending">합계</th><th class="ig-sort" data-k="d">완료</th><th class="ig-sort" data-k="r">예약</th></tr></thead>
         <tbody id="kw-prod-body"></tbody>
       </table>
     </div>
@@ -538,8 +538,11 @@ window.addEventListener('load',()=>dash._load());
     detail();
     comment(T, rs);
   }
+  const psort = { k: 't', dir: -1 };
   function prodRows(body, list) {
     body.innerHTML = '';
+    const v = (x) => ({ lab: x[0], p: x[1], d: x[2], r: x[3], t: x[2] + x[3] })[psort.k];
+    list = list.slice().sort((a, b) => { const x = v(a), y = v(b); return (typeof x === 'string' ? x.localeCompare(y, 'ko') : x - y) * psort.dir || (b[2] + b[3]) - (a[2] + a[3]); });
     if (!list.length) { body.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>'; return; }
     const tot = { d: 0, r: 0 };
     list.forEach(([lab, p, d, r]) => { tot.d += d; tot.r += r; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; body.appendChild(tr); });
@@ -566,9 +569,9 @@ window.addEventListener('load',()=>dash._load());
     const mb = $('kw-mgr-body'); mb.innerHTML = '';
     [...ms, tot].forEach((m, i) => { const tr = document.createElement('tr'); if (i === ms.length) tr.className = 'ig-total'; const a = document.createElement('td'); a.className = 'ig-c'; a.textContent = m.n; tr.appendChild(a); cells(tr, m, KS); mb.appendChild(tr); });
     if (!ms.length) mb.innerHTML = '<tr><td colspan="7" class="ig-c">이번 달 접수가 없어요</td></tr>';
-    const pb = $('kw-prod-body'); pb.innerHTML = ''; let any = false;
-    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => { any = true; const tr = document.createElement('tr'); tr.innerHTML = '<td class="ig-c">' + lab + '</td><td class="ig-c"></td><td class="kw-sum ig-grp">' + f(d + r) + '</td><td>' + f(d) + '</td><td>' + f(r) + '</td>'; tr.children[1].textContent = p; pb.appendChild(tr); }); });
-    if (!any) pb.innerHTML = '<tr><td colspan="5" class="ig-c">이번 달 접수가 없어요</td></tr>';
+    const pl = [];
+    [['life', '일반교원'], ['care', '구독교원']].forEach(([k, lab]) => { const s = ((KD.sites[k] || {}).stores || {})[pick]; ((s && s.prod) || []).forEach(([p, d, r]) => pl.push([lab, p, d, r])); });
+    prodRows($('kw-prod-body'), pl);
   }
   function comment(T, rs) {
     const el = $('kw-comment'); const name = T.team;
@@ -589,6 +592,11 @@ window.addEventListener('load',()=>dash._load());
     }));
     $(reset).addEventListener('click', () => { s.k = def; s.dir = -1; document.querySelectorAll('#' + tbl + ' th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === def ? 'descending' : 'none')); render(); });
   };
+  ['kw-tprod-table', 'kw-prod-table'].forEach((id) => document.querySelectorAll('#' + id + ' th.ig-sort').forEach((th) => th.addEventListener('click', () => {
+    const k = th.getAttribute('data-k'); psort.dir = psort.k === k ? -psort.dir : (k === 'lab' || k === 'p' ? 1 : -1); psort.k = k;
+    document.querySelectorAll('#kw-tprod-table th.ig-sort, #kw-prod-table th.ig-sort').forEach((h) => h.setAttribute('aria-sort', h.getAttribute('data-k') === k ? (psort.dir < 0 ? 'descending' : 'ascending') : 'none'));
+    render();
+  })));
   bindSort('kw-store-table', sort.s, 'kw-store-reset', 'td');
   bindSort('kw-team-table', sort.t, 'kw-team-reset', null);
 })();
