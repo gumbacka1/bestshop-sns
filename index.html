@@ -1009,7 +1009,10 @@ dash.calc('rvkpi', {
       const stamp = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
       const per = document.querySelector('[data-draw="period"]');
       const upd = btn.parentElement.querySelector('.snap-upd');
-      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '주간 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + team + '</p>';
+      let store = '';
+      if (h.id === 'h-rv-daily') { const nt = h.querySelector('[data-draw="rv-bar-title"]'); const w = nt ? nt.textContent.split(' · ')[0].trim() : ''; if (w && w !== '—' && w !== team && w !== '전체') store = w; }
+      const sel = h.id === 'h-rv-daily' ? team + (store ? ' / ' + store : ' 전체') : team;
+      box.innerHTML = '<p class="snap-h">경북 SNS 현황 · ' + (store ? store + ' ' : '') + title + '</p><p class="snap-s">' + (per && per.textContent !== '—' ? '주간 기준 ' + per.textContent + ' · ' : '') + (upd && upd.textContent !== '—' ? upd.textContent.replace('🕒 ', '') : stamp + ' 기준') + ' · 선택: ' + sel + '</p>';
       const c = wrap.cloneNode(true); c.querySelectorAll('.rv-qr').forEach((q) => q.remove()); box.appendChild(c); document.body.appendChild(box);
       const t = c.querySelector('table'); if (t) box.style.width = (t.scrollWidth + 36) + 'px';
       const sc = Math.max(0.5, Math.min(2, Math.sqrt(1.6e7 / Math.max(1, box.offsetWidth * box.offsetHeight))));
