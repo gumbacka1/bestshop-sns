@@ -4,7 +4,7 @@
 - 로그인 정보는 깃허브 Secrets(KW_LIFE_ID/PW, KW_CARE_ID/PW)에서만 읽음. 로그에 찍지 않음.
 - 고객 이름·전화번호는 저장하지 않음 (지점·매니저·상품별 숫자만).
 - 결과는 관리자 비밀번호(KW_ADMIN_PW)로 암호화해서 저장 → 공유 페이지 관리자 로그인 때만 풀림.
-- 기준: 이번 달 1일 ~ 오늘 접수일자, 숫자는 구좌. 신청완료 = 완료, 예약·콜대기중 = 예약 (261123 사용자 결정)
+- 기준: 완료 = 이번 달 1일 ~ 오늘 신청완료일자, 예약 = 같은 기간 접수일자. 숫자는 구좌. 신청완료 = 완료, 예약·콜대기중 = 예약 (261123 사용자 결정)
 - KW_DEBUG=1 이면 화면 구조(검색 줄·엑셀 버튼·페이지 번호)만 로그에 남김 (고객 정보 없음)
 """
 import base64, json, os, re, sys, tempfile, time, datetime as dt
@@ -165,10 +165,12 @@ def login(page, base, uid, pw):
         raise RuntimeError('로그인 실패 (아이디·비밀번호 확인 필요)')
 
 
-def search(page, base, d1, d2):
+def search(page, base, d1, d2, cond='1'):
     page.goto(base + '/easycti/jsp/list/best_list.jsp', wait_until='domcontentloaded', timeout=120000)
     page.wait_for_timeout(2000)
-    ok = page.evaluate("""([a, b]) => {
+    ok = page.evaluate("""([a, b, c]) => {
+      const sel = document.getElementById('selectSRCH_COND');
+      if (sel) { sel.value = c; sel.dispatchEvent(new Event('change', {bubbles:true})); }
       const ins = [...document.querySelectorAll('input')].filter(i => /^\\d{4}-\\d{2}-\\d{2}$/.test(i.value) || /date|sdate|edate|start|end/i.test(i.name + i.id));
       if (ins.length < 2) return 'no-date';
       ins[0].value = a; ins[1].value = b;
@@ -178,7 +180,7 @@ def search(page, base, d1, d2):
       const go = ls[ls.length - 1];
       if (!go) return 'no-btn';
       go.click(); return 'ok';
-    }""", [d1, d2])
+    }""", [d1, d2, cond])
     if ok != 'ok':
         raise RuntimeError('조회 실패: ' + ok)
     page.wait_for_load_state('domcontentloaded', timeout=120000)
@@ -303,17 +305,21 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday):
     try:
         login(page, cfg['base'], uid, pw)
         log(' ', cfg['label'], '로그인 됨')
-        search(page, cfg['base'], d1, d2)
-        if DEBUG:
-            debug_dump(page)
-            log('  첫 쪽 줄 수:', len(page_rows(page)))
-        rows = try_excel(page)
-        how = 'excel'
-        if not rows:
-            search(page, cfg['base'], d1, d2)
-            rows, how = try_pages(page), 'pages'
-        log(' ', cfg['label'], how, len(rows), '줄')
-        if not rows:
+        def grab(cond, name):
+            search(page, cfg['base'], d1, d2, cond)
+            if DEBUG:
+                debug_dump(page)
+            got, how = try_excel(page), 'excel'
+            if not got:
+                search(page, cfg['base'], d1, d2, cond)
+                got, how = try_pages(page), 'pages'
+            log(' ', cfg['label'], name, how, len(got), '줄')
+            return got
+        # 261123 사용자 결정: 완료 = 신청완료일자 기준(조회 조건 '신청완료'), 예약 = 접수일자 기준
+        done = [r for r in grab('3', '신청완료일자 기준') if r.get('status') in DONE]
+        rsv = [r for r in grab('1', '접수일자 기준') if r.get('status') in RSV]
+        rows = done + rsv
+        if not done and not rsv:
             raise RuntimeError('표를 못 읽음')
         agg, un, st = aggregate(rows, match, today, yday)
         return {'ok': True, 'at': dt.datetime.now(KST).strftime('%Y-%m-%d %H:%M'), 'how': how, 'n': len(rows),
