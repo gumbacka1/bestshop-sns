@@ -316,14 +316,18 @@ def collect_site(pw_ctx, key, cfg, d1, d2, match, today, yday, months=(), gb=())
             if not got:
                 search(page, cfg['base'], a, b, cond)
                 got, how = try_pages(page), 'pages'
+            if not got:   # 261124: 사이트가 가끔 '추출 건수가 없습니다'를 잘못 띄움 → 한 번 더
+                page.wait_for_timeout(5000)
+                search(page, cfg['base'], a, b, cond)
+                got, how = try_excel(page), 'excel(재시도)'
             log(' ', cfg['label'], name, how, len(got), '줄')
             return got
         # 261123 사용자 결정: 완료 = 신청완료일자 기준(조회 조건 '신청완료'), 예약 = 접수일자 기준
         done = [r for r in grab('3', '신청완료일자 기준') if r.get('status') in DONE]
         rsv = [r for r in grab('1', '접수일자 기준') if r.get('status') in RSV]
         rows, how = done + rsv, 'excel'
-        if not done and not rsv:
-            raise RuntimeError('표를 못 읽음')
+        if not done and dt.datetime.now(KST).day > 1:
+            raise RuntimeError('신청완료가 0줄 — 사이트 오류로 보고 다시 시도(안 되면 이전 값 유지)')
         agg, un, st = aggregate(rows, match, today, yday)
         # 지난달들 신청완료(경북만, 지점별 구좌) — 한 번 받아 두고 계속 씀 (261123 사용자 요청: 1~10월)
         mon, monm = {}, {}
