@@ -431,7 +431,7 @@ def main():
             sites[key]['monm'] = monm
     # 시각별 기록(어제 이 시각 비교용): 보는 시각 9·15·18·20시 칸에 그때까지의 오늘 완료(지점별 합) 저장, 최근 3일
     h = now.hour + now.minute / 60
-    slot = next((x for x in (20, 18, 15, 9) if h >= x - 1), 9)
+    slot = next((x for x in (20, 18, 15, 9) if h >= x - 2), 9)   # 261124: 7:30·13:30·16:30·18:30 시작에 맞춤
     hist = {d: v for d, v in (prev.get('hist') or {}).items() if d >= (now - dt.timedelta(days=3)).strftime('%Y-%m-%d')}
     snap = {}
     for k in sites:
