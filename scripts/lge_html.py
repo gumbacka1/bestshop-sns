@@ -21,6 +21,30 @@ def sub(s, old, new):
     return s.replace(old, new)
 
 
+def ascii_safe(s):
+    # 메일·휴대폰에서 글자 깨짐 방지: 파일 전체를 영문 글자만으로 (한글은 코드로 바꿔 넣고 브라우저가 다시 한글로 보여 줌)
+    def js(t):
+        out = []
+        for ch in t:
+            o = ord(ch)
+            if o < 128: out.append(ch)
+            elif o > 0xFFFF:
+                o -= 0x10000; out.append('\\u%04x\\u%04x' % (0xD800 + (o >> 10), 0xDC00 + (o & 0x3FF)))
+            else: out.append('\\u%04x' % o)
+        return ''.join(out)
+    def css(t): return ''.join(ch if ord(ch) < 128 else '\\%x ' % ord(ch) for ch in t)
+    def htm(t): return ''.join(ch if ord(ch) < 128 else '&#x%x;' % ord(ch) for ch in t)
+    parts = re.split(r'(<script>.*?</script>|<style>.*?</style>)', s, flags=re.S)
+    res = []
+    for x in parts:
+        if x.startswith('<script>'): res.append(js(x))
+        elif x.startswith('<style>'): res.append(css(x))
+        else: res.append(htm(x))
+    r = ''.join(res)
+    assert all(ord(c) < 128 for c in r)
+    return r
+
+
 def main():
     D = json.load(open(os.path.join(ROOT, 'data', 'lge_dotcom.json'), encoding='utf-8'))
     cache = {}
@@ -80,6 +104,7 @@ function care6(m){""")
         "  {const v=sp(x.m),o=E.store[x.m]||{};if(v||o.card)h+=`<div class=\"gap\" style=\"margin:10px 16px 0\"><div class=\"gb\"><div class=\"t\">매장 혜택가 (직접 입력)</div><div class=\"v\">${v?won(v)+'원':'-'}</div><div class=\"t\">${esc(o.card||'')}</div></div><div class=\"gb\"><div class=\"t\">닷컴 최대혜택가와 차이</div><div class=\"v r\">${v&&!x.sub?signed(v-x.max)+'원':'-'}</div></div></div>`;if(E.memo[x.m])h+=`<div class=\"say2\"><b>멘트·메모</b>\\n${esc(E.memo[x.m])}</div>`;h+=editBox(c,x,null);}\n  h+=`<div class=\"sec\"><div class=\"st2\">일시불</div><table><tr><td class=\"k\">판매가</td>")
     s = sub(s, "<script>\n", "<script>\nwindow.__D=" + json.dumps(D, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + ";\n", )
     s = s.replace("  history.replaceState({view:null", "  saveE();history.replaceState({view:null", 1)
+    s = ascii_safe(s)
     os.makedirs(os.path.join(ROOT, 'out'), exist_ok=True)
     ymd = D['updated'][2:10].replace('-', '')
     fn = os.path.join(ROOT, 'out', f'닷컴비교판매_{ymd}_v1.html')
