@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>닷컴 대응 판매 화면</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* VOICE: 매장 카운터에서 고객에게 돌려 보여주는 화면, 차분하고 숫자가 크게
+   IDEA: 메뉴판처럼 고를 수 있는 선택지 카드
+   PICTURE: A·B·B+·C 선택지 카드와 6년 총액 막대
+   COLOUR and TYPE: 흰 바탕, 진한 잉크, LG 레드 포인트 / Noto Sans KR
+   LAYOUT: 고객이 본 모델 → 선택지 → 6년 총액 → 접힌 매니저 칸 */
+:root{color-scheme:light dark;--bg:light-dark(#f4f5f7,#121417);--card:light-dark(#fff,#1c1f23);--ink:light-dark(#1b1d21,#eceef1);--sub:light-dark(#5d636c,#a3a9b2);--mute:light-dark(#8a9099,#7d838c);--line:light-dark(#e3e5e8,#2c3035);--red:light-dark(#a50034,#ff5a83);--redbg:light-dark(#fbeef2,#3a1822);--ok:light-dark(#1f6f4a,#6fd3a1);--bar:light-dark(#c9cdd3,#4a4f56)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.lab{font-size:13px;color:var(--sub)}.mute{font-size:13px;color:var(--mute)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.big{font-size:clamp(22px,6vw,28px);font-weight:700;white-space:nowrap}
+.mid{font-size:18px;font-weight:700;white-space:nowrap}
+.ttl{font-size:16px;font-weight:500}
+.opt{cursor:pointer;transition:border-color .15s}
+.opt.rec{border:2px solid var(--red)}
+.badge{display:inline-block;font-size:12px;padding:2px 10px;border-radius:6px;background:var(--redbg);color:var(--red);margin-bottom:6px}
+.chk{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.9}
+.chk b{font-weight:500;color:var(--ink)}
+.y{color:var(--ok)}.n{color:var(--mute)}
+.step{text-align:center;font-size:14px;color:var(--sub);margin:-2px 0 8px}
+.bars{display:grid;grid-template-columns:28px minmax(0,1fr) 92px;gap:8px;align-items:center;font-size:14px;margin-top:8px}
+.bars .b{height:14px;border-radius:4px;background:var(--bar)}
+.bars .b.r{background:var(--red)}
+.num{text-align:right;white-space:nowrap}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+summary{cursor:pointer;padding:14px 16px;font-weight:500;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"펼치기";font-size:13px;color:var(--sub);font-weight:400}
+details[open] summary::after{content:"접기"}
+.in{padding:0 16px 14px}
+.in h4{margin:12px 0 4px;font-size:14px;color:var(--red)}
+.in p{margin:0 0 6px;font-size:15px}
+.say{background:var(--redbg);border-radius:10px;padding:10px 12px;font-size:15px;margin:4px 0 8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid label{font-size:13px;color:var(--sub);display:block}
+input{width:100%;min-height:44px;font:inherit;font-size:16px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.seg{display:flex;gap:8px;margin-top:6px}
+.seg button{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="card">
+<div class="lab">고객님이 보신 모델</div>
+<div class="row"><div class="ttl">Fit & Max 650L · 1등급</div><div class="big" id="aPrice"></div></div>
+<div class="mute">G646GBB021 · 엘지닷컴 일시불 · 닷컴 전용</div>
+</div>
+
+<p class="lab" style="margin:12px 4px 8px">같은 Fit & Max, 이렇게 가질 수 있어요</p>
+
+<div class="card">
+<div class="row"><div class="ttl">A. 닷컴에서 일시불</div><div class="mid" id="aToday"></div></div>
+<div class="chk"><span class="n">✕</span> 정기 케어 &nbsp; <span class="n">✕</span> 무상 수리는 구매 보증기간만<br><span class="n">✕</span> 실물 보고 고르기 &nbsp; <span class="n">✕</span> 구매 전 매장 실측 상담</div>
+</div>
+
+<div class="card opt" id="optB" data-k="B">
+<div class="badge" id="recB">추천</div>
+<div class="row"><div class="ttl">B. 매장에서 구독 · 같은 급</div><div class="lab">오늘 0원</div></div>
+<div class="row" style="margin-top:2px"><div class="mute">G646GBB031 · 650L 글라스</div><div class="big" id="bMo"></div></div>
+<div class="mute" style="text-align:right" id="bBase"></div>
+<div class="chk"><span class="y">✓</span> 정기 케어 &nbsp; <span class="y">✓</span> 6년 무상 수리<br><span class="y">✓</span> 실물 보고 고르기 &nbsp; <span class="y">✓</span> 구매 전 매장 실측 상담</div>
+</div>
+
+<div class="step" id="stepTxt"></div>
+
+<div class="card opt" id="optP" data-k="P">
+<div class="badge" id="recP">추천</div>
+<div class="row"><div class="ttl">B+. 한 단계 위</div><div class="lab">오늘 0원</div></div>
+<div class="row" style="margin-top:2px"><div class="mute">D646GBB041 · 컨버터블 드로어</div><div class="big" id="pMo"></div></div>
+<div class="mute" style="text-align:right" id="pBase"></div>
+<div class="chk"><span class="y">+</span> <b>아래칸 서랍형</b>, 허리 숙이지 않고 꺼내기<br><span class="y">+</span> 정기 케어 <b>연 4회</b><br><span class="y">+</span> 워터필터·탈취필터 무상 교체<br><span class="y">+</span> 이사 때 철거·재설치 1회 무상</div>
+</div>
+
+<div class="card">
+<div class="row"><div class="ttl">C. 김치냉장고까지 함께</div><div class="lab">오늘 0원</div></div>
+<div class="row" style="margin-top:2px"><div class="mute">Fit & Max 나란히 맞춤 배치</div><div class="mid" id="cMo"></div></div>
+<div class="mute" id="cNote" style="text-align:right"></div>
+</div>
+
+<div class="card">
+<div class="lab">6년 동안 내는 돈</div>
+<div class="bars" id="bars"></div>
+<p style="margin:10px 0 0;font-size:15px" id="diffTxt"></p>
+<p class="mute" style="margin:6px 0 0">구독 총액과 위약금 조건은 계약 전에 서류로 함께 보여드려요.</p>
+</div>
+
+<details>
+<summary>매니저 멘트</summary>
+<div class="in">
+<h4>1. 인정하기</h4><div class="say">"닷컴에서 잘 보고 오셨네요. 그 모델은 닷컴 전용이라 매장엔 없는데, 같은 650L Fit & Max를 실물로 보여드릴게요."</div>
+<h4>2. 물어보기</h4><div class="say">"주방에 딱 맞게 넣으실 거죠? 김치냉장고도 같이 보고 계세요? 아래칸은 자주 쓰세요?"</div>
+<p class="mute">아래칸을 자주 쓴다, 허리가 불편하다 → B+로. 김치냉장고도 바꾼다 → C로.</p>
+<h4>3. B 보여주기</h4><div class="say" id="sayB"></div>
+<h4>4. B+로 올리기</h4><div class="say" id="sayP"></div>
+<h4>5. 하나 더</h4><div class="say">"Fit & Max는 김치냉장고랑 나란히 맞춰 넣을 때 제일 예뻐요. 두 개 같이 하시면 한 달 얼마인지 보여드릴게요."</div>
+<h4>6. 마무리</h4><div class="say">"6년 총액이랑 조건은 계약 전에 서류로 같이 확인해 드릴게요."</div>
+</div>
+</details>
+
+<details>
+<summary>고객이 물어보면</summary>
+<div class="in">
+<h4>"닷컴이 더 싸던데요?"</h4><div class="say" id="qaCheap"></div>
+<h4>"닷컴에서도 구독되잖아요?"</h4><div class="say">"네, 돼요. 다만 이 모델은 닷컴 전용이라 실물을 못 보고 사셔야 해요. 매장에서는 실측부터 설치, 사후관리까지 제가 챙겨 드려요."</div>
+<h4>"카드 만들기 싫어요"</h4><div class="say" id="qaCard"></div>
+</div>
+</details>
+
+<details>
+<summary>추천 · 숫자 바꾸기</summary>
+<div class="in">
+<p class="lab">이 고객에게 추천할 선택지</p>
+<div class="seg"><button type="button" id="segB" aria-pressed="false">B 같은 급</button><button type="button" id="segP" aria-pressed="true">B+ 한 단계 위</button></div>
+<div class="grid" style="margin-top:12px">
+<div><label for="iA">닷컴 일시불 (원)</label><input id="iA" inputmode="numeric" value="3250000"></div>
+<div><label for="iY">구독 기간 (년)</label><input id="iY" inputmode="numeric" value="6"></div>
+<div><label for="iB">B 구독 월 (원)</label><input id="iB" inputmode="numeric" value="81900"></div>
+<div><label for="iP">B+ 구독 월 (원)</label><input id="iP" inputmode="numeric" value="89900"></div>
+<div><label for="iD">제휴카드 할인 월 (원)</label><input id="iD" inputmode="numeric" value="20000"></div>
+<div><label for="iK">김치냉장고 구독 월 (원)</label><input id="iK" inputmode="numeric" value="" placeholder="매장 금액"></div>
+<div><label for="iJ">결합할인 월 (원)</label><input id="iJ" inputmode="numeric" value="" placeholder="없으면 비워 두기"></div>
+</div>
+<p class="mute" style="margin-top:10px">B·B+ 구독료는 예시 숫자예요. 매장 금액으로 바꿔 주세요. 닷컴 가격은 2026.11.25 엘지닷컴 기준(할인가 3,250,000원, 최대혜택가 2,771,400원)이에요.</p>
+</div>
+</details>
+
+</div>
+<script>
+{
+const $=id=>document.getElementById(id);
+const won=n=>(Math.round(n)||0).toLocaleString('ko-KR')+'원';
+const man=n=>(Math.round(n/1000)/10).toLocaleString('ko-KR')+'만원';
+const v=id=>{const n=Number(String($(id).value).replace(/[^0-9]/g,''));return isFinite(n)?n:0};
+let rec='P';
+try{const s=localStorage.getItem('g646rec');if(s==='B'||s==='P')rec=s}catch(e){}
+function draw(){
+ const A=v('iA'),Y=v('iY')||6,B=v('iB'),P=v('iP'),D=v('iD'),K=v('iK'),J=v('iJ');
+ const Bc=Math.max(B-D,0),Pc=Math.max(P-D,0),Bt=Bc*12*Y,Pt=Pc*12*Y,days=Y*365;
+ $('aPrice').textContent=won(A);$('aToday').textContent='오늘 '+won(A);
+ $('bMo').textContent='월 '+won(Bc);$('pMo').textContent='월 '+won(Pc);
+ $('bBase').textContent=D?`제휴카드 월 40만원 사용 시 · 기본 ${won(B)}`:'';
+ $('pBase').textContent=D?`제휴카드 월 40만원 사용 시 · 기본 ${won(P)}`:'';
+ $('stepTxt').textContent=`↓ 한 달 ${won(Pc-Bc)}만 더 하면`;
+ const base=rec==='P'?Pc:Bc,baseName=rec==='P'?'B+':'B';
+ if(K){const c=base+K-J;$('cMo').textContent='두 개 월 '+won(c);$('cNote').textContent=`${baseName} + 김치냉장고${J?` · 결합할인 월 ${won(J)} 반영`:''}`}
+ else{$('cMo').textContent='두 개 월 ○○,○○○원';$('cNote').textContent='김치냉장고 구독료를 넣으면 계산돼요'}
+ const mx=Math.max(A,Bt,Pt,1);
+ const rows=[['A',A,false],['B',Bt,rec==='B'],['B+',Pt,rec==='P']];
+ $('bars').innerHTML=rows.map(([k,n,r])=>`<span>${k}</span><div class="b${r?' r':''}" style="width:${Math.max(n/mx*100,4)}%"></div><span class="num">${man(n)}</span>`).join('');
+ const t=rec==='P'?Pt:Bt,gap=t-A;
+ $('diffTxt').innerHTML=gap>0?`${baseName}와 A의 차이 ${man(gap)} = <b style="font-weight:500">하루 약 ${won(Math.round(gap/days/10)*10)}</b>으로 ${Y}년 케어와 무상 수리`:`${baseName}가 A보다 ${man(-gap)} 적게 들어요`;
+ $('optB').classList.toggle('rec',rec==='B');$('optP').classList.toggle('rec',rec==='P');
+ $('recB').style.display=rec==='B'?'':'none';$('recP').style.display=rec==='P'?'':'none';
+ $('segB').setAttribute('aria-pressed',rec==='B');$('segP').setAttribute('aria-pressed',rec==='P');
+ $('sayB').textContent=`"같은 650L Fit & Max를 목돈 없이 구독으로 하시면 한 달 ${won(B)}이에요. 제휴카드로 한 달 40만 원만 쓰시면 ${won(Bc)}이고요. ${Y}년 동안 고장 나면 무상으로 고쳐 드리고 정기적으로 관리해 드려요."`;
+ $('sayP').textContent=`"여기서 한 달 ${won(Pc-Bc)}만 더 하시면 아래칸이 서랍으로 바뀌어요. 허리 숙이지 않고 꺼내시고, 케어도 1년에 4번 와서 필터까지 바꿔 드려요. 이사하실 때 철거·재설치도 한 번 무상이에요."`;
+ $('qaCheap').textContent=`"네, 닷컴에서 일시불로 하시면 ${won(A)}이에요. 오늘 한 번에 내시는 대신 케어는 없고 무상 수리는 보증기간까지예요. 구독은 오늘 0원에 ${Y}년 관리까지 들어 있어서, 하루로 치면 차이가 ${won(Math.round(Math.max(t-A,0)/days/10)*10)} 정도예요."`;
+ $('qaCard').textContent=`"괜찮아요. 카드 없이도 한 달 ${won(rec==='P'?P:B)}이에요. 쓰시는 카드 실적이 월 40만 원 넘으시면 그때 바꾸셔도 할인 받으실 수 있는지 같이 확인해 볼게요."`;
+}
+['iA','iY','iB','iP','iD','iK','iJ'].forEach(id=>$(id).addEventListener('input',draw));
+const setRec=k=>{rec=k;try{localStorage.setItem('g646rec',k)}catch(e){}draw()};
+$('segB').addEventListener('click',()=>setRec('B'));$('segP').addEventListener('click',()=>setRec('P'));
+$('optB').addEventListener('click',()=>setRec('B'));$('optP').addEventListener('click',()=>setRec('P'));
+draw();
+}
+</script>
+</body>
+</html>

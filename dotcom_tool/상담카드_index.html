@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>닷컴 비교 상담 카드</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* VOICE: 매장 매니저용 업무 도구, 차분하고 바로 읽히게
+   IDEA: 매장 카운터에 펼쳐 두는 상담 카드
+   PICTURE: 닷컴 랭킹 목록과 펼쳐지는 대결카드 자체
+   COLOUR and TYPE: 흰 바탕, 진한 잉크, LG 레드 포인트 / Noto Sans KR
+   LAYOUT: 위 업로드 줄, 품목·구분 칩, 랭킹 목록, 아래 대결카드 */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#16181b);--ink:light-dark(#1b1d21,#eceef1);--sub:light-dark(#5d636c,#a3a9b2);--line:light-dark(#e3e5e8,#2c3035);--soft:light-dark(#f4f5f7,#202328);--red:light-dark(#a50034,#ff5a83);--redbg:light-dark(#fbeef2,#3a1822);--grn:light-dark(#1f6f4a,#6fd3a1);--grnbg:light-dark(#e9f5ef,#16302a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(18px,3vw,40px) max(4vw,14px)}
+h1{font-size:clamp(24px,4vw,34px);line-height:1.15;margin:0 0 6px;font-weight:700}
+.note{color:var(--sub);font-size:14px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 8px}
+.btn{min-height:44px;padding:0 18px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+.btn.main{background:var(--red);border-color:var(--red);color:#fff}
+.btn:focus-visible,.chip:focus-visible,.row:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+#status{font-size:14px;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.chip{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{margin-top:14px;border-top:2px solid var(--ink)}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit;color:inherit}
+.row:hover{background:var(--soft)}.row.on{background:var(--redbg)}
+.rk{font-size:22px;font-weight:700;text-align:center}
+.nm{font-weight:500}.md{font-size:13px;color:var(--sub)}
+.tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:5px;background:var(--soft);color:var(--sub);margin-right:4px}
+.tag.r{background:var(--redbg);color:var(--red)}
+.pr{text-align:right;white-space:nowrap;font-size:14px}.pr b{font-size:16px}
+.to{font-size:13px;color:var(--red);margin-top:2px}.to.no{color:var(--sub)}
+#card{margin-top:22px}
+.card{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.vs{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);align-items:stretch;background:var(--soft)}
+.side{padding:16px}.side small{color:var(--sub);font-size:13px}.side .m{font-size:18px;font-weight:700;margin:2px 0}
+.vsx{display:grid;place-items:center;font-weight:700;color:var(--red)}
+.side.me{background:var(--redbg)}
+.sec{padding:14px 16px;border-top:1px solid var(--line)}
+.sec h3{margin:0 0 6px;font-size:15px;color:var(--red);font-weight:700}
+.sec p{margin:0}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.num{background:var(--soft);border-radius:10px;padding:10px}.num small{display:block;color:var(--sub);font-size:13px}.num b{font-size:18px;white-space:nowrap}
+.say{background:var(--grnbg);border-radius:10px;padding:12px 14px;color:var(--grn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two div{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px}
+.two b{display:block;margin-bottom:2px}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}.cmp td,.cmp th{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}.cmp td:first-child{color:var(--sub);white-space:nowrap}
+.empty{padding:24px;text-align:center;color:var(--sub);border:1px dashed var(--line);border-radius:12px;margin-top:14px}
+.src{font-size:13px;color:var(--sub);margin-top:22px}
+@media(max-width:600px){.row{grid-template-columns:34px minmax(0,1fr)}.pr{grid-column:2;text-align:left}.nums{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.vs{grid-template-columns:1fr}.vsx{padding:4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>닷컴 비교 상담 카드</h1>
+<p class="note">닷컴 모델을 보고 온 고객에게 매장 전략제품을 비교해 보여주고, 2개 묶음·구독으로 이어가는 매니저용 시험판이에요.</p>
+<div class="bar">
+<label class="btn main" for="file" style="display:inline-flex;align-items:center">엑셀 올리기</label>
+<input id="file" type="file" accept=".xlsx,.xls" style="position:absolute;left:-9999px">
+<button class="btn" id="demo" type="button">예시로 보기</button>
+<span id="status">엑셀을 올리면 전략제품이 연결돼요.</span>
+</div>
+<div class="chips" id="cats"></div>
+<div class="chips" id="subs"></div>
+<div id="list"></div>
+<div id="card"></div>
+<p class="src">닷컴 랭킹 출처: LGE.COM 오늘의 랭킹 (2026.11.25 기준, Claude가 세팅). 가격·순위는 매일 바뀌니 상담 전에 한 번 확인해 주세요.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+{
+const DOT={'냉장고':[
+{r:1,s:'800L급',m:'T876MEE1H1',to:'M876GBB231',n:'디오스 AI 오브제컬렉션 (매직스페이스)',c:'870L · 1등급',p:2490000,b:2129700,t:['26년 출시','닷컴 ONLY']},
+{r:2,s:'양문형',m:'S834MEE111',to:'S836GBB142',n:'디오스 AI 오브제컬렉션 (양문형, 매직스페이스)',c:'832L · 1등급',p:1780000,b:1515900,sub:36300,t:['닷컴 ONLY'],cap:'832L',grade:'1등급',door:'네이처(메탈)',feat:'매직스페이스, 도어쿨링+, 인버터 리니어 컴프레서'},
+{r:3,s:'600L급',m:'D646GBB041',n:'디오스 AI 오브제컬렉션 Fit & Max (컨버터블 드로어)',c:'628L · 1등급',p:4550000,b:3980400,t:['26년 출시']},
+{r:4,s:'600L급',m:'G646GBB031',n:'디오스 AI 오브제컬렉션 Fit & Max',c:'650L · 1등급',p:4150000,b:3608400,t:['26년 출시']},
+{r:5,s:'800L급',m:'M876GBB231',n:'디오스 AI 오브제컬렉션 (더블매직스페이스)',c:'871L · 1등급',p:4550000,b:3980400,cp:4280000,cond:'앱 전용 블랙프라이데이 쿠폰 27만원과 카드 결제일 할인 7%(최대 299,600원)를 모두 받았을 때',t:[]},
+{r:6,s:'양문형',m:'S836MEE022',to:'S836GBB142',n:'디오스 AI 오브제컬렉션 (양문형)',c:'832L · 2등급',p:1400000,b:1209000,sub:27200,t:['닷컴 ONLY'],cap:'832L',grade:'2등급',door:'네이처(메탈)',feat:'퓨어 프레시 필터'},
+{r:7,s:'600L급',m:'D604MEE52',to:'G646GBB031',n:'일반냉장고 오브제컬렉션',c:'612L · 2등급',p:1290000,b:1106700,t:[]},
+{r:8,s:'600L급',m:'G646GBB021',to:'G646GBB031',n:'디오스 AI 오브제컬렉션 Fit & Max',c:'650L · 1등급',p:3250000,b:2771400,t:['26년 출시','닷컴 ONLY']},
+{r:9,s:'600L급',m:'M616GBB0M1',to:'G646GBB031',n:'디오스 AI 오브제컬렉션 Fit & Max',c:'609L · 1등급',p:2680000,b:2278500,t:[]},
+{r:10,s:'800L급',m:'T873MEE111',to:'M876GBB231',n:'디오스 오브제컬렉션 (매직스페이스)',c:'870L · 1등급',p:2290000,b:1943700,sub:42300,t:[]}
+],'TV':[],'세탁기':[],'건조기':[],'워시타워':[],'에어컨':[]};
+const SPEC={'D646GBB041':{cap:'628L',grade:'1등급',door:'글라스',feat:'Fit & Max 컨버터블 드로어, 워터필터·유로 고온살균 케어 포함',dp:4550000,db:4231500},'G646GBB031':{cap:'650L',grade:'1등급',door:'글라스',feat:'Fit & Max (주방에 딱 맞는 설치)',dp:4150000},'M876GBB231':{cap:'871L',grade:'1등급',door:'글라스',feat:'더블매직스페이스, AI 신선케어, 자동정온, UV청정탈취필터+',dp:4550000},'S836GBB142':{cap:'832L',grade:'2등급',door:'미스트 글라스',feat:'매직스페이스, AI 신선케어, AI 세이빙 모드, UV청정탈취필터+, 오토 클로징',dp:2500000,db:2111100}};
+const PAIR={'냉장고':['김치냉장고','정수기'],'김치냉장고':['냉장고'],'세탁기':'건조기','건조기':'세탁기','TV':'사운드바','에어컨':'공기청정기','워시타워':'스타일러'};
+const ASK={'800L급':'식구가 몇 분이세요? 장을 한 번에 많이 보시는 편인가요?','양문형':'주방 폭이 어느 정도예요? 냉동실을 많이 쓰시나요?','600L급':'주방에 딱 맞게 넣으실 건가요? 김치냉장고도 같이 보고 계세요?'};
+const DEMO=[
+{품목:'냉장고',세부구분:'800L급',모델:'M876GBB231',선정:'본사',일시불:4400000,월:87000,기간:6,할인:0,카드:20000,카드조건:'제휴카드 전월 40만원 이상 사용 시',같은점:'871L 대용량 4도어, 에너지 1등급이에요. 닷컴 랭킹의 800L급 모델들과 같은 870L대 용량이에요.',다른점:'매직스페이스가 2개(더블매직스페이스)라 자주 꺼내는 음료·반찬을 큰 문을 열지 않고 꺼낼 수 있어요. 글라스 도어에 AI 신선케어(문을 자주 여는 시간 2시간 전에 냉기를 미리 채움), 자동정온, UV청정탈취필터+가 들어가 있어요.',케어:'구독 기간 무상 A/S, 30개월마다 정기 점검, 36개월 차 기계실 부분 분해·고압세척 1회 (엘지닷컴 구독 안내 기준)'},
+{품목:'냉장고',세부구분:'양문형',모델:'S836GBB142',선정:'본사',일시불:2500000,월:48900,기간:6,할인:0,카드:20000,카드조건:'제휴카드 전월 40만원 이상 사용 시',같은점:'832L 같은 용량에 매직스페이스가 있는 양문형이에요. 고객이 보고 온 닷컴 양문형 1위와 크기·쓰임새가 같아요.',다른점:'도어가 메탈이 아니라 미스트 글라스예요. 매장에서 직접 만져 보고 닦아 보며 고를 수 있어요. AI 세이빙 모드와 오토 클로징이 들어가 있어요. 에너지등급은 닷컴 모델(1등급)이 더 좋으니 숨기지 말고 먼저 말해 주세요.',케어:'엘지닷컴 안내 기준 프리미엄 케어를 고르면 매년 방문(부품 클리닝·성능 점검), 퓨어프레시필터 매년 교체, 36개월 차 기계실 분해 세척, 무상 A/S. 매장 월 48,900원이 어떤 케어 유형인지 꼭 확인하세요.'},
+{품목:'냉장고',세부구분:'600L급',모델:'G646GBB031',일시불:4150000,월:81900,기간:6,할인:0,카드:20000,카드조건:'제휴카드 전월 40만원 이상 사용 시',예시:1,같은점:'650L Fit & Max, 에너지 1등급. 주방 가구 라인에 맞춰 넣는 600L대 냉장고예요.',다른점:'도어가 글라스예요. 고객이 본 모델이 일반형이면 Fit & Max는 주방에 빌트인처럼 들어가는 게 가장 큰 차이예요.',케어:'라이트 케어 기준: 30개월마다 점검, 36개월 차 기계실 분해 1회, 소모품 무상 교체, 무상 A/S (엘지닷컴 안내)'},
+{품목:'냉장고',세부구분:'600L급',모델:'D646GBB041',일시불:4550000,월:89900,기간:6,할인:0,카드:20000,카드조건:'제휴카드 전월 40만원 이상 사용 시',예시:1,같은점:'628L Fit & Max 컨버터블 드로어, 에너지 1등급이에요.',다른점:'아래칸이 드로어(서랍)라 허리 숙이지 않고 꺼낼 수 있어요. 구독하면 워터필터 교체와 유로 고온살균 케어가 들어가요.',케어:'엘지닷컴 안내 기준: 정기 케어(연 4회), 워터필터 6개월·퓨어프레시필터 12개월 무상 교체, 무상 철거·재설치 1회, 무상 A/S. 기계실 분해는 프리미엄 케어에만 있어요.'},
+{품목:'김치냉장고',세부구분:'스탠드형',모델:'예시-김치모델D',선정:'자체',일시불:1990000,월:39900,기간:6,할인:5000}];
+let ST=[],cat='냉장고',sub='전체',pick=null,isDemo=false;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won=n=>(Math.round(n)||0).toLocaleString('ko-KR')+'원';
+const num=v=>{const n=Number(String(v??'').replace(/[^0-9.\-]/g,''));return isFinite(n)?n:0};
+function save(){try{localStorage.setItem('dotcomST',JSON.stringify(ST))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem('dotcomST')||'[]');if(Array.isArray(s))ST=s}catch(e){}}
+function find(p,s){return ST.find(x=>x.품목===p&&(!s||x.세부구분===s))}
+function setStatus(){const n=ST.length;$('status').textContent=n?(isDemo?'예시 데이터로 보고 있어요 (가짜 숫자). ':'')+'전략제품 '+n+'개 연결됨':'엑셀을 올리면 전략제품이 연결돼요.'}
+function drawCats(){$('cats').innerHTML=Object.keys(DOT).map(k=>`<button class="chip" type="button" data-c="${k}" aria-pressed="${k===cat}">${k}</button>`).join('');
+const subs=['전체',...new Set(DOT[cat].map(d=>d.s))];
+$('subs').innerHTML=subs.length>1?subs.map(k=>`<button class="chip" type="button" data-s="${k}" aria-pressed="${k===sub}">${k}</button>`).join(''):''}
+function drawList(){const L=DOT[cat].filter(d=>sub==='전체'||d.s===sub);
+if(!L.length){$('list').innerHTML=`<div class="empty">${esc(cat)} 닷컴 랭킹은 다음 단계에서 세팅할게요.</div>`;$('card').innerHTML='';return}
+$('list').innerHTML='<div class="list">'+L.map(d=>{const st=pickSt(d);
+return `<button class="row${pick===d.m?' on':''}" type="button" data-m="${d.m}"><span class="rk">${d.r}</span><span><span class="nm">${esc(d.n)}</span><br><span class="md">${d.m} · ${d.c}</span><br>${d.t.map(t=>`<span class="tag${t.includes('닷컴')?' r':''}">${t}</span>`).join('')}<span class="tag">${d.s}</span><div class="to${st?'':' no'}">${st?'→ 매장 '+esc(st.모델)+(st.선정?' ('+esc(st.선정)+')':''):'→ 전략제품 미등록'}</div></span><span class="pr">닷컴 최대혜택가<br><b>${won(d.b)}</b></span></button>`}).join('')+'</div>'}
+function pickSt(d){return ST.find(x=>x.품목===cat&&x.모델===d.m)||(d.to&&ST.find(x=>x.품목===cat&&x.모델===d.to))||find(cat,d.s)}
+function drawCard(){const d=DOT[cat].find(x=>x.m===pick);if(!d){$('card').innerHTML='';return}
+const st=pickSt(d);
+if(!st){$('card').innerHTML=`<div class="empty">${esc(d.s)} 매장 모델이 아직 없어요. 엑셀 "전략제품입력" 시트에 ${esc(cat)} · ${esc(d.s)} 모델을 넣어 주세요.</div>`;return}
+const sp=SPEC[st.모델]||{},same1=st.모델===d.m;
+const y=num(st.기간)||6,mo=num(st.월),one=num(st.일시불),cd=num(st.카드),cm=mo-cd,ct=cm*12*y,ex=st.예시?' <span class="tag r">금액 예시</span>':'';
+const ref=sp.dp||one, refName=same1?'이 모델':esc(st.모델);
+const saveAmt=ref-ct, perMo=Math.round((ct-ref)/(12*y));
+const pairs=(PAIR[cat]||[]).map(p=>({p,r:find(p)}));
+const rw=(k,a,b)=>a||b?`<tr><td>${k}</td><td>${esc(a||'-')}</td><td>${esc(b||'-')}</td></tr>`:'';
+const why=[sp.door?`실물 확인: ${esc(sp.door)} 도어를 직접 보고 만져 보고 고를 수 있어요.`:'실물 확인: 크기와 마감을 직접 보고 고를 수 있어요.',`케어: 구독 ${y}년 동안 무상 A/S와 정기 케어가 함께 와요.`,`목돈 0원: 오늘 ${won(ref)}을 한 번에 내지 않아도 돼요.`];
+const say=st.멘트||`"닷컴에서 ${won(d.p)}짜리 보고 오셨죠? ${same1?'이 모델 저희 매장에도 있어요.':(d.t.includes('닷컴 ONLY')?'그 모델은 닷컴 전용이라 매장엔 없어요. 대신 비슷한 급인 '+st.모델+'를 보여드릴게요.':'저희 매장은 '+st.모델+'로 나와요.')} 목돈 없이 구독으로 하시면 한 달 ${won(mo)}인데, 제휴카드로 한 달 40만 원만 쓰시면 ${won(cm)}이에요. ${y}년 동안 고장 나면 무상으로 고쳐 드리고 정기적으로 관리까지 해 드려요. ${y}년 총액은 계약 전에 서류로 같이 보여드릴게요."`;
+const sec=(t,h,bg)=>`<div class="sec"${bg?` style="background:var(${bg})"`:''}><h3>${t}</h3>${h}</div>`;
+$('card').innerHTML=`<div class="card">
+<div class="vs"><div class="side"><small>1. 고객이 본 닷컴 모델 · ${d.r}위</small><div class="m">${d.m}</div><div class="md">${esc(d.n)}<br>할인가 ${won(d.p)} · 최대혜택가 ${won(d.b)}<br>${d.t.map(t=>`<span class="tag${t.includes('닷컴')?' r':''}">${t}</span>`).join('')}</div></div><div class="vsx">VS</div>
+<div class="side me"><small>2. 매장 대응 모델${ex}</small><div class="m">${esc(st.모델)}</div><div class="md">일시불 ${won(one)} · 구독 월 ${won(mo)} (${y}년)${cd?`<br>제휴카드 적용 시 월 ${won(cm)}`:''}</div></div></div>
+${same1?sec('같은 모델이에요','<p>모델 비교가 아니라 조건 비교예요. 구독·케어·묶음으로 가세요.</p>','--redbg'):(d.t.includes('닷컴 ONLY')?sec('닷컴 전용 모델이에요',`<p>${d.m}은 엘지닷컴에서만 팔아요. 먼저 말하고, 매장 모델을 실물로 보여주세요.</p>`,'--redbg'):'')}
+${sec('먼저 물어보기',`<p>${esc(ASK[d.s]||'어떤 점 때문에 그 모델을 보셨어요?')}</p>`)}
+${(d.door||sp.door)&&!same1?sec('한눈에 비교',`<table class="cmp"><tr style="color:var(--sub);text-align:left"><th></th><th>닷컴 ${d.m}</th><th>매장 ${esc(st.모델)}</th></tr>${rw('용량',d.cap||d.c,sp.cap)}${rw('에너지',d.grade,sp.grade)}${rw('도어',d.door,sp.door)}${rw('특징',d.feat,sp.feat)}</table>`):''}
+${sec('같은 점 · 다른 점',`<p><b>같은 점</b> ${esc(st.같은점||'같은 '+d.s+' 제품이에요.')}</p><p style="margin-top:6px"><b>다른 점</b> ${esc(st.다른점||'엑셀 "다른 점" 칸에 적으면 여기에 나와요.')}</p>`)}
+${sec('3. 지불가치 비교',`<div class="nums"><div class="num"><small>${refName} 닷컴 일시불</small><b>${won(ref)}</b></div><div class="num"><small>매장 구독+카드 월</small><b>${won(cd?cm:mo)}</b></div><div class="num"><small>${y}년 총액 (케어 포함)</small><b>${won(cd?ct:mo*12*y)}</b></div></div><p style="margin-top:8px">${cd?(saveAmt>0?`닷컴 일시불보다 <b>${won(saveAmt)} 적게</b> 내고, ${y}년 무상 A/S와 케어까지 받아요.`:`닷컴 일시불과의 차이는 한 달 <b>${won(perMo)}</b>꼴이에요. 이 금액으로 ${y}년 무상 A/S와 정기 케어를 받는다고 보여주세요.`):'제휴카드 할인 칸을 채우면 비교가 나와요.'}</p>${!same1&&d.p<ref?`<p class="md" style="margin-top:6px">고객이 본 ${d.m} 할인가는 ${won(d.p)}예요. 이 얘기가 나오면 "닷컴 전용·사양 차이"로 넘어가세요.</p>`:''}`,'--grnbg')}
+${sec('4. 매장에서 사야 하는 이유',`<p>${why.map(w=>'· '+w).join('<br>')}</p>${st.케어?`<p class="md" style="margin-top:6px">${esc(st.케어)}</p>`:''}`)}
+${sec('5. 같이 하면',pairs.map(({p,r})=>r?`<p><b>${esc(p)}</b> ${esc(r.모델)} 월 ${won(num(r.월))} → 두 개 월 <b>${won(cm+num(r.월)-num(r.할인))}</b>${num(r.할인)?` (결합할인 월 ${won(num(r.할인))} 반영)`:''}</p>`:`<p><b>${esc(p)}</b> 엑셀에 매장 ${esc(p)} 구독료를 넣으면 두 개 월 금액이 나와요.</p>`).join('')+'<p class="md">두 개를 일시불로 하면 목돈이 커지니, 여기서 구독 월 금액을 보여주세요.</p>')}
+${sec('6. 고객이 물어보면',`<p><b>"닷컴이 더 싸던데요?"</b><br>${same1?'"닷컴 최대혜택가는 앱 전용 쿠폰이랑 특정 카드 결제일 할인을 다 받았을 때 금액이에요. 실제로 받으실 수 있는 조건으로 같이 계산해 볼게요."':'"보신 건 '+(d.t.includes('닷컴 ONLY')?'닷컴 전용 모델이고 ':'')+'사양이 달라요. 같은 급으로 보면 닷컴 일시불이 '+won(ref)+'예요."'}</p><p style="margin-top:6px"><b>"닷컴에서도 구독되잖아요?"</b><br>"네, 돼요. 다만 실물을 보고 고르시는 게 후회가 없고, 매장에서는 설치 상담부터 사후관리까지 담당 매니저가 챙겨 드려요."</p><p class="md" style="margin-top:6px">사실만 말해요: 카드 조건(${esc(st.카드조건||'실적 조건')})은 꼭 같이 말하고, ${y}년 총액은 계약 전에 보여주세요.</p>`)}
+${sec('7. 그대로 읽는 멘트',`<div class="say">${esc(say)}</div>`)}
+</div>`;
+$('card').scrollIntoView({behavior:window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'})}
+function all(){drawCats();drawList();drawCard();setStatus()}
+const KEY={'품목':'품목','세부구분':'세부구분','전략제품 모델명':'모델','선정':'선정','일시불 금액(원)':'일시불','구독 월 금액(원)':'월','구독 기간(년)':'기간','결합할인(월, 원)':'할인','같은 점(선택)':'같은점','다른 점(선택)':'다른점','추천 멘트(선택)':'멘트','케어 내용(선택)':'케어','제휴카드 할인(월, 원)':'카드','카드 조건(선택)':'카드조건'};
+$('file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+rd.onload=ev=>{try{const wb=XLSX.read(ev.target.result,{type:'array'});const sh=wb.Sheets['전략제품입력']||wb.Sheets[wb.SheetNames[0]];
+const raw=XLSX.utils.sheet_to_json(sh,{defval:''});
+ST=raw.map(r=>{const o={};for(const k in r){const kk=KEY[String(k).trim()];if(kk)o[kk]=typeof r[k]==='string'?r[k].trim():r[k]}return o}).filter(o=>o.품목&&o.모델);
+isDemo=false;save();all();if(!ST.length)$('status').textContent='읽은 행이 없어요. "전략제품입력" 시트의 제목 줄을 바꾸지 말아 주세요.'}
+catch(err){$('status').textContent='엑셀을 읽지 못했어요. 양식 파일로 다시 올려 주세요.'}};rd.readAsArrayBuffer(f);e.target.value=''});
+$('demo').addEventListener('click',()=>{ST=DEMO.map(o=>({...o}));isDemo=true;pick='T876MEE1H1';cat='냉장고';sub='전체';all()});
+document.addEventListener('click',e=>{const c=e.target.closest('[data-c]'),s=e.target.closest('[data-s]'),r=e.target.closest('[data-m]');
+if(c){cat=c.dataset.c;sub='전체';pick=null;all()}else if(s){sub=s.dataset.s;all()}else if(r){pick=r.dataset.m;drawList();drawCard()}});
+load();all();
+}
+</script>
+</body>
+</html>
