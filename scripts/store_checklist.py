@@ -58,7 +58,7 @@ thin = Side(style='thin', color='BFBFBF'); line = Border(bottom=thin)
 wb = Workbook(); ws = wb.active; ws.title = '사용법'
 day = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime('%y%m%d')
 guide = [['베스트샵 운영 모델 체크표', ''], ['', ''], ['■ 하는 법', ''],
-         ['- 각 시트 맨 왼쪽 "운영" 칸을 누르면 목록이 떠요 → O 선택 (직접 O 입력해도 돼요)', ''],
+         ['- 각 시트 맨 왼쪽 "운영" 칸에 숫자 0 입력 (O·1 등 아무 글자나 넣어도 체크로 인식)', ''],
          ['- 체크하면 그 줄이 연한 초록으로 바뀌어요', ''],
          ['- 메모 칸: 전략모델·본사지정·진열만 등 자유롭게', ''],
          ['- 제목줄 필터로 품목·세부별로 좁혀서 보면 편해요 (리뷰 많은 순 정렬되어 있음)', ''],
@@ -67,7 +67,7 @@ for r in guide: ws.append(r)
 order = [g for g, _ in G] + ['기타']
 for g in order:
     if not rows[g]: continue
-    ws.append([g, f'=COUNTA(\'{g}\'!E2:E{len(rows[g]) + 1})&" / "&COUNTIF(\'{g}\'!A2:A{len(rows[g]) + 1},"O")'])
+    ws.append([g, f'=COUNTA(\'{g}\'!E2:E{len(rows[g]) + 1})&" / "&COUNTA(\'{g}\'!A2:A{len(rows[g]) + 1})'])
 ws.append(['']); ws.append(['▶ 코멘트'])
 ws.append(['- 엘지닷컴 ' + day + ' 수집 기준, 판매중지(NOT_FOR_SALE) 모델은 뺐어요'])
 ws.append(['- "수집 보완 중" 줄은 사이트 목록에서 빠져 있던 모델이라 가격만 우선 넣었어요'])
@@ -87,8 +87,7 @@ for g in order:
             c.font = Font(name=F); c.border = line
             if c.column in (9, 10, 11): c.number_format = '#,##0;-#,##0;"-"'
             if c.column in (1, 12, 13, 14): c.alignment = Alignment(horizontal='center')
-    dv = DataValidation(type='list', formula1='"O"', allow_blank=True); s.add_data_validation(dv); dv.add(f'A2:A{n}')
-    s.conditional_formatting.add(f'A2:O{n}', FormulaRule(formula=['$A2="O"'], fill=on))
+    s.conditional_formatting.add(f'A2:O{n}', FormulaRule(formula=['LEN($A2)>0'], fill=on))
     s.freeze_panes = 'F2'; s.auto_filter.ref = f'A1:O{n}'; s.row_dimensions[1].height = 22
-out = os.path.join('/home/claude/out', f'베샵운영모델_체크_{day}_v2.xlsx')
+out = os.path.join('/home/claude/out', f'베샵운영모델_체크_{day}_v3.xlsx')
 wb.save(out); print(out, {g: len(rows[g]) for g in order}, round(os.path.getsize(out) / 1e6, 2), 'MB')
