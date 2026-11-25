@@ -48,7 +48,7 @@ def main():
     ONLY = {q.get('modelName'): ('Y' if q.get('lgecomOnlyFlag') == 'Y' else 'N') for k in R.values() for l in k.values() for q in l}
     wb = Workbook(); ws = wb.active; ws.title = '요약'
     ws.append(['엘지닷컴 전 모델 수집 결과']); ws.append(['수집 시각', M.get('updated', '')])
-    for k in ['모델수', '구독있음', '사진있음', '영상있음', '초']: ws.append([k, M.get(k)])
+    for k in ['모델수', '구독있음', '다품목대상', '결합할인대상', '행사페이지', '사진있음', '영상있음', '초']: ws.append([k, M.get(k)])
     ws.append([]); ws.append(['품목(사이트 경로)', '모델 수'])
     for k, v in (M.get('품목별') or {}).items(): ws.append([k, v])
     ws.append([]); ws.append(['▶ 코멘트'])
@@ -70,11 +70,11 @@ def main():
                      p.get('modelDisplayName') or p.get('title'), rel, cap, eng,
                      n(p.get('obsOriginalPrice')) or pt.get('할인 전 판매가'), n(p.get('obsSellingPrice')),
                      pt.get('쿠폰 적용 시'), n(p.get('maxBenefitPrice')) or pt.get('최대혜택가'),
-                     only, 'Y' if (p.get('care') or {}).get('요약') else '', '구독 전용' if p.get('구독전용') else p.get('sold_as'),
+                     only, p.get('다품목'), p.get('결합'), 'Y' if (p.get('care') or {}).get('요약') else '', '구독 전용' if p.get('구독전용') else p.get('sold_as'),
                      p.get('reviewCount') or p.get('review_text'), p.get('reviewRating'), p.get('url')])
     sheet(wb, '모델·가격', ['경로', '품목', '세부', '모델', '제품명', '출시', '용량·크기', '에너지등급', '정상가', '할인가',
-                         '쿠폰 적용가', '최대혜택가', '닷컴 전용(랭킹 기준)', '구독 가능', '구독 전용/판매 사양', '리뷰 수', '평점', '주소'], rows,
-          [14, 10, 12, 16, 40, 9, 12, 16, 13, 13, 13, 13, 11, 8, 18, 8, 6, 40], money=(8, 9, 10, 11))
+                         '쿠폰 적용가', '최대혜택가', '닷컴 전용(랭킹 기준)', '다품목할인', '결합할인', '구독 가능', '구독 전용/판매 사양', '리뷰 수', '평점', '주소'], rows,
+          [14, 10, 12, 16, 40, 9, 12, 16, 13, 13, 13, 13, 11, 9, 9, 8, 18, 8, 6, 40], money=(8, 9, 10, 11))
 
     rows = []
     for p in P:
@@ -90,6 +90,17 @@ def main():
     sheet(wb, '구독료·케어', ['품목', '모델', '3년 월', '4년 월', '5년 월', '6년 월', '6년 정상 월', '케어 유형',
                            '방문 주기', '기본 선택', '주소'], rows, [14, 16, 11, 11, 11, 11, 12, 40, 30, 16, 40],
           money=(2, 3, 4, 5, 6))
+
+    rows = [[p.get('경로품목'), p.get('modelName'), p.get('다품목'), p.get('결합'), ', '.join(p.get('badges') or []),
+             '\n'.join(p.get('max_benefit_lines') or []), '\n'.join(p.get('buy_benefit_lines') or []),
+             '\n'.join(p.get('캐시백_lines') or []), '\n'.join((p.get('care') or {}).get('combine_lines') or [])]
+            for p in P]
+    sheet(wb, '할인·캐시백(모델별)', ['품목', '모델', '다품목할인 대상', '결합할인 대상', '표시 뱃지', '최대혜택가 구성',
+                                  '구매 혜택', '캐시백', '구독 할인(결합·선납·재구독 등)'], rows, [14, 16, 9, 9, 18, 50, 50, 40, 50])
+
+    rows = [[k, v.get('title'), v.get('url'), '\n'.join(v.get('할인') or [])[:30000], '\n'.join(v.get('캐시백') or [])[:30000]]
+            for k, v in B.items()]
+    sheet(wb, '할인·행사 페이지', ['구분', '제목', '주소', '할인·포인트 문구', '캐시백 문구'], rows, [22, 36, 40, 80, 60])
 
     rows = [[p.get('경로품목'), p.get('modelName'), (p.get('care') or {}).get('care_text') or p.get('care_text'),
              (p.get('care') or {}).get('notes') or p.get('care_notes'), (p.get('care') or {}).get('benefit_text')]

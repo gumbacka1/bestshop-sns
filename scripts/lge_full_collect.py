@@ -27,6 +27,14 @@ INFO_PAGES = {
     '다품목할인': '/benefits/exhibitions/multiple-products',
     '구독_결합할인': '/benefits/exhibitions/detail-PE00423001',
     '구독_FAQ_제휴카드': '/story/user-guide/care-solutions-faq8',
+    '이사_웨딩_구독쿠폰': '/benefits/exhibitions/detail-PE01030003',
+    '구독도엘지닷': '/benefits/exhibitions/detail-PE01027006',
+    '블랙프라이데이': '/benefits/exhibitions/detail-PE01036002',
+    '가전가구결합': '/benefits/exhibitions/detail-PE00932024',
+    '다품목_TV탭': '/benefits/exhibitions/detail-PE00356001?tab=TV',
+    '웨딩혜택': '/benefits/wedding',
+    '멤버십': '/benefits/newMembership',
+    '제휴혜택': '/benefits/affiliate-channel',
 }
 PRICE_KEYS = ['obsOriginalPrice', 'obsSellingPrice', 'obsMemberPrice', 'obsCouponPrice', 'maxBenefitPrice',
               'obsDiscountRate', 'rtModelSeq', 'reviewRatingAvg', 'reviewCount', 'reviewRating', 'totalReviewCount']
@@ -81,6 +89,18 @@ def text_of(h, start=None, end=None, cap=4000):
             j = next((k for k, x in enumerate(lines[1:], 1) if end in x), None)
             if j: lines = lines[:j]
     return '\n'.join(lines)[:cap]
+
+
+def sec_lines(full, start, end, cap):
+    L = full.split('\n')
+    i = next((k for k, x in enumerate(L) if x.startswith(start)), None)
+    if i is None: return []
+    out = []
+    for x in L[i + 1:i + 1 + cap * 2]:
+        if x.startswith(end): break
+        if len(x) < 200: out.append(x)
+        if len(out) >= cap: break
+    return out
 
 
 def first(h, key):
@@ -164,6 +184,18 @@ def product(u):
         if m not in vids: vids.append(m)
     d['images'] = imgs[:60]
     d['videos'] = vids[:20]
+    full = text_of(raw, cap=60000)
+    d['max_benefit_lines'] = sec_lines(full, '최대혜택가', '혜택은 적용하는', 12)
+    d['buy_benefit_lines'] = sec_lines(full, '구매 혜택', '배송', 20)
+    head = full.split('구매 혜택')[0][-3000:] if '구매 혜택' in full else full[:3000]
+    zone = head + '\n' + '\n'.join(d['buy_benefit_lines'])
+    d['badges'] = [b for b in ['다품목할인', '결합할인', '타임딜', '닷컴 ONLY', '닷컴ONLY', '2026년 출시', '신제품', '단독', '쿠폰', '캐시백']
+                   if b in zone]
+    d['다품목'] = 'Y' if '다품목' in zone else ''
+    d['결합'] = 'Y' if '결합할인' in zone else ''
+    d['캐시백_lines'] = [x for x in full.split('\n') if '캐시백' in x and len(x) < 160][:10]
+    d['promo_links'] = sorted(set(re.findall(r'/benefits/exhibitions/detail-PE\d+', raw)) |
+                              set(re.findall(r'/benefits/[a-z][a-z-]{2,40}(?=["\'?#])', raw)))[:40]
     rv = re.search(r'제품 리뷰\s*([\d,]+)', text_of(raw, cap=8000))
     if rv: d['review_text'] = int(rv.group(1).replace(',', ''))
     return d
@@ -198,6 +230,8 @@ def care_page(u):
     if cur: res['current_selection'] = cur.group(1)
     res['care_text'] = text_of(raw, '케어 방문 주기', '구독료 혜택', 3000) or text_of(raw, '케어서비스', '구독료 혜택', 3000)
     res['benefit_text'] = text_of(raw, '구독료 혜택', '더 알아보기', 800)
+    ct = text_of(raw, cap=60000)
+    res['combine_lines'] = [x for x in ct.split('\n') if re.search(r'결합|다품목|선납|재구독|연계|캐시백', x) and len(x) < 160][:25]
     res['notes'] = text_of(raw, '구독하기 전에 꼭 확인', '전체 보기', 1500)
     return res
 
@@ -327,11 +361,33 @@ def main():
             if i % 50 == 0: print(f'{i}/{len(urls)} 진행 ({int(time.time()-t0)}초)')
 
     info = {}
-    for k, path in INFO_PAGES.items():
+    rawdir = os.path.join(OUT, 'raw'); os.makedirs(rawdir, exist_ok=True)
+    endpoints = set()
+    def page(k, path):
         raw, final = get(BASE + path)
         t = text_of(raw, cap=120000)
-        info[k] = {'url': final or BASE + path, 'text': t, 'cards': card_rows(t) if '카드' in k else []}
-        time.sleep(0.5)
+        tt = re.search(r'<title>([^<]{1,200})</title>', raw)
+        info[k] = {'url': final or BASE + path, 'title': H.unescape(tt.group(1)).strip() if tt else '', 'text': t,
+                   'cards': card_rows(t) if '카드' in t else [],
+                   '캐시백': [x for x in t.split('\n') if '캐시백' in x and len(x) < 200][:40],
+                   '할인': [x for x in t.split('\n') if re.search(r'\d+\s*%|\d[\d,]*\s*원\s*(할인|캐시백)|만\s*P', x) and len(x) < 200][:80]}
+        for e in re.findall(r'["\'](/[A-Za-z0-9/_.-]+\.(?:lgajax|json)|/ajax/[A-Za-z0-9/_.-]+|/mkt/api/[A-Za-z0-9/_.-]+)', raw):
+            endpoints.add(e)
+        return raw
+    for k, path in INFO_PAGES.items():
+        raw = page(k, path); time.sleep(0.4)
+        if k in ('다품목할인', '구독_혜택안내', '구독_결합할인'):
+            open(os.path.join(rawdir, k + '.html'), 'w', encoding='utf-8').write(raw)
+    hub = set()
+    for path in ['/benefits', '/benefits/exhibitions', '/benefits/event', '/care-solutions', '/benefits/card-discount']:
+        raw, _ = get(BASE + path)
+        hub |= set(re.findall(r'/benefits/exhibitions/detail-PE\d+', raw)) | set(re.findall(r'/benefits/[a-z][a-z-]{2,40}(?=["\'?#])', raw))
+        time.sleep(0.4)
+    links = hub | {l for p in products for l in (p.get('promo_links') or [])}
+    have = {v['url'].replace(BASE, '').split('?')[0] for v in info.values()}
+    for l in sorted(links)[:250]:
+        if l in have: continue
+        page('행사 ' + l.rsplit('/', 1)[-1], l); time.sleep(0.4)
 
     if len(products) < 10 and not (ONLY or LIMIT):
         print('수집 결과가 너무 적음 — 저장 안 함', len(products)); sys.exit(1)
@@ -339,7 +395,9 @@ def main():
             '품목별': {k: sum(1 for p in products if p['경로품목'] == k) for k in by_cat},
             '구독있음': sum(1 for p in products if (p.get('care') or {}).get('요약')),
             '사진있음': sum(1 for p in products if p.get('images')),
-            '영상있음': sum(1 for p in products if p.get('videos'))}
+            '영상있음': sum(1 for p in products if p.get('videos')),
+            '다품목대상': sum(1 for p in products if p.get('다품목')), '결합할인대상': sum(1 for p in products if p.get('결합')),
+            '행사페이지': len(info), 'ajax_endpoints': sorted(endpoints)[:200]}
     def dump(name, obj):
         with open(os.path.join(OUT, name), 'w', encoding='utf-8') as f:
             json.dump(obj, f, ensure_ascii=False, separators=(',', ':'))
