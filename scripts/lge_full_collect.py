@@ -175,6 +175,8 @@ def care_page(u):
     if not raw or ('care-solutions' not in (final or u)): return None
     h = unesc(raw)
     res = {'url': final or u}
+    tt = re.search(r'<title>([^<]{1,200})</title>', raw)
+    if tt: res['title'] = H.unescape(tt.group(1)).strip()
     m = re.search(r'"priceMap":(\{.*?\}\}),"partnerPriceMap"', h)
     if m:
         try:
@@ -288,10 +290,12 @@ def main():
     def work(u):
         p = product(u)
         time.sleep(0.3)
-        if not p: return None
         cat, slug = path_cat(u)
-        p['경로품목'] = cat
         cu = care_by_slug.get(slug.lower())
+        if not p:
+            if not cu: return None
+            p = {'url': cu, 'modelName': slug.upper(), '구독전용': True, 'specs': {}, 'images': [], 'videos': []}
+        p['경로품목'] = cat
         if not cu:
             cu = BASE + '/care-solutions/' + cat + '/' + slug   # 사이트맵에 없어도 구독 페이지가 있는지 확인
         if cu:
@@ -299,6 +303,8 @@ def main():
             if c:
                 c['요약'] = terms_summary(c)
                 p['care'] = c
+                if p.get('구독전용') and c.get('title'): p['title'] = c['title']
+        if p.get('구독전용') and not p.get('care'): return None
         return p
     with ThreadPoolExecutor(WORKERS) as ex:
         for i, p in enumerate(ex.map(work, urls), 1):

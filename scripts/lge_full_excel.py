@@ -70,10 +70,10 @@ def main():
                      p.get('modelDisplayName') or p.get('title'), rel, cap, eng,
                      n(p.get('obsOriginalPrice')) or pt.get('할인 전 판매가'), n(p.get('obsSellingPrice')),
                      pt.get('쿠폰 적용 시'), n(p.get('maxBenefitPrice')) or pt.get('최대혜택가'),
-                     only, 'Y' if (p.get('care') or {}).get('요약') else '', p.get('sold_as'),
+                     only, 'Y' if (p.get('care') or {}).get('요약') else '', '구독 전용' if p.get('구독전용') else p.get('sold_as'),
                      p.get('reviewCount') or p.get('review_text'), p.get('reviewRating'), p.get('url')])
     sheet(wb, '모델·가격', ['경로', '품목', '세부', '모델', '제품명', '출시', '용량·크기', '에너지등급', '정상가', '할인가',
-                         '쿠폰 적용가', '최대혜택가', '닷컴 전용(랭킹 기준)', '구독 가능', '판매 사양', '리뷰 수', '평점', '주소'], rows,
+                         '쿠폰 적용가', '최대혜택가', '닷컴 전용(랭킹 기준)', '구독 가능', '구독 전용/판매 사양', '리뷰 수', '평점', '주소'], rows,
           [14, 10, 12, 16, 40, 9, 12, 16, 13, 13, 13, 13, 11, 8, 18, 8, 6, 40], money=(8, 9, 10, 11))
 
     rows = []
