@@ -198,9 +198,9 @@ window.addEventListener('load',()=>dash._load());
     <div class="ig-mc" id="card-fol"><span class="ig-ml">팔로워</span><span class="ig-mv"><span class="ig-mn" data-draw="k-fol" data-source="kpi" data-field="followers" data-row="0">—</span><span class="ig-ms">주 <span data-draw="k-fold" data-source="kpi" data-field="f_diff" data-row="0">—</span></span></span></div>
     <div class="ig-mc" id="card-stale"><span class="ig-ml">30일+ 게시 없음</span><span class="ig-mv"><span class="ig-mn bad" data-draw="k-stale" data-source="kpi" data-field="stale" data-row="0">—</span><span class="ig-ms">/ <span data-draw="k-acct" data-source="kpi" data-field="accounts" data-row="0">—</span>곳</span></span></div>
   </div>
-  <p class="ig-note" id="period-note">주간 기준(월요일 아침): <span data-draw="period">—</span><br>원본 갱신 <span data-draw="lastrun">—</span></p>
+  <p class="ig-note" id="period-note">주간 기준(최근 7일, 매일 아침 수집값): <span data-draw="period">—</span><br>원본 갱신 <span data-draw="lastrun">—</span></p>
 
-  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
+  <h2 class="ig-h" id="h-team">담당별 현황 <span class="ig-note">담당을 누르면 아래 지점이 바뀌어요</span><button class="ig-reset" id="team-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-team" type="button">📷 이미지 생성</button><button class="ig-reset xl-btn" type="button" style="display:none" title="경북담당 인스타 기록을 엑셀로 받아요(관리자 전용)">📥 엑셀(경북)</button><span class="snap-upd" data-draw="ig-upd-at">—</span></h2>
   <div class="ig-wrap">
     <table class="ig-table" id="team-table" data-source="teams" data-row-key="team">
       <thead><tr>
@@ -222,7 +222,7 @@ window.addEventListener('load',()=>dash._load());
   <h2 class="ig-h" id="h-store">지점별 현황 <span class="ig-note" data-draw="store-count">—</span></h2>
   <div class="ig-tools">
     <input class="ig-search" id="store-search" type="search" placeholder="지점명 검색" aria-label="지점 검색">
-    <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-store" type="button">📷 이미지 생성</button><span class="snap-upd" data-draw="ig-upd-at">—</span>
+    <button class="ig-reset" id="store-reset" type="button">↺ 정렬 초기화</button><button class="ig-reset" data-snap="h-store" type="button">📷 이미지 생성</button><button class="ig-reset xl-btn" type="button" style="display:none" title="경북담당 인스타 기록을 엑셀로 받아요(관리자 전용)">📥 엑셀(경북)</button><span class="snap-upd" data-draw="ig-upd-at">—</span>
     <span class="ig-note">표 머리를 누르면 정렬되고, 지점명을 누르면 인스타로 가요</span>
   </div>
   <div class="ig-wrap">
@@ -260,8 +260,8 @@ window.addEventListener('load',()=>dash._load());
   <details class="ig-note" id="defs" style="margin-top: var(--cds-gap-lg)">
     <summary>숫자 기준 보기</summary>
     <p>· 인스타 숫자는 메타 공식 Instagram API, 카톡 친구 수는 카카오톡 채널 공개 정보에서 직접 모아요. 인스타는 전국 297곳을 매일 아침 5~8시에 나눠 모아 9시에 마무리하고, 경북담당 29곳은 12~20시에 매시간 다시 모아요. 카톡은 매일 9시에 1번 갱신돼요.</p><p>· 팔로잉은 11/20 직접 수집부터 나와요(그 전 기록은 —). 경북담당은 맨 앞 탭과 표 위쪽에 노란색으로 먼저 보여요.</p><p>· 최근 게시는 그 계정이 직접 올린 글 기준이에요. 다른 계정이 올리고 공동 작성자(콜라보)로 넣은 글은 들어가지 않아요.</p>
-    <p>· 주간 증가 = 가장 최근 월요일 아침 수치 − 그 전 월요일 아침 수치(월~일 한 주). 모든 담당을 같은 아침 수집값(6~9시)으로 비교해요. 그 전 월요일 기록이 없으면 가장 오래된 기록과 비교해요(위 기준 줄에 날짜가 나와요).</p>
-    <p>· 증가율 = 주간 증가 ÷ 그 주 시작(월요일 아침) 수치. 담당 합계는 지점 증가 합 ÷ 지점 시작 수치 합이에요.</p>
+    <p>· 주간 증가 = 오늘 아침 수치 − 7일 전 아침 수치(최근 7일, 매일 하루씩 밀려요). 모든 담당을 같은 아침 수집값(6~9시)으로 비교해요. 7일 전 기록이 없으면 그 이전 가장 가까운 날과 비교해요(위 기준 줄에 날짜가 나와요).</p>
+    <p>· 증가율 = 주간 증가 ÷ 7일 전 아침 수치. 담당 합계는 지점 증가 합 ÷ 지점 시작 수치 합이에요.</p>
     <p>· 최근 게시는 주 1회 업로드 기준으로 표시해요: 8일 이상 빨간 글씨, 15일 이상 빨간 테두리, 30일 이상 진한 빨강 바탕과 ⚠ 표시(최근 게시 칸만). 릴스 최다 조회는 최근 30일 안에 올린 릴스 중 조회수(올린 날부터 쌓인 누적)가 가장 많은 것이고, 누르면 그 릴스로 가요. 30일 안에 올린 릴스가 없으면 '—'. (최근 게시물 25개 안에서 찾아요)</p>
     <p>· 누적 좋아요·누적 댓글은 경북담당 29곳만, 그 계정이 지금까지 올린 모든 게시물의 합계예요(인스타 수집 때마다 새로 셈). 좋아요 수를 숨긴 글은 좋아요에서 빠지고 '숨김 N개'로 표시돼요. 광고로 받은 반응은 들어가지 않아요. 다른 담당은 —로 보여요.</p>
   </details>
@@ -832,17 +832,16 @@ IG.STALE = 30;
 dash.calc('period', {
   inputs: ['daily', 'latest'],
   title: '비교 날짜',
-  description: '최신 기록일, 기준 월요일, 비교일(기준 7일 전 월요일, 없으면 가장 오래된 기록일), 원본 갱신 시각',
+  description: '최신 기록일, 기준일(최신 기록일), 비교일(7일 전, 없으면 그 이전 가장 가까운 날·그것도 없으면 가장 오래된 기록일), 원본 갱신 시각',
   fn: (daily, latest) => {
     const dates = [...new Set(daily.map((r) => r.date))].sort();
     if (!dates.length) return [];
     const last = dates[dates.length - 1];
-    const mondays = dates.filter((d) => new Date(d + 'T00:00:00Z').getUTCDay() === 1);
-    const base = mondays.length ? mondays[mondays.length - 1] : last;
+    const base = last;   // 최근 7일: 오늘 아침 − 7일 전 아침 (261125 변경, 이전엔 월요일 기준)
     const t = new Date(base + 'T00:00:00Z'); t.setUTCDate(t.getUTCDate() - 7);
     const target = t.toISOString().slice(0, 10);
-    const before = dates.filter((d) => d < base);
-    const prev = dates.includes(target) ? target : (before.length ? before[0] : null);
+    const before = dates.filter((d) => d <= target);
+    const prev = before.length ? before[before.length - 1] : (dates[0] < base ? dates[0] : null);
     const upd = latest.map((r) => r.updated).filter(Boolean).sort();
     return [{ last, base, prev, updated: upd.length ? upd[upd.length - 1] : '' }];
   }
@@ -851,7 +850,7 @@ dash.calc('period', {
 dash.calc('snap', {
   inputs: ['latest', 'daily', 'period'],
   title: '지점별 최신값과 주간 증가',
-  description: '지점마다 최신 팔로워·카톡 친구·게시물, 주간 증가(월요일 아침 − 전 월요일 아침), 증가율, 최근 게시 후 지난 날수',
+  description: '지점마다 최신 팔로워·카톡 친구·게시물, 주간 증가(최근 7일: 오늘 아침 − 7일 전 아침), 증가율, 최근 게시 후 지난 날수',
   fn: (latest, daily, period) => {
     if (!period || !period.length) return [];
     const { last, base, prev } = period[0];
@@ -863,7 +862,7 @@ dash.calc('snap', {
     const today = new Date(last + 'T00:00:00Z');
     return latest.map((r) => {
       const b = B.get(r.handle), p = P.get(r.handle);
-      const am = (x, k) => x ? num(x['am_' + k] !== undefined ? x['am_' + k] : x[k]) : null;   // 월요일 아침값(없으면 그날 값)
+      const am = (x, k) => x ? num(x['am_' + k] !== undefined ? x['am_' + k] : x[k]) : null;   // 아침값(없으면 그날 값)
       const bf = am(b, 'followers'), pf = am(p, 'followers');
       const bk = b ? num(b.kakao) : null, pk = p ? num(p.kakao) : null;
       const bl = am(b, 'following'), pl = am(p, 'following');
@@ -1578,7 +1577,7 @@ const say=(t,bad)=>{const m=$('admMsg');m.textContent=t;m.style.color=bad?'#d930
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const logged=()=>ss.get('admOK')==='1';
-function mark(){btn.textContent=logged()?'🔓 관리자':'🔒 관리자';try{window.kwMark&&window.kwMark(logged())}catch(e){}btn.classList.toggle('on',logged());const d=$('rv-mgr-def');if(d)d.style.display=logged()?'':'none';try{dash.draw('rv-mgr')}catch(e){}}
+function mark(){btn.textContent=logged()?'🔓 관리자':'🔒 관리자';try{window.kwMark&&window.kwMark(logged())}catch(e){}btn.classList.toggle('on',logged());const d=$('rv-mgr-def');if(d)d.style.display=logged()?'':'none';document.querySelectorAll('.xl-btn').forEach(x=>{x.style.display=logged()?'':'none'});try{dash.draw('rv-mgr')}catch(e){}}
 function open(){dim.classList.add('show');$('admLogin').style.display=logged()?'none':'block';$('admPanel').style.display=logged()?'block':'none';if(!logged())setTimeout(()=>$('admPw').focus(),50)}
 function close(){dim.classList.remove('show')}
 btn.onclick=open;$('admClose1').onclick=close;$('admClose2').onclick=close;
@@ -1594,4 +1593,138 @@ mark();
 }
 </script>
 
+<script>
+/* 📥 엑셀 다운로드 — 관리자 모드 때만 보임, 경북담당 전용 (261125) */
+window.IGXL = (() => {
+  const TEAM = '경북담당', F = 'LG스마트체2.0 Regular';
+  const NUM = '#,##0;-#,##0;0', PCT = '0.0%;-0.0%;0.0%';
+  const g = { style: 'thin', color: { argb: 'FFBFBFBF' } }, bd = { top: g, bottom: g, left: g, right: g };
+  const fill = (c) => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + c } });
+  const HF = fill('EDEDED'), TF = fill('FFF2CC'), GF = fill('F2F2F2');
+  const md = (d) => (+d.slice(5, 7)) + '/' + (+d.slice(8, 10));
+  const num = (v) => (v === null || v === undefined || v === '') ? null : +v;
+  const am = (x, k) => x ? num(x['am_' + k] !== undefined ? x['am_' + k] : x[k]) : null;
+  const sub = (a, b) => (a === null || b === null) ? null : a - b;
+  function build(ExcelJS, daily, latest) {
+    const st = latest.filter((r) => r.team === TEAM);
+    const idx = new Map(daily.filter((r) => r.team === TEAM).map((r) => [r.handle + '|' + r.date, r]));
+    const get = (h, d) => idx.get(h + '|' + d);
+    const dates = [...new Set(daily.map((r) => r.date))].sort();
+    const last = dates[dates.length - 1];
+    const t = new Date(last + 'T00:00:00Z'); t.setUTCDate(t.getUTCDate() - 7);
+    const target = t.toISOString().slice(0, 10);
+    const bf = dates.filter((d) => d <= target);
+    const base = bf.length ? bf[bf.length - 1] : dates[0];
+    const wb = new ExcelJS.Workbook();
+    const put = (ws, r, c, v, o = {}) => {
+      const x = ws.getCell(r, c); x.value = (v === null || v === undefined) ? '-' : v;
+      x.font = { name: F, size: 10, bold: !!o.bold, color: o.color ? { argb: 'FF' + o.color } : undefined };
+      x.border = bd; if (o.fill) x.fill = o.fill; if (o.fmt) x.numFmt = o.fmt;
+      x.alignment = { vertical: 'middle', horizontal: typeof x.value === 'number' ? 'right' : 'center', wrapText: true };
+      return x;
+    };
+    const title = (ws, r, s, sub2) => { const c = ws.getCell(r, 1); c.value = s; c.font = { name: F, size: 13, bold: true }; if (sub2) { const d = ws.getCell(r + 1, 1); d.value = sub2; d.font = { name: F, size: 10 }; } };
+    const note = (ws, r, lines) => { const c = ws.getCell(r, 1); c.value = '▶ 코멘트'; c.font = { name: F, size: 10, bold: true }; lines.forEach((s, i) => { const x = ws.getCell(r + 1 + i, 1); x.value = s; x.font = { name: F, size: 10 }; }); };
+    const scale = (ws, ref, cfg) => ws.addConditionalFormatting({ ref, rules: [{ type: 'colorScale', priority: 1, cfvo: cfg.cfvo, color: cfg.color }] });
+    const sheetSet = (ws) => { ws.views = [{ state: 'frozen', xSplit: ws._fx, ySplit: ws._fy, showGridLines: false }]; ws.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }; };
+
+    /* 1) 일자별 증가 (전일비) */
+    const w3 = wb.addWorksheet('일자별 증가');
+    title(w3, 1, `[경북 실행강화팀] ${TEAM} 팔로워·팔로잉 일자별 증가 (전일비, 매일 아침 수집값)`);
+    const D = dates.slice(1), last7 = new Set(dates.slice(-7));
+    let r = 3; put(w3, r, 1, '지점', { bold: true, fill: HF }); put(w3, r, 2, '구분', { bold: true, fill: HF });
+    D.forEach((d, j) => put(w3, r, 3 + j, md(d), { bold: true, fill: HF }));
+    const c7 = 3 + D.length; put(w3, r, c7, '최근 7일', { bold: true, fill: HF });
+    const inc = (h, d, k) => { const i = dates.indexOf(d); return sub(am(get(h, d), k), am(get(h, dates[i - 1]), k)); };
+    const frows = [];
+    const block3 = (name, gv, tot) => {
+      const s0 = r + 1;
+      [['followers', '팔로워'], ['following', '팔로잉']].forEach(([k, lab]) => {
+        r++; const vals = D.map((d) => gv(d, k)); const o = tot ? { bold: true, fill: TF } : {};
+        put(w3, r, 2, lab, o);
+        vals.forEach((v, j) => put(w3, r, 3 + j, v, { ...o, fmt: NUM }));
+        const s7 = vals.filter((v, j) => last7.has(D[j]) && v !== null);
+        put(w3, r, c7, s7.length ? s7.reduce((a, b) => a + b, 0) : null, { bold: true, fill: tot ? TF : GF, fmt: NUM });
+        if (k === 'followers' && !tot) frows.push(r);
+      });
+      w3.mergeCells(s0, 1, r, 1); put(w3, s0, 1, name, tot ? { bold: true, fill: TF } : {});
+    };
+    block3('계', (d, k) => { const vs = st.map((x) => inc(x.handle, d, k)).filter((v) => v !== null); return vs.length ? vs.reduce((a, b) => a + b, 0) : null; }, true);
+    st.forEach((x) => block3(x.store, (d, k) => inc(x.handle, d, k), false));
+    const colL = (n) => { let s = ''; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+    if (frows.length) scale(w3, frows.map((q) => `C${q}:${colL(c7 - 1)}${q}`).join(' '), { cfvo: [{ type: 'num', value: 0 }, { type: 'percentile', value: 95 }], color: [{ argb: 'FFFFFFFF' }, { argb: 'FF63BE7B' }] });
+    w3.getColumn(1).width = 12; w3.getColumn(2).width = 7; D.forEach((d, j) => { w3.getColumn(3 + j).width = 7; }); w3.getColumn(c7).width = 9;
+    note(w3, r + 2, ['· 전일비 = 그날 아침 − 전날 아침 / 팔로워만 많이 늘어난 날일수록 진한 초록, 팔로잉은 색 없음 / 최근 7일 = 현황 시트 전주비와 같은 숫자']);
+    w3._fx = 2; w3._fy = 3; sheetSet(w3);
+
+    /* 2) 현황 */
+    const ws = wb.addWorksheet('현황');
+    title(ws, 1, `[경북 실행강화팀] ${TEAM} 인스타 현황`, `기준: ${last} 아침 / 비교: ${base} 아침 (최근 7일)`);
+    const H = ['지점', '팔로워', '전주비', '신장률', '팔로잉', '전주비', '게시물', '전주비', '최근 게시', '경과일', '릴스 최다 조회', '카톡 친구'];
+    H.forEach((h, i) => put(ws, 4, i + 1, h, { bold: true, fill: HF }));
+    const today = new Date(last + 'T00:00:00Z');
+    const rows = st.map((x) => {
+      const a = get(x.handle, last), b = get(x.handle, base);
+      const fo = am(a, 'followers'), fo0 = am(b, 'followers'), fg = am(a, 'following'), fg0 = am(b, 'following'), po = am(a, 'posts'), po0 = am(b, 'posts');
+      const fd = sub(fo, fo0);
+      const el = x.lastPost ? Math.max(0, Math.round((today - new Date(x.lastPost + 'T00:00:00Z')) / 86400000)) : null;
+      return [x.store, fo, fd, (fd !== null && fo0) ? fd / fo0 : null, fg, sub(fg, fg0), po, sub(po, po0), x.lastPost || null, el, num(x.reelsMax), num(x.kakao)];
+    });
+    const S = (i) => rows.some((v) => v[i] !== null) ? rows.reduce((a, v) => a + (v[i] || 0), 0) : null;
+    const b0 = rows.reduce((a, v) => a + ((v[1] !== null && v[2] !== null) ? v[1] - v[2] : 0), 0);
+    const tot = ['계', S(1), S(2), (S(2) !== null && b0) ? S(2) / b0 : null, S(4), S(5), S(6), S(7), null, null, null, S(11)];
+    tot.forEach((v, i) => put(ws, 5, i + 1, v, { bold: true, fill: TF, fmt: i === 3 ? PCT : NUM }));
+    r = 5;
+    rows.forEach((row) => { r++; row.forEach((v, i) => put(ws, r, i + 1, v, { fmt: i === 3 ? PCT : NUM, color: (i === 9 && v >= 8) ? 'C00000' : undefined, bold: i === 9 && v >= 15 })); });
+    scale(ws, `D6:D${r}`, { cfvo: [{ type: 'min' }, { type: 'percentile', value: 50 }, { type: 'max' }], color: [{ argb: 'FFF8696B' }, { argb: 'FFFFEB84' }, { argb: 'FF63BE7B' }] });
+    [12, 9, 8, 8, 9, 8, 8, 8, 11, 7, 12, 10].forEach((w, i) => { ws.getColumn(i + 1).width = w; });
+    ws.getRow(4).height = 22;
+    note(ws, r + 2, ['· 신장률 = 최근 7일 팔로워 전주비 ÷ 7일 전 팔로워 / 경과일 8일↑ 빨간 글씨, 15일↑ 굵게 / 비교일 기록이 없는 칸은 "-"']);
+    ws._fx = 1; ws._fy = 5; sheetSet(ws);
+
+    /* 3) 일자별 */
+    const w2 = wb.addWorksheet('일자별');
+    title(w2, 1, `[경북 실행강화팀] ${TEAM} 인스타 일자별 기록 (매일 아침 수집값)`);
+    r = 3; put(w2, r, 1, '지점', { bold: true, fill: HF }); put(w2, r, 2, '구분', { bold: true, fill: HF });
+    dates.forEach((d, j) => put(w2, r, 3 + j, md(d), { bold: true, fill: HF }));
+    const KS = [['followers', '팔로워'], ['following', '팔로잉'], ['posts', '게시물']];
+    const block2 = (name, gv, tot) => {
+      const s0 = r + 1; const o = tot ? { bold: true, fill: TF } : {};
+      KS.forEach(([k, lab]) => { r++; put(w2, r, 2, lab, o); dates.forEach((d, j) => put(w2, r, 3 + j, gv(k, d), { ...o, fmt: NUM })); });
+      w2.mergeCells(s0, 1, r, 1); put(w2, s0, 1, name, o);
+    };
+    block2('계', (k, d) => { const vs = st.map((x) => am(get(x.handle, d), k)).filter((v) => v !== null); return vs.length ? vs.reduce((a, b) => a + b, 0) : null; }, true);
+    st.forEach((x) => block2(x.store, (k, d) => am(get(x.handle, d), k), false));
+    w2.getColumn(1).width = 12; w2.getColumn(2).width = 7; dates.forEach((d, j) => { w2.getColumn(3 + j).width = 8; });
+    note(w2, r + 2, ['· 기록 시작: 팔로워 11/10, 게시물 11/19, 팔로잉 11/20 (그 전은 "-")']);
+    w2._fx = 2; w2._fy = 3; sheetSet(w2);
+    ws.orderNo = 0; w2.orderNo = 1; w3.orderNo = 2;   // 시트 순서: 현황 → 일자별 → 일자별 증가
+    const yy = last.slice(2, 4) + last.slice(5, 7) + last.slice(8, 10);
+    return { wb, name: `경북SNS_인스타기록_${yy}_v1.xlsx` };
+  }
+  let lib = null;
+  const load = () => lib || (lib = new Promise((ok, no) => {
+    if (window.ExcelJS) return ok(window.ExcelJS);
+    const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+    s.onload = () => ok(window.ExcelJS); s.onerror = () => { lib = null; no(new Error('load')); }; document.head.appendChild(s);
+  }));
+  async function download(btn) {
+    const t0 = btn ? btn.textContent : '';
+    try {
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ 만드는 중'; }
+      const dd = dash.data('daily'), ll = dash.data('latest');
+      if (dd.status !== 'ok' || ll.status !== 'ok') throw new Error('data');
+      const X = await load();
+      const { wb, name } = build(X, dd.data, ll.data);
+      const buf = await wb.xlsx.writeBuffer();
+      const url = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    } catch (e) { alert(e.message === 'data' ? '숫자를 아직 불러오는 중이에요. 잠시 뒤 다시 눌러 주세요.' : '엑셀을 만들지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.'); }
+    finally { if (btn) { btn.disabled = false; btn.textContent = t0; } }
+  }
+  document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.xl-btn'); if (b) download(b); });
+  return { build, download };
+})();
+</script>
 </body></html>
