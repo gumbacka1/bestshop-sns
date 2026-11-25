@@ -20,18 +20,30 @@ def one(u):
         data = urllib.request.urlopen(req, timeout=40).read()
         if len(data) < 12000: return u, {'skip': 'small'}
         open(f, 'wb').write(data)
-        png = f + '.png'
-        subprocess.run(['convert', f + '[0]', '-resize', '200%', '-colorspace', 'Gray', png], check=False, capture_output=True)
-        src = png if os.path.exists(png) else f
-        r = subprocess.run(['tesseract', src, '-', '-l', 'kor+eng', '--psm', '3'], capture_output=True, text=True, timeout=180)
-        t = '\n'.join(x.strip() for x in r.stdout.split('\n') if len(x.strip()) > 1)
+        base = f + '_t'
+        # 긴 배너는 1400px 높이로 잘라서 하나씩 인식(시간 초과 방지)
+        subprocess.run(['convert', f + '[0]', '-colorspace', 'Gray', '-crop', '100%x1400', '+repage', base + '_%03d.png'],
+                       check=False, capture_output=True)
+        tiles = sorted(x for x in os.listdir(IMG) if x.startswith(os.path.basename(base) + '_'))
+        out = []
+        for tl in tiles or [os.path.basename(f)]:
+            try:
+                r = subprocess.run(['tesseract', os.path.join(IMG, tl), '-', '-l', 'kor+eng', '--psm', '6'],
+                                   capture_output=True, text=True, timeout=120)
+                out.append(r.stdout)
+            except subprocess.TimeoutExpired:
+                out.append('')
+            if tl != os.path.basename(f):
+                try: os.remove(os.path.join(IMG, tl))
+                except OSError: pass
+        t = '\n'.join(x.strip() for x in '\n'.join(out).split('\n') if len(x.strip()) > 1)
         return u, {'file': name, 'bytes': len(data), 'text': t}
     except Exception as e:
         return u, {'error': str(e)[:120]}
 
 import urllib.parse
 res = {}
-with ThreadPoolExecutor(6) as ex:
+with ThreadPoolExecutor(4) as ex:
     for u, r in ex.map(one, urls):
         res[u] = r
 by_page = {}
