@@ -12,7 +12,7 @@ UA = 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safar
 OUT = os.path.join(os.path.dirname(__file__), '..', 'data', 'lge_full')
 ONLY = [s for s in os.environ.get('ONLY', '').split(',') if s]     # 경로 이름으로 품목 제한(시험용)
 LIMIT = int(os.environ.get('LIMIT', '0') or 0)                      # 품목당 모델 수 제한(시험용)
-WORKERS = int(os.environ.get('WORKERS', '4') or 4)
+WORKERS = int(os.environ.get('WORKERS', '6') or 6)
 # 가전 품목만(사업자·소모품·액세서리 제외). 사이트맵 경로의 첫 칸 기준.
 SKIP_PATH = re.compile(r'business|accessor|consumable|parts|filter|support|story|benefit|care-solutions|'
                        r'homestyle|company|cart|my-page|event|search|lg-signature-story', re.I)
@@ -258,7 +258,7 @@ def main():
     for u in care_urls:
         care_by_slug.setdefault(path_cat(u.replace('/care-solutions', ''))[1].lower(), u)
     urls = [u for v in by_cat.values() for u in v]
-    print('수집 대상 품목', len(by_cat), '모델', len(urls), {k: len(v) for k, v in by_cat.items()})
+    print('수집 대상 품목', len(by_cat), '모델', len(urls), {k: len(v) for k, v in sorted(by_cat.items(), key=lambda x: -len(x[1]))})
 
     products = []
     def work(u):

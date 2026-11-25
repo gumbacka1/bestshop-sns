@@ -5,6 +5,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 D = os.path.join(os.path.dirname(__file__), '..', 'data', 'lge_full')
 F = 'LG스마트체2.0 Regular'
+ONLY = {}
 HEAD = PatternFill('solid', fgColor='EDEDED')
 LINE = Border(bottom=Side(style='thin', color='BFBFBF'))
 
@@ -43,6 +44,8 @@ def n(v):
 
 def main():
     P = load('products.json', []); R = load('ranking.json', {}); B = load('benefits.json', {}); M = load('meta.json', {})
+    global ONLY
+    ONLY = {q.get('modelName'): ('Y' if q.get('lgecomOnlyFlag') == 'Y' else 'N') for k in R.values() for l in k.values() for q in l}
     wb = Workbook(); ws = wb.active; ws.title = '요약'
     ws.append(['엘지닷컴 전 모델 수집 결과']); ws.append(['수집 시각', M.get('updated', '')])
     for k in ['모델수', '구독있음', '사진있음', '영상있음', '초']: ws.append([k, M.get(k)])
@@ -58,15 +61,20 @@ def main():
     rows = []
     for p in P:
         pt = p.get('price_text') or {}
-        rows.append([p.get('경로품목'), p.get('modelName'), p.get('modelDisplayName') or p.get('title'),
-                     (p.get('modelReleaseDate') or '')[:7], p.get('keywdNmA'), p.get('keywdNmB'),
+        sp = p.get('specs') or {}
+        rel = (p.get('modelReleaseDate') or sp.get('동일모델의 출시년월') or '')[:7]
+        cap = next((v for k, v in sp.items() if re.search(r'전체 용량|용량|화면 크기|냉방면적|세탁 용량|건조 용량', k)), '')
+        eng = next((v for k, v in sp.items() if '에너지소비효율' in k or '에너지 소비효율' in k), '')
+        only = ONLY.get(p.get('modelName'), '')
+        rows.append([p.get('경로품목'), p.get('categoryName'), p.get('subCategoryName'), p.get('modelName'),
+                     p.get('modelDisplayName') or p.get('title'), rel, cap, eng,
                      n(p.get('obsOriginalPrice')) or pt.get('할인 전 판매가'), n(p.get('obsSellingPrice')),
                      pt.get('쿠폰 적용 시'), n(p.get('maxBenefitPrice')) or pt.get('최대혜택가'),
-                     'Y' if p.get('lgecomOnlyFlag') == 'Y' else '', p.get('sold_as'),
-                     p.get('review_text') or p.get('reviewCount'), p.get('url')])
-    sheet(wb, '모델·가격', ['품목', '모델', '제품명', '출시', '특징1', '특징2', '정상가', '할인가', '쿠폰 적용가',
-                         '최대혜택가', '닷컴 전용', '판매 사양', '리뷰 수', '주소'], rows,
-          [14, 16, 44, 9, 10, 10, 13, 13, 13, 13, 9, 18, 9, 40], money=(6, 7, 8, 9))
+                     only, 'Y' if (p.get('care') or {}).get('요약') else '', p.get('sold_as'),
+                     p.get('reviewCount') or p.get('review_text'), p.get('reviewRating'), p.get('url')])
+    sheet(wb, '모델·가격', ['경로', '품목', '세부', '모델', '제품명', '출시', '용량·크기', '에너지등급', '정상가', '할인가',
+                         '쿠폰 적용가', '최대혜택가', '닷컴 전용(랭킹 기준)', '구독 가능', '판매 사양', '리뷰 수', '평점', '주소'], rows,
+          [14, 10, 12, 16, 40, 9, 12, 16, 13, 13, 13, 13, 11, 8, 18, 8, 6, 40], money=(8, 9, 10, 11))
 
     rows = []
     for p in P:
