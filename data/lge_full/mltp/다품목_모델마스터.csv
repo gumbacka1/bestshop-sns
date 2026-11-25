@@ -1,0 +1,483 @@
+﻿제품군,구분,그룹,모델명,SKU,제품명,판매유형,정가,판매가,쿠폰할인,쿠폰적용가,일시불가능,구독월요금,구독개월,구독옵션,구독가능,제품별캐시백,URL
+TV,대형,TV,86QNED9MAKA,86QNED9MAKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,5390000,5290000,0,5290000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned9maka-wall
+TV,대형,TV,75QNED92AGA,75QNED92AGS.AKRQ,LG QNED evo AI (스탠드형),PRODUCT,3790000,2890000,230000,2660000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned92aga-stand
+TV,대형,TV,75QNED92AGA,75QNED92AGW.AKRQ,LG QNED evo AI (벽걸이형),PRODUCT,3790000,2890000,230000,2660000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned92aga-wall
+TV,대형,TV,65QNED85AKS,65QNED85AK1.AKRG,LG Easy TV AI (스탠드형),PRODUCT,2640000,2640000,230000,2410000,True,55500.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/65qned85aks-stand
+TV,대형,TV,65QNED85AKS,65QNED85AK2.AKRG,LG Easy TV AI (벽걸이형),PRODUCT,2640000,2640000,230000,2410000,True,55500.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/65qned85aks-wall
+TV,대형,TV,75QNED85AKS,75QNED85AK1.AKRG,LG Easy TV AI (스탠드형),PRODUCT,3740000,3740000,270000,3470000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned85aks-stand
+TV,대형,TV,75QNED85AKS,75QNED85AK2.AKRG,LG Easy TV AI (벽걸이형),PRODUCT,3740000,3740000,270000,3470000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned85aks-wall
+TV,대형,TV,OLED97G6KNA,OLED97G6KS.AKR,LG 올레드 evo AI (스탠드형),PRODUCT,50384000,42900000,270000,42630000,True,694700.0,72.0,72_01_025,True,2000000,https://www.lge.co.kr/tvs/oled97g6kna-stand
+TV,대형,TV,OLED97G6KNA,OLED97G6KW.AKR,LG 올레드 evo AI (벽걸이형),PRODUCT,48484000,42900000,270000,42630000,True,694700.0,72.0,72_01_025,True,2000000,https://www.lge.co.kr/tvs/oled97g6kna-wall
+TV,대형,TV,OLED97G6KNA,OLED97G6KL.AKR,LG 올레드 evo AI (벽걸이형),PRODUCT,48484000,42900000,270000,42630000,True,694700.0,72.0,72_01_025,True,2000000,https://www.lge.co.kr/tvs/oled97g6kna-wall2
+TV,대형,TV,OLED83G6KNA,OLED83G6KS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,15000000,14000000,270000,13730000,True,226400.0,72.0,72_01_025,True,1000000,https://www.lge.co.kr/tvs/oled83g6kna-stand
+TV,대형,TV,OLED83G6KNA,OLED83G6KW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,15000000,14000000,270000,13730000,True,,,,False,1000000,https://www.lge.co.kr/tvs/oled83g6kna-wall
+TV,대형,TV,OLED83G6KNA,OLED83G6KL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,15000000,14000000,270000,13730000,True,226400.0,72.0,72_01_025,True,1000000,https://www.lge.co.kr/tvs/oled83g6kna-wall2
+TV,대형,TV,OLED77G6KNA,OLED77G6KS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,11388000,9000000,270000,8730000,True,155400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled77g6kna-stand
+TV,대형,TV,OLED77G6KNA,OLED77G6KW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,11388000,9000000,270000,8730000,True,155400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled77g6kna-wall
+TV,대형,TV,OLED77G6KNA,OLED77G6KL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,11388000,9000000,270000,8730000,True,155400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled77g6kna-wall2
+TV,대형,TV,OLED65G6KNA,OLED65G6KS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,5188000,4290000,270000,4020000,True,82600.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65g6kna-stand
+TV,대형,TV,OLED65G6KNA,OLED65G6KW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,5188000,4290000,270000,4020000,True,82600.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65g6kna-wall
+TV,대형,TV,OLED65G6KNA,OLED65G6KL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,5188000,4290000,270000,4020000,True,82600.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65g6kna-wall2
+TV,대형,TV,OLED83C6SNA,OLED83C6SS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,10000000,9000000,270000,8730000,True,160400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6sna-stand
+TV,대형,TV,OLED83C6SNA,OLED83C6SW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,10000000,9000000,270000,8730000,True,160400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6sna-wall
+TV,대형,TV,OLED83C6SNA,OLED83C6SL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,10000000,9000000,270000,8730000,True,160400.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6sna-wall2
+TV,대형,TV,OLED77C6SNA,OLED77C6SS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,7288000,6190000,270000,5920000,True,114300.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6sna-stand
+TV,대형,TV,OLED77C6SNA,OLED77C6SW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,7288000,6190000,270000,5920000,True,114300.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6sna-wall
+TV,대형,TV,OLED77C6SNA,OLED77C6SL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,7288000,6190000,270000,5920000,True,114300.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6sna-wall2
+TV,대형,TV,OLED65C6SNA,OLED65C6SS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,4688000,3790000,270000,3520000,True,74400.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65c6sna-stand
+TV,대형,TV,OLED65C6SNA,OLED65C6SW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,4688000,3790000,270000,3520000,True,74400.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65c6sna-wall
+TV,대형,TV,OLED65C6SNA,OLED65C6SL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,4688000,3790000,270000,3520000,True,74400.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65c6sna-wall2
+TV,대형,TV,OLED83C6QNA,OLED83C6QS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,8900000,8500000,270000,8230000,True,152100.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6qna-stand
+TV,대형,TV,OLED83C6QNA,OLED83C6QW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,8900000,8500000,270000,8230000,True,152100.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6qna-wall
+TV,대형,TV,OLED83C6QNA,OLED83C6QL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,8900000,8500000,270000,8230000,True,152100.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/oled83c6qna-wall2
+TV,대형,TV,OLED77C6QNA,OLED77C6QS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,6590000,5990000,270000,5720000,True,111000.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6qna-stand
+TV,대형,TV,OLED77C6QNA,OLED77C6QW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,6590000,5990000,270000,5720000,True,111000.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6qna-wall
+TV,대형,TV,OLED77C6QNA,OLED77C6QL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,6590000,5990000,270000,5720000,True,111000.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77c6qna-wall2
+TV,대형,TV,OLED77C6FNA,OLED77C6FS.AKRG,LG 올레드 evo AI (스탠드형),PRODUCT,6490000,5863000,0,5863000,True,,,,False,100000,https://www.lge.co.kr/tvs/oled77c6fna-stand
+TV,대형,TV,OLED77C6FNA,OLED77C6FW.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,6490000,5863000,0,5863000,True,,,,False,100000,https://www.lge.co.kr/tvs/oled77c6fna-wall
+TV,대형,TV,OLED77C6FNA,OLED77C6FL.AKRG,LG 올레드 evo AI (벽걸이형),PRODUCT,6450000,5863000,0,5863000,True,,,,False,100000,https://www.lge.co.kr/tvs/oled77c6fna-wall2
+TV,대형,TV,OLED77B6SNA,OLED77B6SS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,5790000,5790000,270000,5520000,True,109400.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77b6sna-stand
+TV,대형,TV,OLED77B6SNA,OLED77B6SW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,5790000,5790000,270000,5520000,True,109400.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77b6sna-wall
+TV,대형,TV,OLED65B6SNA,OLED65B6SS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,3290000,3290000,270000,3020000,True,66600.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65b6sna-stand
+TV,대형,TV,OLED65B6SNA,OLED65B6SW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,3290000,3290000,270000,3020000,True,66600.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/oled65b6sna-wall
+TV,대형,TV,OLED77B6XNA,OLED77B6XS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,5290000,4738000,0,4738000,True,,,,False,100000,https://www.lge.co.kr/tvs/oled77b6xna-stand
+TV,대형,TV,OLED77B6XNA,OLED77B6XW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,5290000,4738000,0,4738000,True,,,,False,100000,https://www.lge.co.kr/tvs/oled77b6xna-wall
+TV,대형,TV,OLED65B6XNA,OLED65B6XS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,3090000,2688000,0,2688000,True,,,,False,0,https://www.lge.co.kr/tvs/oled65b6xna-stand
+TV,대형,TV,OLED65B6XNA,OLED65B6XW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,3090000,2688000,0,2688000,True,,,,False,0,https://www.lge.co.kr/tvs/oled65b6xna-wall
+TV,대형,TV,OLED77B6BNA,OLED77B6BS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,5090000,4100000,270000,3830000,True,92300.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77b6bna-stand
+TV,대형,TV,OLED77B6BNA,OLED77B6BW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,5090000,4100000,270000,3830000,True,92300.0,72.0,72_01_025,True,100000,https://www.lge.co.kr/tvs/oled77b6bna-wall
+TV,대형,TV,OLED65B6BNA,OLED65B6BS.AKRG,LG 올레드 AI (스탠드형),PRODUCT,3090000,2790000,230000,2560000,True,,,,False,0,https://www.lge.co.kr/tvs/oled65b6bna-stand
+TV,대형,TV,OLED65B6BNA,OLED65B6BW.AKRG,LG 올레드 AI (벽걸이형),PRODUCT,3090000,2790000,230000,2560000,True,,,,False,0,https://www.lge.co.kr/tvs/oled65b6bna-wall
+TV,대형,TV,115QNED90BK,115QNED90BS.AKRQ,LG QNED evo AI (스탠드형),PRODUCT,29000000,29000000,270000,28730000,True,,,,False,0,https://www.lge.co.kr/tvs/115qned90bk-stand
+TV,대형,TV,115QNED90BK,115QNED90BW.AKRQ,LG QNED evo AI (벽걸이형),PRODUCT,29000000,29000000,270000,28730000,True,,,,False,0,https://www.lge.co.kr/tvs/115qned90bk-wall
+TV,대형,TV,85QNED91BKA,85QNED91BKS.AKRQ,LG QNED evo AI (스탠드형),PRODUCT,5489000,4990000,270000,4720000,True,,,,False,0,https://www.lge.co.kr/tvs/85qned91bka-stand
+TV,대형,TV,85QNED91BKA,85QNED91BKW.AKRQ,LG QNED evo AI (벽걸이형),PRODUCT,5489000,4990000,270000,4720000,True,,,,False,0,https://www.lge.co.kr/tvs/85qned91bka-wall
+TV,대형,TV,65QNED91BKA,65QNED91BKS.AKRQ,LG QNED evo AI (스탠드형),PRODUCT,2959000,2690000,230000,2460000,True,,,,False,0,https://www.lge.co.kr/tvs/65qned91bka-stand
+TV,대형,TV,65QNED91BKA,65QNED91BKW.AKRQ,LG QNED evo AI (벽걸이형),PRODUCT,2959000,2690000,230000,2460000,True,,,,False,0,https://www.lge.co.kr/tvs/65qned91bka-wall
+TV,대형,TV,86QNED86BKA,86QNED86BKS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,4900000,4890000,270000,4620000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned86bka-stand
+TV,대형,TV,86QNED86BKA,86QNED86BKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,4900000,4890000,270000,4620000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned86bka-wall
+TV,대형,TV,75QNED86BKA,75QNED86BKS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,4059000,3690000,270000,3420000,True,76000.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75qned86bka-stand
+TV,대형,TV,75QNED86BKA,75QNED86BKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,4059000,3690000,270000,3420000,True,76000.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75qned86bka-wall
+TV,대형,TV,65QNED86BKA,65QNED86BKS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,2849000,2590000,230000,2360000,True,,,,False,0,https://www.lge.co.kr/tvs/65qned86bka-stand
+TV,대형,TV,65QNED86BKA,65QNED86BKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,2849000,2590000,230000,2360000,True,,,,False,0,https://www.lge.co.kr/tvs/65qned86bka-wall
+TV,대형,TV,86QNED86BMA,86QNED86BMS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,5090000,4690000,270000,4420000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned86bma-stand
+TV,대형,TV,86QNED86BMA,86QNED86BMW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,5090000,4690000,270000,4420000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned86bma-wall
+TV,대형,TV,75QNED86BMA,75QNED86BMS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,3890000,3590000,270000,3320000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned86bma-stand
+TV,대형,TV,75QNED86BMA,75QNED86BMW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,3890000,3590000,270000,3320000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned86bma-wall
+TV,대형,TV,85QNED82BKA,85QNED82BKS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,3690000,3363000,0,3363000,True,,,,False,0,https://www.lge.co.kr/tvs/85qned82bka-stand
+TV,대형,TV,85QNED82BKA,85QNED82BKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,3690000,3363000,0,3363000,True,,,,False,0,https://www.lge.co.kr/tvs/85qned82bka-wall
+TV,대형,TV,75QNED82BKA,75QNED82BKS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,3190000,2863000,0,2863000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned82bka-stand
+TV,대형,TV,75QNED82BKA,75QNED82BKW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,3190000,2863000,0,2863000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned82bka-wall
+TV,대형,TV,100MRGB96BK,100MRGB96BS.AKRG,LG Micro RGB evo AI (스탠드형),PRODUCT,16500000,15000000,270000,14730000,True,250900.0,72.0,72_01_025,True,1000000,https://www.lge.co.kr/tvs/100mrgb96bk-stand
+TV,대형,TV,100MRGB96BK,100MRGB96BW.AKRG,LG Micro RGB evo AI (벽걸이형) ,PRODUCT,16500000,15000000,270000,14730000,True,250900.0,72.0,72_01_025,True,1000000,https://www.lge.co.kr/tvs/100mrgb96bk-wall
+TV,대형,TV,86MRGB96BKA,86MRGB96BKS.AKRG,LG Micro RGB evo AI (스탠드형),PRODUCT,10450000,9500000,270000,9230000,True,163700.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/86mrgb96bka-stand
+TV,대형,TV,86MRGB96BKA,86MRGB96BKW.AKRG,LG Micro RGB evo AI (벽걸이형),PRODUCT,10450000,9500000,270000,9230000,True,163700.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/86mrgb96bka-wall
+TV,대형,TV,75MRGB96BKA,75MRGB96BKS.AKRG,LG Micro RGB evo AI (스탠드형),PRODUCT,9020000,8200000,270000,7930000,True,142200.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/75mrgb96bka-stand
+TV,대형,TV,75MRGB96BKA,75MRGB96BKW.AKRG,LG Micro RGB evo AI (벽걸이형),PRODUCT,9020000,8200000,270000,7930000,True,142200.0,72.0,72_01_025,True,300000,https://www.lge.co.kr/tvs/75mrgb96bka-wall
+TV,대형,TV,86MRGB86BKA,86MRGB86BKS.AKRG,LG Mini RGB evo AI (스탠드형),PRODUCT,5599000,5090000,270000,4820000,True,100800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/86mrgb86bka-stand
+TV,대형,TV,86MRGB86BKA,86MRGB86BKW.AKRG,LG Mini RGB evo AI (벽걸이형),PRODUCT,5599000,5090000,270000,4820000,True,100800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/86mrgb86bka-wall
+TV,대형,TV,75MRGB86BKA,75MRGB86BKS.AKRG,LG Mini RGB evo AI (스탠드형),PRODUCT,4279000,3890000,270000,3620000,True,79300.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75mrgb86bka-stand
+TV,대형,TV,75MRGB86BKA,75MRGB86BKW.AKRG,LG Mini RGB evo AI (벽걸이형),PRODUCT,4279000,3890000,270000,3620000,True,79300.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75mrgb86bka-wall
+TV,대형,TV,100QNED86BK,100QNED86BS.AKRG,LG QNED evo AI (스탠드형),PRODUCT,9790000,8900000,270000,8630000,True,,,,False,0,https://www.lge.co.kr/tvs/100qned86bk-stand
+TV,대형,TV,100QNED86BK,100QNED86BW.AKRG,LG QNED evo AI (벽걸이형),PRODUCT,9790000,8900000,270000,8630000,True,,,,False,0,https://www.lge.co.kr/tvs/100qned86bk-wall
+TV,대형,TV,100MRGB96BK,100MRGB96BL.AKRG,LG Micro RGB evo AI (벽걸이형),PRODUCT,16500000,15000000,270000,14730000,True,,,,False,1000000,https://www.lge.co.kr/tvs/100mrgb96bk-wall2
+TV,대형,TV,65LX7BKNA,65LX7BKNA.AKRQ,LG 갤러리 TV AI,PRODUCT,2490000,2490000,200000,2290000,True,50900.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/65lx7bkna
+TV,대형,TV,86MRGB83BEA,86MRGB83BES.AKRG,LG Mini RGB evo AI (스탠드형),PRODUCT,4790000,4690000,270000,4420000,True,99700.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/86mrgb83bea-stand
+TV,대형,TV,86MRGB83BEA,86MRGB83BEW.AKRG,LG Mini RGB evo AI (벽걸이형),PRODUCT,4790000,4690000,270000,4420000,True,99700.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/86mrgb83bea-wall
+TV,대형,TV,75MRGB83BEA,75MRGB83BES.AKRG,LG Mini RGB evo AI (스탠드형),PRODUCT,3590000,3590000,270000,3320000,True,77700.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75mrgb83bea-stand
+TV,대형,TV,75MRGB83BEA,75MRGB83BEW.AKRG,LG Mini RGB evo AI (벽걸이형),PRODUCT,3590000,3590000,270000,3320000,True,77700.0,72.0,72_01_025,True,0,https://www.lge.co.kr/tvs/75mrgb83bea-wall
+TV,대형,TV,OLED77W6KNA,OLED77W6KNA.AKR,LG SIGNATURE OLED W,PRODUCT,10500000,10500000,0,10500000,True,,,,False,1000000,https://www.lge.co.kr/tvs/oled77w6kna
+TV,대형,TV,OLED83W6KNA,OLED83W6KNA.AKR,LG SIGNATURE OLED W,PRODUCT,16000000,16000000,0,16000000,True,,,,False,2000000,https://www.lge.co.kr/tvs/oled83w6kna
+스타일러,대형,스타일러,SC3GME50,SC3GME50.BKOR,LG 스타일러 오브제컬렉션 3벌 (2026 NEW),PRODUCT,1791000,1790000,150000,1640000,True,34900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/lg-styler/sc3gme50
+스타일러,대형,스타일러,SC3GME51,SC3GME51.BKOR,LG 스타일러 오브제컬렉션 3벌 (2026 NEW),PRODUCT,1691000,1690000,150000,1540000,True,,,,False,0,https://www.lge.co.kr/lg-styler/sc3gme51
+스타일러,대형,스타일러,SC3GBE50,SC3GBE50.BKOR,LG 스타일러 오브제컬렉션 3벌 (2026 NEW),PRODUCT,1691000,1690000,150000,1540000,True,32900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/lg-styler/sc3gbe50
+스타일러,대형,스타일러,SC5GMR80S,SC5GMR80S.AKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW) + 스티머,PRODUCT,2691000,2690000,230000,2460000,True,53900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5gmr80s
+스타일러,대형,스타일러,SC5MBR80S,SC5MBR80S.AKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW) + 스티머,PRODUCT,2591000,2590000,230000,2360000,True,51900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5mbr80s
+스타일러,대형,스타일러,SC5GMR70S,SC5GMR70S.AKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW) + 스티머,PRODUCT,2491000,2490000,200000,2290000,True,49900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5gmr70s
+스타일러,대형,스타일러,SC5MBR60S,SC5MBR60S.BKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW),PRODUCT,2241000,2240000,200000,2040000,True,45900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5mbr60s
+스타일러,대형,스타일러,SC5MSR40S,SC5MSR40S.AKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW),PRODUCT,1941000,1940000,150000,1790000,True,40900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5msr40s
+스타일러,대형,스타일러,SC5GMR60S,SC5GMR60S.BKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW),PRODUCT,2341000,2340000,200000,2140000,True,47900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/lg-styler/sc5gmr60s
+스타일러,대형,스타일러,SC5MFR60S,SC5MFR60S.BKOR,LG 스타일러 AI 오브제컬렉션 (2026 NEW),PRODUCT,2241000,2240000,200000,2040000,True,,,,False,0,https://www.lge.co.kr/lg-styler/sc5mfr60s
+청소기 A9,대형,청소기 A9,AS527WA,AS527WA.CKOR,LG 코드제로 A5,PRODUCT,750000,700000,50000,650000,True,19900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/as527wa
+청소기 A9,대형,청소기 A9,A730WA,A730WA.CKOR,LG 코드제로 오브제컬렉션 A7 Core,PRODUCT,1041000,1040000,100000,940000,True,21900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/a730wa
+청소기 A9,대형,청소기 A9,AI958WA,AI958WA.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1691000,1690000,150000,1540000,True,31300.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/ai958wa
+청소기 A9,대형,청소기 A9,AI948WA,AI948WA.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1610000,1550000,150000,1400000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/ai948wa
+청소기 A9,대형,청소기 A9,AI958WA,AI958WA-S.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1707000,1707000,150000,1557000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/ai958wa-a
+청소기 A9,대형,청소기 A9,A730WA,A730WA-S.CKOR,LG 코드제로 오브제컬렉션 A7 Core,PRODUCT,1057000,1057000,100000,957000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/a730wa-a
+청소기 A9,대형,청소기 A9,AI927BA,AI927BA.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1331000,1330000,100000,1230000,True,30900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/ai927ba
+청소기 A9,대형,청소기 A9,AI927BA,AI927BA-S.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1347000,1347000,0,1347000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/ai927ba-a
+청소기 A9,대형,청소기 A9,AI958WB,AI958WB.BKOR,LG 코드제로 AI 오브제컬렉션 A9,PRODUCT,1791000,1790000,150000,1640000,True,39900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/ai958wb
+청소기 A9,대형,청소기 A9,A730WC,A730WC.CKOR1,LG 코드제로 오브제컬렉션 A7 Core,PRODUCT,991000,990000,50000,940000,True,24900.0,72.0,72_00_012,True,0,https://www.lge.co.kr/vacuum-cleaners/a730wc
+로봇 R9,대형,로봇 R9,B94AHB,B94AHB.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (프리스탠딩),PRODUCT,1970000,1170000,100000,1070000,True,39900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/vacuum-cleaners/b94ahb-1
+로봇 R9,대형,로봇 R9,B95AWBH,B95AWBH.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (프리스탠딩),PRODUCT,1990000,1390000,100000,1290000,True,46100.0,72.0,72_12_007,True,0,https://www.lge.co.kr/vacuum-cleaners/b95awbh-1
+로봇 R9,대형,로봇 R9,B94AHB-S,B94AHB-S.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (프리스탠딩),PRODUCT,1992000,1992000,150000,1842000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/b94ahb-s-1
+로봇 R9,대형,로봇 R9,B95AWBH-S,B95AWBH-S.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (프리스탠딩),PRODUCT,2012000,2012000,200000,1812000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/b95awbh-s-a
+로봇 R9,대형,로봇 R9,B95AWBTH,B95AWBTH.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (자동 급배수),PRODUCT,2191000,2190000,200000,1990000,True,50900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/vacuum-cleaners/b95awbth-1
+로봇 R9,대형,로봇 R9,B95AWBTH-S,B95AWBTH-S.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (자동 급배수),PRODUCT,2212000,2212000,200000,2012000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/b95awbth-s-1
+로봇 R9,대형,로봇 R9,B95AWBTH-S2,B95AWBTH-S2.CKOR1,LG 코드제로 AI 오브제컬렉션 로보킹 올인원 (자동 급배수),PRODUCT,2312000,2312000,200000,2112000,True,,,,False,0,https://www.lge.co.kr/vacuum-cleaners/b95awbth-s2
+정수기,대형,정수기,WD323AWB,WD323AWB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉정)",CARESHIP,1940000,1598000,150000,1448000,False,28900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd323awb
+정수기,대형,정수기,WD323ACB,WD323ACB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉정)",CARESHIP,1940000,1598000,150000,1448000,False,28900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd323acb
+정수기,대형,정수기,WU923ANB,WU923ANB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(듀얼, 냉온정)",CARESHIP,2340000,2021000,200000,1821000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu923anb
+정수기,대형,정수기,WU923ABB,WU923ABB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(듀얼, 냉온정)",CARESHIP,2340000,2021000,200000,1821000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu923abb
+정수기,대형,정수기,WU923AWB,WU923AWB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(듀얼, 냉온정)",CARESHIP,2340000,2021000,200000,1821000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu923awb
+정수기,대형,정수기,WU923ACB,WU923ACB.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(듀얼, 냉온정)",CARESHIP,2340000,2021000,200000,1821000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu923acb
+정수기,대형,정수기,WU923AS,WU923AS.AKOR,"LG 퓨리케어 정수기(듀얼, 냉온정)",CARESHIP,2260000,1934000,150000,1784000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu923as
+정수기,대형,정수기,WU823AS,WU823AS.AKOR,"LG 퓨리케어 정수기(듀얼, 냉정)",CARESHIP,2140000,1803000,150000,1653000,False,36900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wu823as
+정수기,대형,정수기,WD721RH,WD721RH.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3213000,2853000,230000,2623000,False,22400.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd721rh
+정수기,대형,정수기,WD721RK,WD721RK.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3213000,2853000,230000,2623000,False,22400.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd721rk
+정수기,대형,정수기,WD721RE,WD721RE.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3213000,2853000,230000,2623000,False,22400.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd721re
+정수기,대형,정수기,WD722RH,WD722RH.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3286000,2926000,230000,2696000,False,51900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd722rh
+정수기,대형,정수기,WD722RK,WD722RK.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3286000,2926000,230000,2696000,False,51900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd722rk
+정수기,대형,정수기,WD722RE,WD722RE.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,3286000,2926000,230000,2696000,False,51900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd722re
+정수기,대형,정수기,WS513SH,WS513SH.AKOR,"LG 퓨리케어 오브제컬렉션 정수기 (스탠드, 냉온정)",CARESHIP,2690000,2316000,200000,2116000,False,37700.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/ws513sh
+정수기,대형,정수기,WS511SH,WS511SH.AKOR,"LG 퓨리케어 오브제컬렉션 정수기 (슬림스탠드, 냉온정)",CARESHIP,1820000,1365000,100000,1265000,False,26000.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/ws511sh
+정수기,대형,정수기,WD723RK,WD723RK.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,2996000,2754000,230000,2524000,False,49900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd723rk
+정수기,대형,정수기,WD723RE,WD723RE.AKOR,LG 퓨리케어 오브제컬렉션 냉동얼음정수기,CARESHIP,2996000,2754000,230000,2524000,False,49900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd723re
+정수기,대형,정수기,WD523VCT,WD523VCT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉온정)",CARESHIP,2210000,1891000,150000,1741000,False,32900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd523vct
+정수기,대형,정수기,WD523VHT,WD523VHT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉온정)",CARESHIP,2210000,1891000,150000,1741000,False,32900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd523vht
+정수기,대형,정수기,WD523VST,WD523VST.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉온정)",CARESHIP,2210000,1891000,150000,1741000,False,32900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd523vst
+정수기,대형,정수기,WD523VMT,WD523VMT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉온정)",CARESHIP,2210000,1891000,150000,1741000,False,32900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd523vmt
+정수기,대형,정수기,WD523VPT,WD523VPT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(맞춤 출수, 냉온정)",CARESHIP,2210000,1891000,150000,1741000,False,32900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd523vpt
+정수기,대형,정수기,WD524VCT,WD524VCT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(음성인식/맞춤 출수, 냉온정)",CARESHIP,2340000,2038000,200000,1838000,False,34900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd524vct
+정수기,대형,정수기,WD524VHT,WD524VHT.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(음성인식/맞춤 출수, 냉온정)",CARESHIP,2340000,2038000,200000,1838000,False,34900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd524vht
+정수기,대형,정수기,WD524VST,WD524VST.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(음성인식/맞춤 출수, 냉온정)",CARESHIP,2340000,2038000,200000,1838000,False,34900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd524vst
+정수기,대형,정수기,WD522MH,WD522MH.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(슬림맞춤, 냉온정)",CARESHIP,2171000,1956000,150000,1806000,False,33900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd522mh
+정수기,대형,정수기,WD522MC,WD522MC.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(슬림맞춤, 냉온정)",CARESHIP,2171000,1956000,150000,1806000,False,33900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd522mc
+정수기,대형,정수기,WD522MN,WD522MN.AKOR,"LG 퓨리케어 오브제컬렉션 정수기(슬림맞춤, 냉온정)",CARESHIP,2171000,1956000,150000,1806000,False,33900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd522mn
+정수기,대형,정수기,WD724RH,WD724RH.AKOR,LG 퓨리케어 AI 오브제컬렉션 냉동얼음정수기,CARESHIP,3403000,3043000,270000,2773000,False,53900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd724rh
+정수기,대형,정수기,WD724RE,WD724RE.AKOR,LG 퓨리케어 AI 오브제컬렉션 냉동얼음정수기,CARESHIP,3403000,3043000,270000,2773000,False,53900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd724re
+정수기,대형,정수기,WD724RK,WD724RK.AKOR,LG 퓨리케어 AI 오브제컬렉션 냉동얼음정수기,CARESHIP,3403000,3043000,270000,2773000,False,53900.0,72.0,schema,True,0,https://www.lge.co.kr/care-solutions/water-purifiers/wd724rk
+에어로타워,대형,에어로타워,HY856RNAAP,HY856RNAAP.AKOR,LG 퓨리케어 AI 오브제컬렉션 하이드로타워 Max + 급수비커 + 알레르겐 특화필터,PRODUCT,2715000,2446000,200000,2246000,True,60900.0,72.0,72_00_008,True,0,https://www.lge.co.kr/humidifying-air-purifier/hy856rnaap
+에어로타워,대형,에어로타워,HY856RSAAP,HY856RSAAP.AKOR,LG 퓨리케어 AI 오브제컬렉션 하이드로타워 Max + 급수비커 + 알레르겐 특화필터,PRODUCT,2715000,2446000,200000,2246000,True,60900.0,72.0,72_00_008,True,0,https://www.lge.co.kr/humidifying-air-purifier/hy856rsaap
+에어로타워,대형,에어로타워,HY706RSUAB,HY706RSUAB.AKOR,LG 퓨리케어 오브제컬렉션 하이드로타워 + 급수비커 세트,PRODUCT,1686000,1519000,150000,1369000,True,,,,False,0,https://www.lge.co.kr/humidifiers/hy706rsuab
+에어로타워,대형,에어로타워,HY706RWUAB,HY706RWUAB.AKOR,LG 퓨리케어 오브제컬렉션 하이드로타워 + 급수비커 세트,PRODUCT,1686000,1519000,150000,1369000,True,,,,False,0,https://www.lge.co.kr/humidifiers/hy706rwuab
+에어로타워,대형,에어로타워,HY706RWUABM,HY706RWUABM.AKOR,LG 퓨리케어 오브제컬렉션 하이드로타워 + 급수비커 + 무빙휠 세트,PRODUCT,1750000,1578000,150000,1428000,True,37900.0,72.0,72_00_008,True,50000,https://www.lge.co.kr/humidifiers/hy706rwuabm
+에어컨,대형,에어컨,FW18EV3EA1,FW18EV3EA1.AKOR,LG 휘센 오브제컬렉션 뷰I 사계절에어컨(3시리즈),PRODUCT,3830000,3450000,270000,3180000,True,68900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fw18ev3ea1
+에어컨,대형,에어컨,FW18EV3EA1M,FW18EV3EA1M.AKOR,LG 휘센 오브제컬렉션 뷰I 사계절에어컨(3시리즈)  <sup>매립배관형</sup>,PRODUCT,3830000,3450000,270000,3180000,True,68900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fw18ev3ea1m
+에어컨,대형,에어컨,FQ18FV3BA2,FQ18FV3BA2.AKOR,LG 휘센 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3830000,3450000,0,3450000,True,71900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18fv3ba2
+에어컨,대형,에어컨,FQ18GV6EE1,FQ18GV6EE1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (6시리즈),PRODUCT,4624000,4166000,270000,3896000,True,87900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv6ee1
+에어컨,대형,에어컨,FQ22GV6EA1,FQ22GV6EA1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (6시리즈),PRODUCT,4624000,4166000,270000,3896000,True,87900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv6ea1
+에어컨,대형,에어컨,FQ18GV6EE1M,FQ18GV6EE1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (6시리즈)<sup>매립배관형</sup>,PRODUCT,4624000,4166000,270000,3896000,True,87900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv6ee1m
+에어컨,대형,에어컨,FQ22GV6EA1M,FQ22GV6EA1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (6시리즈)<sup>매립배관형</sup>,PRODUCT,4624000,4166000,270000,3896000,True,87900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv6ea1m
+에어컨,대형,에어컨,FQ18GN9BE1,FQ18GN9BE1.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (9시리즈),PRODUCT,5901000,5316000,270000,5046000,True,109900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn9be1
+에어컨,대형,에어컨,FQ18GN9BE1M,FQ18GN9BE1M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (9시리즈)<sup>매립배관형</sup>,PRODUCT,5901000,5316000,270000,5046000,True,109900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn9be1m
+에어컨,대형,에어컨,FQ25GN9BE1,FQ25GN9BE1.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (9시리즈),PRODUCT,6844000,6166000,270000,5896000,True,123900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25gn9be1
+에어컨,대형,에어컨,FQ25GN9BE1M,FQ25GN9BE1M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (9시리즈)<sup>매립배관형</sup>,PRODUCT,6844000,6166000,270000,5896000,True,123900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25gn9be1m
+에어컨,대형,에어컨,FQ25FN5BA2,FQ25FN5BA2.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (5시리즈),PRODUCT,5627000,5070000,270000,4800000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25fn5ba2
+에어컨,대형,에어컨,FQ25FN5BA1,FQ25FN5BA1.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (5시리즈),PRODUCT,5123000,4616000,270000,4346000,True,89900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25fn5ba1
+에어컨,대형,에어컨,FQ25FN5BA1M,FQ25FN5BA1M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (5시리즈)<sup>매립배관형</sup>,PRODUCT,5123000,4616000,270000,4346000,True,89900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25fn5ba1m
+에어컨,대형,에어컨,FQ25GN9BE2,FQ25GN9BE2.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (9시리즈),PRODUCT,7570000,6820000,270000,6550000,True,141900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25gn9be2
+에어컨,대형,에어컨,FQ18GN9BE2,FQ18GN9BE2.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (9시리즈),PRODUCT,6627000,5970000,270000,5700000,True,126900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn9be2
+에어컨,대형,에어컨,FQ25GN9BE2M,FQ25GN9BE2M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (9시리즈)<sup>매립배관형</sup>,PRODUCT,7570000,6820000,270000,6550000,True,141900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25gn9be2m
+에어컨,대형,에어컨,FQ18GN9BE2M,FQ18GN9BE2M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (9시리즈)<sup>매립배관형</sup>,PRODUCT,6627000,5970000,270000,5700000,True,126900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn9be2m
+에어컨,대형,에어컨,FQ18GV6EE2,FQ18GV6EE2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (6시리즈),PRODUCT,5350000,4820000,270000,4550000,True,104900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv6ee2
+에어컨,대형,에어컨,FQ22GV6EA2,FQ22GV6EA2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (6시리즈),PRODUCT,5350000,4820000,270000,4550000,True,104900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv6ea2
+에어컨,대형,에어컨,FQ18GV6EE2M,FQ18GV6EE2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (6시리즈)<sup>매립배관형</sup>,PRODUCT,5350000,4820000,270000,4550000,True,104900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv6ee2m
+에어컨,대형,에어컨,FQ22GV6EA2M,FQ22GV6EA2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (6시리즈)<sup>매립배관형</sup>,PRODUCT,5350000,4820000,270000,4550000,True,104900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv6ea2m
+에어컨,대형,에어컨,FQ25FN5BA2M,FQ25FN5BA2M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (5시리즈)<sup>매립배관형</sup>,PRODUCT,5627000,5070000,270000,4800000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq25fn5ba2m
+에어컨,대형,에어컨,FQ18GV3EE1,FQ18GV3EE1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈) ,PRODUCT,3869000,3486000,270000,3216000,True,68900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ee1
+에어컨,대형,에어컨,FQ22GV3EA1,FQ22GV3EA1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈) ,PRODUCT,3903000,3516000,270000,3246000,True,69900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv3ea1
+에어컨,대형,에어컨,FQ18GV3EE1M,FQ18GV3EE1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3869000,3486000,270000,3216000,True,68900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ee1m
+에어컨,대형,에어컨,FQ22GV3EA1M,FQ22GV3EA1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3903000,3516000,270000,3246000,True,69900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv3ea1m
+에어컨,대형,에어컨,FQ18GV3EE2,FQ18GV3EE2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈) ,PRODUCT,4407000,3970000,270000,3700000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ee2
+에어컨,대형,에어컨,FQ22GV3EA2,FQ22GV3EA2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈) ,PRODUCT,4407000,3970000,270000,3700000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv3ea2
+에어컨,대형,에어컨,FQ18GV3EE2M,FQ18GV3EE2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,4407000,3970000,270000,3700000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ee2m
+에어컨,대형,에어컨,FQ22GV3EA2M,FQ22GV3EA2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,4407000,3970000,270000,3700000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq22gv3ea2m
+에어컨,대형,에어컨,FQ18GN5BK1,FQ18GN5BK1.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (5시리즈),PRODUCT,4380000,3946000,270000,3676000,True,77900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn5bk1
+에어컨,대형,에어컨,FQ18GN5BK1M,FQ18GN5BK1M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 싱글 (5시리즈)<sup>매립배관형</sup>,PRODUCT,4380000,3946000,270000,3676000,True,77900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn5bk1m
+에어컨,대형,에어컨,FQ18GN5BK2,FQ18GN5BK2.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (5시리즈),PRODUCT,5051000,4550000,270000,4280000,True,91900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn5bk2
+에어컨,대형,에어컨,FQ18GN5BK2M,FQ18GN5BK2M.AKOR,LG 휘센 AI 오브제컬렉션 타워I 에어컨 2in1 (5시리즈)<sup>매립배관형</sup>,PRODUCT,5051000,4550000,270000,4280000,True,91900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gn5bk2m
+에어컨,대형,에어컨,FQ18GV5EK1,FQ18GV5EK1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (5시리즈),PRODUCT,3714000,3346000,270000,3076000,True,65900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv5ek1
+에어컨,대형,에어컨,FQ18GV5EK1M,FQ18GV5EK1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 싱글 (5시리즈)<sup>매립배관형</sup>,PRODUCT,3714000,3346000,270000,3076000,True,65900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv5ek1m
+에어컨,대형,에어컨,FQ18GV3EK1,FQ18GV3EK1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈),PRODUCT,3326000,2996000,230000,2766000,True,60900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ek1
+에어컨,대형,에어컨,FQ18GV3BK1,FQ18GV3BK1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈),PRODUCT,3437000,3096000,270000,2826000,True,61900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3bk1
+에어컨,대형,에어컨,FQ18GV3EL1,FQ18GV3EL1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈),PRODUCT,2975000,2833000,0,2833000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3el1
+에어컨,대형,에어컨,FQ18GV3BL1,FQ18GV3BL1.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈),PRODUCT,2975000,2833000,0,2833000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3bl1
+에어컨,대형,에어컨,FQ18GV3EK1M,FQ18GV3EK1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3326000,2996000,230000,2766000,True,60900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ek1m
+에어컨,대형,에어컨,FQ18GV3BK1M,FQ18GV3BK1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3437000,3096000,270000,2826000,True,61900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3bk1m
+에어컨,대형,에어컨,FQ18GV3EL1M,FQ18GV3EL1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,2975000,2833000,0,2833000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3el1m
+에어컨,대형,에어컨,FQ18GV3BL1M,FQ18GV3BL1M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 싱글 (3시리즈)<sup>매립배관형</sup>,PRODUCT,2975000,2833000,0,2833000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3bl1m
+에어컨,대형,에어컨,FQ18GV5EK2,FQ18GV5EK2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (5시리즈),PRODUCT,4385000,3950000,270000,3680000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv5ek2
+에어컨,대형,에어컨,FQ18GV5EK2M,FQ18GV5EK2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 프로 에어컨 2in1 (5시리즈)<sup>매립배관형</sup>,PRODUCT,4385000,3950000,270000,3680000,True,80900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv5ek2m
+에어컨,대형,에어컨,FQ18GV3EK2,FQ18GV3EK2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3830000,3450000,270000,3180000,True,72900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ek2
+에어컨,대형,에어컨,FQ18GV3BK2,FQ18GV3BK2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3941000,3550000,270000,3280000,True,73900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3bk2
+에어컨,대형,에어컨,FQ18GV3EL2,FQ18GV3EL2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3418000,3255000,0,3255000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3el2
+에어컨,대형,에어컨,FQ18GV3BL2,FQ18GV3BL2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3418000,3255000,0,3255000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3bl2
+에어컨,대형,에어컨,FQ17GV3EN2,FQ17GV3EN2.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈),PRODUCT,3774000,3740000,270000,3470000,True,64900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq17gv3en2
+에어컨,대형,에어컨,FQ18GV3EK2M,FQ18GV3EK2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3830000,3450000,270000,3180000,True,72900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3ek2m
+에어컨,대형,에어컨,FQ18GV3BK2M,FQ18GV3BK2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3941000,3550000,270000,3280000,True,73900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq18gv3bk2m
+에어컨,대형,에어컨,FQ18GV3EL2M,FQ18GV3EL2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3418000,3255000,0,3255000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3el2m
+에어컨,대형,에어컨,FQ18GV3BL2M,FQ18GV3BL2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3418000,3255000,0,3255000,True,,,,False,0,https://www.lge.co.kr/air-conditioners/fq18gv3bl2m
+에어컨,대형,에어컨,FQ17GV3EN2M,FQ17GV3EN2M.AKOR,LG 휘센 AI 오브제컬렉션 뷰I 에어컨 2in1 (3시리즈)<sup>매립배관형</sup>,PRODUCT,3774000,3740000,270000,3470000,True,64900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/air-conditioners/fq17gv3en2m
+스탠바이미,대형,스탠바이미,27LX6TPGA,27LX6TPGA.AKR,LG 스탠바이미 2,PRODUCT,1391000,1390000,100000,1290000,True,38800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/stan-by-me/27lx6tpga
+스탠바이미,대형,스탠바이미,27LX6TPGAA,27LX6TPGAA.AKR,LG 스탠바이미 2,PRODUCT,1716000,1390000,100000,1290000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/27lx6tpgaa
+스탠바이미,대형,스탠바이미,27LX6TPGAC,27LX6TPGAC.AKR,LG 스탠바이미 2,PRODUCT,1793000,1460000,100000,1360000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/27lx6tpgac
+스탠바이미,대형,스탠바이미,27LX6TPGAKXT7SC,27LX6TPGA.AKXT7SC,LG 스탠바이미 2<br>+ LG 스탠바이미 스피커,PRODUCT,1590000,1589000,150000,1439000,True,42800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/stan-by-me/27lx6tpgakxt7sc
+스탠바이미,대형,스탠바이미,27LX6TPGAAKXT7SC,27LX6TPGAA.AKXT7SC,LG 스탠바이미 2<br>+ LG 스탠바이미 스피커,PRODUCT,1935000,1499000,100000,1399000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/27lx6tpgaakxt7sc
+스탠바이미,대형,스탠바이미,27LX6TPGACKXT7SC,27LX6TPGAC.AKXT7SC,LG 스탠바이미 2<br>+ LG 스탠바이미 스피커,PRODUCT,2012000,1569000,150000,1419000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/27lx6tpgackxt7sc
+스탠바이미,대형,스탠바이미,27LX6TEGA,27LX6TEGA.AKR,LG 스탠바이미 2,PRODUCT,1350000,1310000,100000,1210000,True,35800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/stan-by-me/27lx6tega
+스탠바이미,대형,스탠바이미,OLED55B5NWP,OLED55B5NWP.AKRG,LG 올레드 AI (벽걸이형) <br>+ LG 스탠바이미 2,PRODUCT,3180000,2730000,230000,2500000,True,,,,False,0,https://www.lge.co.kr/tvs/oled55b5nwp
+스탠바이미,대형,스탠바이미,OLED55B5NSP,OLED55B5NSP.AKRG,LG 올레드 AI (스탠드형) <br>+ LG 스탠바이미 2,PRODUCT,3180000,2730000,230000,2500000,True,,,,False,0,https://www.lge.co.kr/tvs/oled55b5nsp
+스탠바이미,대형,스탠바이미,32LX6BPGA,32LX6BPGA.AKR,LG 스탠바이미 2 Max,PRODUCT,1600000,1590000,150000,1440000,True,44800.0,72.0,72_01_025,True,0,https://www.lge.co.kr/stan-by-me/32lx6bpga
+스탠바이미,대형,스탠바이미,32LX6BEGA,32LX6BEGA.AKR,LG 스탠바이미 2 Max,PRODUCT,1500000,1490000,100000,1390000,True,43000.0,72.0,72_01_025,True,0,https://www.lge.co.kr/stan-by-me/32lx6bega
+스탠바이미,대형,스탠바이미,32LX6BPGAS,32LX6BPGAS.AKR,LG 스탠바이미 2 Max,PRODUCT,1690000,1690000,150000,1540000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgas
+스탠바이미,대형,스탠바이미,32LX6BPGAKXT7SC,32LX6BPGA.AKXT7SC,LG 스탠바이미 2 Max<br>+ LG 스탠바이미 스피커,PRODUCT,1869000,1789000,150000,1639000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgakxt7sc
+스탠바이미,대형,스탠바이미,32LX6BPGASAKXT7SC,32LX6BPGAS.AKXT7SC,LG 스탠바이미 2 Max<br>+ LG 스탠바이미 스피커,PRODUCT,1969000,1889000,150000,1739000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgasakxt7sc
+스탠바이미,대형,스탠바이미,32LX6BPGAA,32LX6BPGAA.AKR,LG 스탠바이미 2 Max,PRODUCT,1690000,1690000,150000,1540000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgaa
+스탠바이미,대형,스탠바이미,32LX6BPGAC,32LX6BPGAC.AKR,LG 스탠바이미 2 Max,PRODUCT,1790000,1790000,150000,1640000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgac
+스탠바이미,대형,스탠바이미,32LX6BPGAAAKXT7SC,32LX6BPGAA.AKXT7SC,LG 스탠바이미 2 Max<br>+ LG 스탠바이미 스피커,PRODUCT,1969000,1889000,150000,1739000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgaaakxt7sc
+스탠바이미,대형,스탠바이미,32LX6BPGACAKXT7SC,32LX6BPGAC.AKXT7SC,LG 스탠바이미 2 Max<br>+ LG 스탠바이미 스피커,PRODUCT,2069000,1989000,150000,1839000,True,,,,False,0,https://www.lge.co.kr/stan-by-me/32lx6bpgacakxt7sc
+안마의자,대형,안마의자,MH21BBY,MH21BBY.CKOR,LG 힐링미 오브제컬렉션 안마의자 (아르테UP),PRODUCT,3291000,3290000,270000,3020000,True,25400.0,72.0,72_36_003,True,50000,https://www.lge.co.kr/massage-chairs/mh21bby
+안마의자,대형,안마의자,MH21RRY,MH21RRY.CKOR,LG 힐링미 오브제컬렉션 안마의자 (아르테UP),PRODUCT,3291000,3290000,270000,3020000,True,25400.0,72.0,72_36_003,True,50000,https://www.lge.co.kr/massage-chairs/mh21rry
+김치냉장고,대형,김치냉장고,Z403MEEF53,Z403MEEF53.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2730000,2030000,200000,1830000,True,50900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z403meef53
+김치냉장고,대형,김치냉장고,Z403MPSF53,Z403MPSF53.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2730000,2260000,200000,2060000,True,46900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z403mpsf53
+김치냉장고,대형,김치냉장고,Z408MEEF23,Z408MEEF23.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2580000,2260000,200000,2060000,True,44900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z408meef23
+김치냉장고,대형,김치냉장고,Z408MPSF23,Z408MPSF23.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2580000,2230000,200000,2030000,True,48900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z408mpsf23
+김치냉장고,대형,김치냉장고,Z509MEEF33,Z509MEEF33.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2753000,2480000,200000,2280000,True,46900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z509meef33
+김치냉장고,대형,김치냉장고,Z509MHHF23,Z509MHHF23.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2330000,2330000,200000,2130000,True,43900.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z509mhhf23
+김치냉장고,대형,김치냉장고,Z509MPSF13,Z509MPSF13.AKOR,LG 디오스 오브제컬렉션 김치톡톡,PRODUCT,2230000,1890000,150000,1740000,True,38100.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z509mpsf13
+김치냉장고,대형,김치냉장고,Z484GBB172,Z484GBB172.AKOR,LG 디오스 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3441000,3100000,270000,2830000,True,59400.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z484gbb172
+김치냉장고,대형,김치냉장고,Z484GQQ172S,Z484GQQ172S.AKOR,LG 디오스 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3608000,3250000,270000,2980000,True,58400.0,72.0,72_30_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z484gqq172s
+김치냉장고,대형,김치냉장고,Z495SVV271,Z495SVV271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,4584000,4130000,270000,3860000,True,78900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495svv271
+김치냉장고,대형,김치냉장고,Z495GBB271,Z495GBB271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,4251000,3830000,270000,3560000,True,69900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495gbb271
+김치냉장고,대형,김치냉장고,Z495GCB271,Z495GCB271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,4251000,3830000,270000,3560000,True,73900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495gcb271
+김치냉장고,대형,김치냉장고,Z495GQQ271,Z495GQQ271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,4251000,3830000,270000,3560000,True,73900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495gqq271
+김치냉장고,대형,김치냉장고,Z495GGA271,Z495GGA271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,4208000,3830000,270000,3560000,True,73900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495gga271
+김치냉장고,대형,김치냉장고,Z495MWW271,Z495MWW271.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,3885000,3500000,270000,3230000,True,69900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495mww271
+김치냉장고,대형,김치냉장고,Z495GBB212,Z495GBB212.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,3380000,3050000,270000,2780000,True,65900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495gbb212
+김치냉장고,대형,김치냉장고,Z495GGG212,Z495GGG212.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,3300000,2800000,230000,2570000,True,65900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z495ggg212
+김치냉장고,대형,김치냉장고,Z490MEEF11,Z490MEEF11.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,3141000,2830000,230000,2600000,True,53900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z490meef11
+김치냉장고,대형,김치냉장고,Z490MPSF12,Z490MPSF12.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡,PRODUCT,2730000,1950000,150000,1800000,True,54900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/kimchi-refrigerators/z490mpsf12
+김치냉장고,대형,김치냉장고,Z386SLL281,Z386SLL281.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3497000,3150000,270000,2880000,True,60900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386sll281
+김치냉장고,대형,김치냉장고,Z386GBB281,Z386GBB281.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3275000,2950000,230000,2720000,True,53400.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386gbb281
+김치냉장고,대형,김치냉장고,Z386GQQ281,Z386GQQ281.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3497000,3150000,270000,2880000,True,57900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386gqq281
+김치냉장고,대형,김치냉장고,Z386SLL261,Z386SLL261.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3100000,2600000,230000,2370000,True,54900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386sll261
+김치냉장고,대형,김치냉장고,Z386SVV281,Z386SVV281.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3100000,2850000,230000,2620000,True,60900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386svv281
+김치냉장고,대형,김치냉장고,Z386SVV261,Z386SVV261.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,3100000,2450000,200000,2250000,True,47900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386svv261
+김치냉장고,대형,김치냉장고,Z386GBB261,Z386GBB261.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2930000,2660000,230000,2430000,True,51900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386gbb261
+김치냉장고,대형,김치냉장고,Z386GQQ261,Z386GQQ261.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2900000,2530000,230000,2300000,True,42900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386gqq261
+김치냉장고,대형,김치냉장고,Z386MEE241,Z386MEE241.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2650000,2350000,200000,2150000,True,,,,False,0,https://www.lge.co.kr/kimchi-refrigerators/z386mee241
+김치냉장고,대형,김치냉장고,Z386GBB221,Z386GBB221.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2700000,2190000,200000,1990000,True,48900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386gbb221
+김치냉장고,대형,김치냉장고,Z386MEE221,Z386MEE221.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2550000,2090000,200000,1890000,True,45900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386mee221
+김치냉장고,대형,김치냉장고,Z386MQQ221,Z386MQQ221.AKOR,LG 디오스 AI 오브제컬렉션 김치톡톡 Fit & Max,PRODUCT,2550000,2320000,200000,2120000,True,36900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/kimchi-refrigerators/z386mqq221
+냉장고,대형,냉장고,F904ND79E,F904ND79E.AKOR,LG SIGNATURE 상냉장고,PRODUCT,10500000,10500000,0,10500000,True,,,,False,0,https://www.lge.co.kr/refrigerators/f904nd79e
+냉장고,대형,냉장고,W825SVV182S,W825SVV182S.AKOR,LG 디오스 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),PRODUCT,6272000,5650000,270000,5380000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w825svv182s
+냉장고,대형,냉장고,W825GCC182S,W825GCC182S.AKOR,LG 디오스 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),PRODUCT,5828000,5250000,270000,4980000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w825gcc182s
+냉장고,대형,냉장고,J825GBB142,J825GBB142.CKOR,LG 디오스 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),CARESHIP,4551000,4100000,270000,3830000,False,,,,False,0,https://www.lge.co.kr/care-solutions/ice-water-purifiers-refrigerator/j825gbb142_
+냉장고,대형,냉장고,H875GBB442,H875GBB442.CKOR,LG 디오스 오브제컬렉션 STEM 베이직 냉장고 (노크온 매직스페이스),PRODUCT,4070000,3700000,270000,3430000,True,,,,False,0,https://www.lge.co.kr/refrigerators/h875gbb442
+냉장고,대형,냉장고,H875GBB141,H875GBB141.CKOR,LG 디오스 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,3960000,3600000,270000,3330000,True,,,,False,0,https://www.lge.co.kr/refrigerators/h875gbb141
+냉장고,대형,냉장고,T875MHH141,T875MHH141.CKOR,LG 디오스 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,3497000,3150000,270000,2880000,True,,,,False,0,https://www.lge.co.kr/refrigerators/t875mhh141
+냉장고,대형,냉장고,W826GBB482,W826GBB482.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,6549000,5900000,270000,5630000,True,126900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/w826gbb482
+냉장고,대형,냉장고,W826GBB492,W826GBB492.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,6771000,6100000,270000,5830000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826gbb492
+냉장고,대형,냉장고,W826GBB182,W826GBB182.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),PRODUCT,6161000,5550000,270000,5280000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826gbb182
+냉장고,대형,냉장고,M876GBB582,M876GBB582.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5772000,5200000,270000,4930000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbb582
+냉장고,대형,냉장고,M876GBB472,M876GBB472.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 매직스페이스),PRODUCT,5220000,4750000,270000,4480000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbb472
+냉장고,대형,냉장고,M876GBB282,M876GBB282.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (더블매직스페이스),PRODUCT,5384000,4850000,270000,4580000,True,94900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gbb282
+냉장고,대형,냉장고,M876GBB181,M876GBB181.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,5384000,4850000,270000,4580000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbb181
+냉장고,대형,냉장고,M876GBB161,M876GBB161.AKOR,LG 디오스 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,4601000,4600000,270000,4330000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbb161
+냉장고,대형,냉장고,M876GBB231,M876GBB231.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (더블매직스페이스),PRODUCT,5051000,4550000,270000,4280000,True,77900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gbb231
+냉장고,대형,냉장고,M876GQQ231,M876GQQ231.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (더블매직스페이스),PRODUCT,5051000,4550000,270000,4280000,True,83900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gqq231
+냉장고,대형,냉장고,M876GGA231,M876GGA231.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (더블매직스페이스),PRODUCT,5051000,4550000,270000,4280000,True,83900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gga231
+냉장고,대형,냉장고,M876GBB232,M876GBB232.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (더블매직스페이스),PRODUCT,4620000,4200000,0,4200000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbb232
+냉장고,대형,냉장고,M876GBC232,M876GBC232.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (더블매직스페이스),PRODUCT,4350000,3960000,270000,3690000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gbc232
+냉장고,대형,냉장고,W826SKV482S,W826SKV482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5800000,5795000,270000,5525000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826skv482s
+냉장고,대형,냉장고,W826GQQ482S,W826GQQ482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5600000,5595000,270000,5325000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826gqq482s
+냉장고,대형,냉장고,W826GGG482S,W826GGG482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5600000,5595000,270000,5325000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826ggg482s
+냉장고,대형,냉장고,W826GGA482S,W826GGA482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5600000,5595000,270000,5325000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826gga482s
+냉장고,대형,냉장고,W826MQQ482S,W826MQQ482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5400000,5395000,270000,5125000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826mqq482s
+냉장고,대형,냉장고,W826MNQ482S,W826MNQ482S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,5400000,5395000,270000,5125000,True,,,,False,0,https://www.lge.co.kr/refrigerators/w826mnq482s
+냉장고,대형,냉장고,M876GBB431,M876GBB431.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 (노크온 매직스페이스),PRODUCT,5217000,4700000,270000,4430000,True,86900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gbb431
+냉장고,대형,냉장고,M876GGA161,M876GGA161.AKOR,LG 디오스 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,5050000,4600000,270000,4330000,True,89900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/m876gga161
+냉장고,대형,냉장고,M876SVV582S,M876SVV582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5880000,5350000,270000,5080000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876svv582s
+냉장고,대형,냉장고,M876SKV582S,M876SKV582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5880000,5350000,270000,5080000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876skv582s
+냉장고,대형,냉장고,M876GQQ582S,M876GQQ582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5606000,5050000,270000,4780000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gqq582s
+냉장고,대형,냉장고,M876GGG582S,M876GGG582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5606000,5050000,270000,4780000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876ggg582s
+냉장고,대형,냉장고,M876GGA582S,M876GGA582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5606000,5050000,270000,4780000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876gga582s
+냉장고,대형,냉장고,M876MQQ582S,M876MQQ582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5273000,4750000,270000,4480000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876mqq582s
+냉장고,대형,냉장고,M876MNQ582S,M876MNQ582S.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 더블매직스페이스),PRODUCT,5273000,4750000,270000,4480000,True,,,,False,0,https://www.lge.co.kr/refrigerators/m876mnq582s
+냉장고,대형,냉장고,J826GBB442,J826GBB442.CKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (노크온 매직스페이스),PRODUCT,4995000,4500000,270000,4230000,True,102900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/j826gbb442
+냉장고,대형,냉장고,J826GBB142,J826GBB142.CKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),PRODUCT,4200000,4200000,270000,3930000,True,96900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/j826gbb142
+냉장고,대형,냉장고,H876GBB442,H876GBB442.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (노크온 매직스페이스),PRODUCT,4120000,3750000,270000,3480000,True,75900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/h876gbb442
+냉장고,대형,냉장고,H876GBB141,H876GBB141.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,4107000,3700000,270000,3430000,True,74900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/h876gbb141
+냉장고,대형,냉장고,J826MEE142,J826MEE142.CKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 (매직스페이스),PRODUCT,3800000,3800000,270000,3530000,True,84900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/j826mee142
+냉장고,대형,냉장고,J826MEE042,J826MEE042.CKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고,PRODUCT,3600000,3300000,270000,3030000,True,86900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/j826mee042
+냉장고,대형,냉장고,T876MEE141,T876MEE141.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 (매직스페이스),PRODUCT,3300000,2800000,230000,2570000,True,62900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/t876mee141
+냉장고,대형,냉장고,G646GBB091,G646GBB091.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max ,PRODUCT,5051000,4550000,270000,4280000,True,88900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646gbb091
+냉장고,대형,냉장고,G646SLL091,G646SLL091.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max ,PRODUCT,5217000,4700000,270000,4430000,True,92900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646sll091
+냉장고,대형,냉장고,G646SVV091,G646SVV091.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max,PRODUCT,5165000,4700000,270000,4430000,True,83900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646svv091
+냉장고,대형,냉장고,G646GBB081,G646GBB081.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max,PRODUCT,4890000,4450000,270000,4180000,True,87900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646gbb081
+냉장고,대형,냉장고,G646GQQ081,G646GQQ081.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max,PRODUCT,4940000,4450000,270000,4180000,True,81900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646gqq081
+냉장고,대형,냉장고,G646GBB071,G646GBB071.AKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max,PRODUCT,4100000,3900000,270000,3630000,True,74900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/g646gbb071
+냉장고,대형,냉장고,G646GBB341,G646GBB341.AKOR,LG 디오스 AI 오브제컬렉션  냉장고 Fit & Max (노크온),PRODUCT,5106000,4600000,270000,4330000,True,85900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/g646gbb341
+냉장고,대형,냉장고,G646GGG341,G646GGG341.AKOR,LG 디오스 AI 오브제컬렉션 냉장고 Fit & Max (노크온),PRODUCT,5106000,4600000,270000,4330000,True,85900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/g646ggg341
+냉장고,대형,냉장고,D646SLL091,D646SLL091.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,5606000,5050000,270000,4780000,True,97900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/d646sll091
+냉장고,대형,냉장고,D646GBB091,D646GBB091.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,5384000,4850000,270000,4580000,True,94900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/d646gbb091
+냉장고,대형,냉장고,D646GBB071,D646GBB071.CKOR,LG 디오스 AI 오브제컬렉션 STEM 베이직 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,4250000,4100000,270000,3830000,True,77900.0,72.0,72_12_003,True,0,https://www.lge.co.kr/refrigerators/d646gbb071
+냉장고,대형,냉장고,D646GBB021,D646GBB021.CKOR,LG 디오스 AI 오브제컬렉션 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,3951000,3950000,270000,3680000,True,68900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/d646gbb021
+냉장고,대형,냉장고,P606SLL092,P606SLL092.CKOR,LG 디오스 AI 오브제컬렉션 STEM 얼음정수 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,6216000,5600000,270000,5330000,True,121900.0,72.0,72_03_003,True,0,https://www.lge.co.kr/refrigerators/p606sll092
+냉장고,대형,냉장고,D646MEE021,D646MEE021.CKOR,LG 디오스 AI 오브제컬렉션 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,3750000,3170000,270000,2900000,True,65900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/d646mee021
+냉장고,대형,냉장고,D646GBB041,D646GBB041.CKOR,LG 디오스 AI 오브제컬렉션 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,5051000,4550000,270000,4280000,True,84900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/d646gbb041
+냉장고,대형,냉장고,D646SLL041,D646SLL041.CKOR,LG 디오스 AI 오브제컬렉션 냉장고 Fit & Max (컨버터블 드로어),PRODUCT,5273000,4750000,270000,4480000,True,88900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/refrigerators/d646sll041
+모던엣지,대형,모던엣지,Q343GIB183,Q343GIB183.AKOR,LG 모던엣지 냉장고 오브제컬렉션 노크온,PRODUCT,2276000,2050000,200000,1850000,True,39400.0,72.0,72_30_003,True,50000,https://www.lge.co.kr/refrigerators/q343gib183
+모던엣지,대형,모던엣지,Q343GIP183S,Q343GIP183S.AKOR,LG 모던엣지 냉장고 오브제컬렉션 노크온,PRODUCT,2276000,2050000,200000,1850000,True,39400.0,72.0,72_30_003,True,50000,https://www.lge.co.kr/refrigerators/q343gip183s
+모던엣지,대형,모던엣지,Q343GIC183S,Q343GIC183S.AKOR,LG 모던엣지 냉장고 오브제컬렉션 노크온,PRODUCT,2276000,2050000,200000,1850000,True,39400.0,72.0,72_30_003,True,50000,https://www.lge.co.kr/refrigerators/q343gic183s
+모던엣지,대형,모던엣지,Q343GIH183S,Q343GIH183S.AKOR,LG 모던엣지 냉장고 오브제컬렉션 노크온,PRODUCT,2276000,2050000,200000,1850000,True,39400.0,72.0,72_30_003,True,50000,https://www.lge.co.kr/refrigerators/q343gih183s
+모던엣지,대형,모던엣지,Q343GIW183S,Q343GIW183S.AKOR,LG 모던엣지 냉장고 오브제컬렉션 노크온,PRODUCT,2276000,2050000,200000,1850000,True,39400.0,72.0,72_30_003,True,50000,https://www.lge.co.kr/refrigerators/q343giw183s
+PC,대형,PC,16Z90TR-ED7WK,16Z90TR-E.AD7WK,LG 그램 Pro AI,PRODUCT,5640000,4560000,270000,4290000,True,,,,False,0,https://www.lge.co.kr/notebook/16z90tr-ed7wk
+PC,대형,PC,17Z90TR-ED7WK,17Z90TR-E.AD7WK,LG 그램 Pro AI,PRODUCT,5740000,5060000,270000,4790000,True,,,,False,0,https://www.lge.co.kr/notebook/17z90tr-ed7wk
+PC,대형,PC,16Z90TR-ED7HK,16Z90TR-E.AD7HK,LG 그램 Pro AI,PRODUCT,5640000,5240000,270000,4970000,True,165900.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/16z90tr-ed7hk
+PC,대형,PC,17Z90TR-ED7HK,17Z90TR-E.AD7HK,LG 그램 Pro AI,PRODUCT,5740000,5340000,270000,5070000,True,169100.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/17z90tr-ed7hk
+PC,대형,PC,16T95TP-KA5HK,16T95TP-K.AA5HK,LG 그램 Pro 360 AI 2026,PRODUCT,3690000,3590000,270000,3320000,True,113600.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/16t95tp-ka5hk
+PC,대형,PC,15Z95U-GS5HK,15Z95U-G.AS5HK,"LG 그램 AI 2026, Copilot+ PC",PRODUCT,3140000,2990000,230000,2760000,True,,,,False,0,https://www.lge.co.kr/notebook/15z95u-gs5hk
+PC,대형,PC,16Z90U-KU7HK,16Z90U-K.AU7HK,"LG 그램 Pro AI 2026, Copilot+ PC",PRODUCT,5390000,5290000,270000,5020000,True,167500.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/16z90u-ku7hk
+PC,대형,PC,14Z95U-GS5HK,14Z95U-G.AS5HK,"LG 그램 AI 2026, Copilot+ PC",PRODUCT,3040000,2890000,230000,2660000,True,91500.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/14z95u-gs5hk
+PC,대형,PC,16Z95U-GS5HK,16Z95U-G.AS5HK,"LG 그램 Pro AI 2026, Copilot+ PC",PRODUCT,3590000,3240000,270000,2970000,True,102600.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/16z95u-gs5hk
+PC,대형,PC,17Z90U-GS5HK,17Z90U-G.AS5HK,"LG 그램 Pro AI 2026, Copilot+ PC",PRODUCT,3390000,3290000,270000,3020000,True,,,,False,0,https://www.lge.co.kr/notebook/17z90u-gs5hk
+PC,대형,PC,16Z90U-GS5HK,16Z90U-G.AS5HK,"LG 그램 Pro AI 2026, Copilot+ PC",PRODUCT,3290000,3190000,270000,2920000,True,102600.0,48.0,schema,True,0,https://www.lge.co.kr/notebook/16z90u-gs5hk
+광파오븐,대형,광파오븐,MLJ32ERS,MLJ32ERS.CKOR,LG 디오스 오브제컬렉션 광파오븐,PRODUCT,1095000,990000,50000,940000,True,22400.0,72.0,72_12_003,True,0,https://www.lge.co.kr/microwaves-and-ovens/mlj32ers
+광파오븐,대형,광파오븐,MLJ32MRS,MLJ32MRS.CKOR,LG 디오스 오브제컬렉션 광파오븐,PRODUCT,1095000,990000,50000,940000,True,22400.0,72.0,72_12_003,True,0,https://www.lge.co.kr/microwaves-and-ovens/mlj32mrs
+광파오븐,대형,광파오븐,MLJ32PRS,MLJ32PRS.CKOR,LG 디오스 오브제컬렉션 광파오븐,PRODUCT,1095000,990000,50000,940000,True,22400.0,72.0,72_12_003,True,0,https://www.lge.co.kr/microwaves-and-ovens/mlj32prs
+광파오븐,대형,광파오븐,MLJ32HRS,MLJ32HRS.CKOR,LG 디오스 오브제컬렉션 광파오븐,PRODUCT,1095000,990000,50000,940000,True,37800.0,36.0,36_12_003,True,0,https://www.lge.co.kr/microwaves-and-ovens/mlj32hrs
+오브제와인셀러,대형,와인,W0812GG,W0812GG.AKOR,LG 디오스 오브제컬렉션 와인셀러 ,PRODUCT,2886000,2600000,230000,2370000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0812gg
+오브제와인셀러,대형,와인,W1212GB,W1212GB.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,2300000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/winecellar/w1212gb
+오브제와인셀러,대형,와인,W0772GB,W0772GB.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,2450000,2230000,200000,2030000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0772gb
+오브제와인셀러,대형,와인,W0492GG,W0492GG.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,1832000,1650000,150000,1500000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0492gg
+시스템아이어닝,대형,시스템아이어닝,IY15CT80,IY15CT80.CKOR,LG 스타일러 시스템 아이어닝,PRODUCT,2991000,2990000,230000,2760000,True,,,,False,0,https://www.lge.co.kr/system-ironing/iy15ct80
+식기세척기,대형,식기세척기,DUE6BGE,DUE6BGE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (빌트인/14인용),PRODUCT,2240000,2240000,200000,2040000,True,43000.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/due6bge
+식기세척기,대형,식기세척기,DUE6GLE,DUE6GLE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (빌트인/14인용),PRODUCT,2240000,2240000,200000,2040000,True,44700.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/due6gle
+식기세척기,대형,식기세척기,DEE6BGE,DEE6BGE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (빌트인/14인용),PRODUCT,2240000,2240000,200000,2040000,True,43000.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/dee6bge
+식기세척기,대형,식기세척기,DEE6EWE,DEE6EWE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (빌트인/14인용),PRODUCT,2240000,2240000,200000,2040000,True,44700.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/dee6ewe
+식기세척기,대형,식기세척기,DFE6BGE,DFE6BGE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (프리스탠딩/14인용),PRODUCT,2240000,2240000,200000,2040000,True,44700.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/dfe6bge
+식기세척기,대형,식기세척기,DUE6BGLE,DUE6BGLE.AKOR,LG 디오스 오브제컬렉션 식기세척기 (빌트인/14인용),PRODUCT,1890000,1840000,150000,1690000,True,38700.0,72.0,72_12_003,True,0,https://www.lge.co.kr/dishwashers/due6bgle
+시네빔,대형,시네빔,PU615U,PU615U.BKR,LG 시네빔 쇼츠 (빔프로젝터),PRODUCT,1791000,1790000,150000,1640000,True,,,,False,0,https://www.lge.co.kr/projectors/pu615u
+시네빔,대형,시네빔,PU615UBXO2TBE,PU615U.BXO2TBE,LG 시네빔 쇼츠 (빔프로젝터) <br>+ LG 엑스붐 360,PRODUCT,2069000,1950000,150000,1800000,True,,,,False,0,https://www.lge.co.kr/projectors/pu615ubxo2tbe
+시네빔,대형,시네빔,PU615UBGRAB,PU615U.BGRAB,LG 시네빔 쇼츠 (빔프로젝터)<br> + LG 엑스붐 그랩,PRODUCT,1949000,1850000,150000,1700000,True,,,,False,0,https://www.lge.co.kr/projectors/pu615ubgrab
+시네빔,대형,시네빔,PU615UBBOUNCE,PU615U.BBOUNCE,LG 시네빔 쇼츠 (빔프로젝터)<br> + LG 엑스붐 바운스,PRODUCT,2049000,1950000,150000,1800000,True,,,,False,0,https://www.lge.co.kr/projectors/pu615ubbounce
+시네빔,대형,시네빔,PU600U,PU600U.BKR,LG 시네빔 큐브 26년형,PRODUCT,1591000,1590000,150000,1440000,True,,,,False,0,https://www.lge.co.kr/projectors/pu600u
+세탁기,대형,세탁기,FH25LMTH,FH25LMTH.AKOR,LG SIGNATURE 세탁건조기,PRODUCT,6900000,6900000,0,6900000,True,,,,False,0,https://www.lge.co.kr/all-in-one-laundry/fh25lmth
+세탁기,대형,세탁기,FX25GAR,FX25GAR.AKOR2,LG 트롬 오브제컬렉션 세탁기,PRODUCT,2100000,2100000,200000,1900000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25gar-akor2
+세탁기,대형,세탁기,FX25EAR,FX25EAR.AKOR2,LG 트롬 오브제컬렉션 세탁기,PRODUCT,2100000,2100000,200000,1900000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25ear-akor2
+세탁기,대형,세탁기,FX25ENR,FX25ENR.AKOR2,LG 트롬 오브제컬렉션 세탁기,PRODUCT,2050000,2050000,200000,1850000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25enr-akor2
+세탁기,대형,세탁기,FH25WAX,FH25WAX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,4840000,3950000,270000,3680000,True,,,,False,300000,https://www.lge.co.kr/all-in-one-laundry/fh25wax-ckor
+세탁기,대형,세탁기,FH25ESE,FH25ESE.AKOR,LG 트롬 오브제컬렉션 워시콤보,PRODUCT,4540000,4530000,270000,4260000,True,86900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fh25ese
+세탁기,대형,세탁기,FH25KAX,FH25KAX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5040000,3630000,270000,3360000,True,,,,False,300000,https://www.lge.co.kr/all-in-one-laundry/fh25kax-ckor
+세탁기,대형,세탁기,FH25VAX,FH25VAX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,4940000,4080000,270000,3810000,True,,,,False,300000,https://www.lge.co.kr/all-in-one-laundry/fh25vax-ckor
+세탁기,대형,세탁기,FH25ESEFX,FH25ESEFX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5190000,5170000,270000,4900000,True,92400.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fh25esefx
+세탁기,대형,세탁기,FH25ESEF,FH25ESEF.AKOR,LG 트롬 오브제컬렉션 워시콤보 + 키높이 수납함,PRODUCT,4740000,4740000,270000,4470000,True,90900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fh25esef
+세탁기,대형,세탁기,FX25GFG,FX25GFG.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2100000,200000,1900000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25gfg
+세탁기,대형,세탁기,FX25EFE,FX25EFE.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25efe
+세탁기,대형,세탁기,FX25VF,FX25VF.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25vf
+세탁기,대형,세탁기,FX25TF,FX25TF.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25tf
+세탁기,대형,세탁기,FX25AF,FX25AF.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25af
+세탁기,대형,세탁기,FX25IF,FX25IF.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25if
+세탁기,대형,세탁기,RD25IS,RD25IS.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2440000,200000,2240000,True,46900.0,72.0,72_12_011,True,0,https://www.lge.co.kr/dryers/rd25is
+세탁기,대형,세탁기,FH24ENE,FH24ENE.AKOR,LG 트롬 오브제컬렉션 워시콤보,PRODUCT,4090000,4090000,270000,3820000,True,78900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fh24ene
+세탁기,대형,세탁기,FH23KN,FH23KN.AKOR,LG 트롬 오브제컬렉션 워시콤보,PRODUCT,4100000,4100000,270000,3830000,True,74900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fh23kn
+세탁기,대형,세탁기,FX25KF,FX25KF.AKOR,LG 트롬 AI 오브제컬렉션 세탁기,PRODUCT,2200000,2200000,200000,2000000,True,,,,False,0,https://www.lge.co.kr/washing-machines/fx25kf
+세탁기,대형,세탁기,FH24ENEX,FH24ENEX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,4740000,4740000,270000,4470000,True,84800.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fh24enex
+세탁기,대형,세탁기,FH23KNX,FH23KNX.CKOR,LG 트롬 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,4700000,4700000,270000,4430000,True,82900.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fh23knx
+세탁기,대형,세탁기,FH24ENEF,FH24ENEF.AKOR,LG 트롬 오브제컬렉션 워시콤보 + 키높이 수납함,PRODUCT,4600000,4290000,270000,4020000,True,82900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fh24enef
+세탁기,대형,세탁기,FC2521TX6C,FC2521TX6C.AKOR,LG 트롬 AI 오브제컬렉션 워시콤보,PRODUCT,5090000,5090000,270000,4820000,True,98900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fc2521tx6c
+세탁기,대형,세탁기,WA2525UUP6G,WA2525UUP6G.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5190000,5190000,270000,4920000,True,101900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525uup6g
+세탁기,대형,세탁기,WA2525TAP6Z,WA2525TAP6Z.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,99900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525tap6z
+세탁기,대형,세탁기,WA2525TTP6Z,WA2525TTP6Z.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,99900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ttp6z
+세탁기,대형,세탁기,WA2525EGP6Z,WA2525EGP6Z.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,99900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525egp6z
+세탁기,대형,세탁기,WA2525YMP6G,WA2525YMP6G.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,99900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ymp6g
+세탁기,대형,세탁기,WA2525SSP6G,WA2525SSP6G.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5190000,5190000,270000,4920000,True,101900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ssp6g
+세탁기,대형,세탁기,FC2521UX6C,FC2521UX6C.AKOR,LG 트롬 AI 오브제컬렉션 워시콤보,PRODUCT,5190000,5190000,270000,4920000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fc2521ux6c
+세탁기,대형,세탁기,FC2521SX6C,FC2521SX6C.AKOR,LG 트롬 AI 오브제컬렉션 워시콤보,PRODUCT,5190000,5190000,270000,4920000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fc2521sx6c
+세탁기,대형,세탁기,FC2521KX6C,FC2521KX6C.AKOR,LG 트롬 AI 오브제컬렉션 워시콤보,PRODUCT,5090000,5090000,270000,4820000,True,90900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fc2521kx6c
+세탁기,대형,세탁기,FC2521IQ6C,FC2521IQ6C.AKOR,LG 트롬 AI 오브제컬렉션 워시콤보,PRODUCT,4890000,4890000,270000,4620000,True,94900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/fc2521iq6c
+세탁기,대형,세탁기,FC2521TX6CX,FC2521TX6CX.CKOR,LG 트롬 AI 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5840000,5840000,270000,5570000,True,106800.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fc2521tx6cx
+세탁기,대형,세탁기,FC2521KX6CX,FC2521KX6CX.CKOR,LG 트롬 AI 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5840000,5840000,270000,5570000,True,98300.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fc2521kx6cx
+세탁기,대형,세탁기,FC2521SX6CX,FC2521SX6CX.CKOR,LG 트롬 AI 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5990000,5990000,270000,5720000,True,109700.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fc2521sx6cx
+세탁기,대형,세탁기,FC2521UX6CX,FC2521UX6CX.CKOR,LG 트롬 AI 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5990000,5990000,270000,5720000,True,109700.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fc2521ux6cx
+세탁기,대형,세탁기,RD25ASR,RD25ASR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2360000,200000,2160000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25asr
+세탁기,대형,세탁기,RD25ESER,RD25ESER.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2360000,200000,2160000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25eser
+세탁기,대형,세탁기,RD25GSGR,RD25GSGR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2360000,200000,2160000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25gsgr
+세탁기,대형,세탁기,RD25ISR,RD25ISR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2440000,200000,2240000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25isr
+세탁기,대형,세탁기,RD25KSR,RD25KSR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2440000,200000,2240000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25ksr
+세탁기,대형,세탁기,RD25TSR,RD25TSR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2360000,200000,2160000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25tsr
+세탁기,대형,세탁기,RD25VSR,RD25VSR.AKOR,LG 트롬 AI 오브제컬렉션 건조기,PRODUCT,2440000,2440000,200000,2240000,True,47900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd25vsr
+세탁기,대형,세탁기,RD21GSGR,RD21GSGR.AKOR,LG 트롬 오브제컬렉션 건조기,PRODUCT,2140000,2140000,200000,1940000,True,42900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/dryers/rd21gsgr
+세탁기,대형,세탁기,WA2525UUP6R,WA2525UUP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5190000,5190000,270000,4920000,True,102900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525uup6r
+세탁기,대형,세탁기,WA2525TAP6R,WA2525TAP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525tap6r
+세탁기,대형,세탁기,WA2525TTP6R,WA2525TTP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ttp6r
+세탁기,대형,세탁기,WA2525EGP6R,WA2525EGP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525egp6r
+세탁기,대형,세탁기,WA2525YMP6R,WA2525YMP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5090000,5090000,270000,4820000,True,100900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ymp6r
+세탁기,대형,세탁기,WA2525SSP6R,WA2525SSP6R.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,5190000,5190000,270000,4920000,True,102900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2525ssp6r
+세탁기,대형,세탁기,WA2323EGZNR,WA2323EGZNR.AKOR,LG 트롬 AI 오브제컬렉션 워시타워,PRODUCT,4540000,4540000,270000,4270000,True,90900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/all-in-one-laundry/wa2323egznr
+세탁기,대형,세탁기,FC2521IQ6CX,FC2521IQ6CX.CKOR,LG 트롬 AI 오브제컬렉션 워시콤보 + 미니워시,PRODUCT,5640000,5640000,270000,5370000,True,103000.0,72.0,72_12_007,True,300000,https://www.lge.co.kr/all-in-one-laundry/fc2521iq6cx
+세탁기,대형,세탁기,KX25VF-5VSR,KX25VF-5VSR.AKOR2,LG 트롬 AI 오브제컬렉션 세탁기 + LG 트롬 AI 오브제컬렉션 건조기 + 스태킹키트,PRODUCT,4680000,4540000,270000,4270000,True,,,,False,100000,https://www.lge.co.kr/all-in-one-laundry/kx25vf-5vsr
+세탁기,대형,세탁기,KX25EFE5EER,KX25EFE5EER.AKOR,LG 트롬 AI 오브제컬렉션 세탁기 + 건조기 + 스태킹키트,PRODUCT,5039000,4540000,270000,4270000,True,,,,False,100000,https://www.lge.co.kr/all-in-one-laundry/kx25efe5eer
+바스에어,대형,바스에어,MX0120BASV,MX0120BASV.ASM,LG 퓨리케어 바스에어시스템 프리미엄 듀얼,PRODUCT,1430000,1290000,100000,1190000,True,31900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/bath-air-system/mx0120basv
+바스에어,대형,바스에어,M-X0120BASV,M-X0120BASV.ASM,LG 퓨리케어 바스에어시스템 프리미엄,PRODUCT,1210000,1090000,100000,990000,True,26900.0,72.0,72_12_007,True,0,https://www.lge.co.kr/bath-air-system/m-x0120basv
+전기레인지,대형,전기레인지,BEI3ASMLE,BEI3ASMLE.AKOR,LG 디오스 인덕션 ,PRODUCT,1914000,1740000,150000,1590000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3asmle
+전기레인지,대형,전기레인지,BEI3ANBLE,BEI3ANBLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,1931000,1740000,150000,1590000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3anble
+전기레인지,대형,전기레인지,BEI3ANHLE,BEI3ANHLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,1931000,1740000,150000,1590000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3anhle
+전기레인지,대형,전기레인지,BEI3ANPLE,BEI3ANPLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,1931000,1740000,150000,1590000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3anple
+전기레인지,대형,전기레인지,BEI3AMB4E,BEI3AMB4E.AKOR,LG 디오스 인덕션 ,PRODUCT,1987000,1790000,150000,1640000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3amb4e
+전기레인지,대형,전기레인지,BEI3ASB4E,BEI3ASB4E.AKOR,LG 디오스 인덕션,PRODUCT,1765000,1590000,150000,1440000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3asb4e
+전기레인지,대형,전기레인지,BEI3ASS4E,BEI3ASS4E.AKOR,LG 디오스 인덕션,PRODUCT,1765000,1590000,150000,1440000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bei3ass4e
+전기레인지,대형,전기레인지,BEF3ANBLE,BEF3ANBLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,2098000,1890000,150000,1740000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bef3anble
+전기레인지,대형,전기레인지,BEF3ANHLE,BEF3ANHLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,2098000,1890000,150000,1740000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bef3anhle
+전기레인지,대형,전기레인지,BEF3ANSLE,BEF3ANSLE.AKOR,LG 디오스 오브제컬렉션 인덕션,PRODUCT,2098000,1890000,150000,1740000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bef3ansle
+전기레인지,대형,전기레인지,BEF3AMB4E,BEF3AMB4E.AKOR,LG 디오스 인덕션,PRODUCT,2134000,1940000,150000,1790000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bef3amb4e
+전기레인지,대형,전기레인지,BEF3ASMLE,BEF3ASMLE.AKOR,LG 디오스 인덕션 ,PRODUCT,2079000,1890000,150000,1740000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bef3asmle
+전기레인지,대형,전기레인지,BEY3GS2E,BEY3GS2E.AKOR,LG 디오스 하이브리드,PRODUCT,1265000,1140000,100000,1040000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bey3gs2e
+전기레인지,대형,전기레인지,BEY3MSE,BEY3MSE.AKOR,LG 디오스 하이브리드,PRODUCT,1376000,1240000,100000,1140000,True,,,,False,0,https://www.lge.co.kr/electric-ranges/bey3mse
+전자칠판,대형,전자칠판,65TR3DQ-BW,65TR3DQ-BW.AKRQ,LG 전자칠판 + 벽걸이 브라켓,PRODUCT,3750000,2510000,0,2510000,True,,,,False,0,https://www.lge.co.kr/displays/65tr3dq-bw
+전자칠판,대형,전자칠판,65TR3DQ-BS,65TR3DQ-BS.AKRQ,LG 전자칠판 + 이동형 스탠드,PRODUCT,4000000,2860000,0,2860000,True,,,,False,0,https://www.lge.co.kr/displays/65tr3dq-bs
+전자칠판,대형,전자칠판,75TR3DQ-BW,75TR3DQ-BW.AKRQ,LG 전자칠판 + 벽걸이 브라켓,PRODUCT,4750000,3330000,0,3330000,True,,,,False,0,https://www.lge.co.kr/displays/75tr3dq-bw
+전자칠판,대형,전자칠판,75TR3DQ-BS,75TR3DQ-BS.AKRQ,LG 전자칠판 + 이동형 스탠드,PRODUCT,5000000,3680000,0,3680000,True,,,,False,0,https://www.lge.co.kr/displays/75tr3dq-bs
+전자칠판,대형,전자칠판,86TR3DQ-BW,86TR3DQ-BW.AKRQ,LG 전자칠판 + 벽걸이 브라켓,PRODUCT,5750000,4380000,0,4380000,True,,,,False,0,https://www.lge.co.kr/displays/86tr3dq-bw
+전자칠판,대형,전자칠판,86TR3DQ-BS,86TR3DQ-BS.AKRQ,LG 전자칠판 + 이동형 스탠드,PRODUCT,6000000,4730000,0,4730000,True,,,,False,0,https://www.lge.co.kr/displays/86tr3dq-bs
+공기청정기,대형,공기청정기,AS356NSMA,AS356NSMA.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M7,PRODUCT,2320000,2090000,200000,1890000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as356nsma
+공기청정기,대형,공기청정기,AS356NGMA,AS356NGMA.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M7,PRODUCT,2320000,2090000,200000,1890000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as356ngma
+공기청정기,대형,공기청정기,AS206NSHA,AS206NSHA.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M5,PRODUCT,1709000,1540000,150000,1390000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as206nsha
+공기청정기,대형,공기청정기,AS206NGHA,AS206NGHA.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M5,PRODUCT,1709000,1540000,150000,1390000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as206ngha
+공기청정기,대형,공기청정기,AS356NSHH,AS356NSHH.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M5,PRODUCT,1980000,1790000,0,1790000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as356nshh
+공기청정기,대형,공기청정기,AS356NSMAM,AS356NSMAM.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M7 + 무빙휠 세트,PRODUCT,2385000,2149000,200000,1949000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as356nsmam
+공기청정기,대형,공기청정기,AS356NGMAM,AS356NGMAM.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M7 + 무빙휠 세트,PRODUCT,2385000,2149000,200000,1949000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as356ngmam
+공기청정기,대형,공기청정기,AS206NSHAM,AS206NSHAM.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M5 + 무빙휠 세트,PRODUCT,1769000,1594000,150000,1444000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as206nsham
+공기청정기,대형,공기청정기,AS206NGHAM,AS206NGHAM.AKOR,LG 퓨리케어 AI 오브제컬렉션 360˚ 공기청정기 M5 + 무빙휠 세트,PRODUCT,1769000,1594000,150000,1444000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as206ngham
+사운드바,대형,사운드바,86QNED65ABWAS70TR,86QNED65ABW.AS70TR,LG QNED AI (벽걸이형)<br>+ LG 사운드바,PRODUCT,3890000,3159000,270000,2889000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned65abwas70tr
+사운드바,대형,사운드바,86QNED65ABSAS70TR,86QNED65ABS.AS70TR,LG QNED AI (스탠드형) <br>+ LG 사운드바,PRODUCT,3890000,3159000,270000,2889000,True,,,,False,0,https://www.lge.co.kr/tvs/86qned65absas70tr
+사운드바,대형,사운드바,75QNED65ABWAS70TR,75QNED65ABW.AS70TR,LG QNED AI (벽걸이형) <br>+ LG 사운드바,PRODUCT,2890000,2150000,200000,1950000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned65abwas70tr
+사운드바,대형,사운드바,75QNED65ABSAS70TR,75QNED65ABS.AS70TR,LG QNED AI (스탠드형) <br>+ LG 사운드바,PRODUCT,2890000,2150000,200000,1950000,True,,,,False,0,https://www.lge.co.kr/tvs/75qned65absas70tr
+사운드바,대형,사운드바,75NANO80AEWAS70TR,75NANO80AEW.AS70TR,LG 나노셀 AI (벽걸이형) <br>+ LG 사운드바,PRODUCT,2790000,1811000,150000,1661000,True,,,,False,0,https://www.lge.co.kr/tvs/75nano80aewas70tr
+사운드바,대형,사운드바,75NANO80AESAS70TR,75NANO80AES.AS70TR,LG 나노셀 AI (스탠드형)<br>+ LG 사운드바,PRODUCT,2790000,1811000,150000,1661000,True,,,,False,0,https://www.lge.co.kr/tvs/75nano80aesas70tr
+사운드바,대형,사운드바,S70TR,S70TR.AKORD,LG 사운드바,PRODUCT,899000,699000,50000,649000,True,,,,False,0,https://www.lge.co.kr/home-audio/s70tr-d
+사운드바,대형,사운드바,H7,H7.AKOR,LG 사운드 스위트 H7,PRODUCT,1301000,1299000,100000,1199000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7
+사운드바,대형,사운드바,M5SAKOR2,M5S.AKOR2,LG 스테레오 스위트5,PRODUCT,898000,768000,50000,718000,True,,,,False,0,https://www.lge.co.kr/home-audio/m5sakor2
+사운드바,대형,사운드바,M7SAKOR2,M7S.AKOR2,LG 스테레오 스위트7,PRODUCT,1098000,1048000,100000,948000,True,,,,False,0,https://www.lge.co.kr/home-audio/m7sakor2
+사운드바,대형,사운드바,H7SAWM52,H7S.AWM52,LG 럭셔리 스위트5,PRODUCT,2996000,2826000,230000,2596000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sawm52
+사운드바,대형,사운드바,H7SAWM72,H7S.AWM72,LG 럭셔리 스위트7,PRODUCT,3196000,3096000,270000,2826000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sawm72
+사운드바,대형,사운드바,H7SAWM74,H7S.AWM74,LG 프리미어 스위트7,PRODUCT,4294000,4144000,270000,3874000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sawm74
+사운드바,대형,사운드바,H7SAM74,H7S.AM74,LG 스탠다드 쿼드 스위트7,PRODUCT,3495000,3395000,270000,3125000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sam74
+사운드바,대형,사운드바,H7SAM54,H7S.AM54,LG 스탠다드 쿼드 스위트5,PRODUCT,3095000,2825000,230000,2595000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sam54
+사운드바,대형,사운드바,H7SAM72,H7S.AM72,LG 스탠다드 스위트7,PRODUCT,2397000,2327000,200000,2127000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sam72
+사운드바,대형,사운드바,H7SAM52,H7S.AM52,LG 스탠다드 스위트5,PRODUCT,2197000,2047000,200000,1847000,True,,,,False,0,https://www.lge.co.kr/home-audio/h7sam52
+(소형)에어케어,소형,공기청정기,FS065PSKA,FS065PSKA.AKOR,LG 퓨리케어 오브제컬렉션 에어로타워 Hit (온풍 겸용),PRODUCT,1265000,929000,50000,879000,True,,,,False,0,https://www.lge.co.kr/air-purifier/fs065pska
+(소형)에어케어,소형,공기청정기,AS065PWHA,AS065PWHA.AKOR,LG 퓨리케어 AI 오브제컬렉션 에어로퍼니처,PRODUCT,720000,499000,0,499000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as065pwha
+(소형)에어케어,소형,공기청정기,AS065CWHA,AS065CWHA.AKOR,LG 퓨리케어 AI 오브제컬렉션 에어로캣타워,PRODUCT,1220000,999000,50000,949000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as065cwha
+(소형)에어케어,소형,공기청정기,DQ235MWGA,DQ235MWGA.AKOR,LG 휘센 오브제컬렉션 제습기,PRODUCT,942000,849000,50000,799000,True,20500.0,72.0,72_12_006,True,0,https://www.lge.co.kr/dehumidifiers/dq235mwga
+(소형)에어케어,소형,공기청정기,DQ235MWGAS,DQ235MWGAS.AKOR,LG 휘센 오브제컬렉션 제습기 + 건조케이스,PRODUCT,1052000,728000,50000,678000,True,22500.0,72.0,72_12_006,True,50000,https://www.lge.co.kr/dehumidifiers/dq235mwgas
+(소형)에어케어,소형,공기청정기,DQ235MEGAS,DQ235MEGAS.AKOR,LG 휘센 오브제컬렉션 제습기 + 건조케이스,PRODUCT,1052000,728000,50000,678000,True,,,,False,50000,https://www.lge.co.kr/dehumidifiers/dq235megas
+(소형)에어케어,소형,공기청정기,DQ214MWGAS,DQ214MWGAS.AKOR,LG 휘센 오브제컬렉션 제습기 + 건조케이스,PRODUCT,996000,698000,50000,648000,True,23900.0,72.0,72_12_006,True,50000,https://www.lge.co.kr/dehumidifiers/dq214mwgas
+(소형)에어케어,소형,공기청정기,AS185LGAA,AS185LGAA.AKOR,LG 퓨리케어 AI 오브제컬렉션 월핏 (스탠드),PRODUCT,988000,890000,50000,840000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as185lgaa
+(소형)에어케어,소형,공기청정기,AS185LGAAW,AS185LGAAW.AKOR,LG 퓨리케어 AI 오브제컬렉션 월핏 (벽걸이),PRODUCT,1043000,940000,50000,890000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as185lgaaw
+(소형)에어케어,소형,공기청정기,AS185LGAAS,AS185LGAAS.AKOR,LG 퓨리케어 AI 오브제컬렉션 월핏 (스탠드) + 선반 Kit,PRODUCT,1099000,990000,50000,940000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as185lgaas
+(소형)에어케어,소형,공기청정기,HY505RWLL,HY505RWLL.AKOR,LG 퓨리케어 오브제컬렉션 하이드로에센셜 + 무빙휠 + 스테인리스 물통 세트,PRODUCT,1133000,1133000,100000,1033000,True,32900.0,72.0,72_00_008,True,0,https://www.lge.co.kr/humidifiers/hy505rwll
+(소형)에어케어,소형,공기청정기,AS186LSAAW,AS186LSAAW.AKOR,LG 퓨리케어 AI 오브제컬렉션 월핏 (벽걸이),PRODUCT,932000,840000,50000,790000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as186lsaaw
+(소형)에어케어,소형,공기청정기,AS186LSAAS,AS186LSAAS.AKOR,LG 퓨리케어 AI 오브제컬렉션 월핏 (스탠드) + 선반 Kit,PRODUCT,988000,890000,50000,840000,True,,,,False,0,https://www.lge.co.kr/air-purifier/as186lsaas
+(소형)에어케어,소형,공기청정기,DQ256MWGA,DQ256MWGA.AKOR,LG 휘센 오브제컬렉션 제습기,PRODUCT,998000,899000,50000,849000,True,23900.0,72.0,72_12_006,True,0,https://www.lge.co.kr/dehumidifiers/dq256mwga
+(소형)에어케어,소형,공기청정기,DQ256MEGA,DQ256MEGA.AKOR,LG 휘센 오브제컬렉션 제습기,PRODUCT,998000,899000,50000,849000,True,,,,False,0,https://www.lge.co.kr/dehumidifiers/dq256mega
+(소형)에어케어,소형,공기청정기,DQ256MWGAS,DQ256MWGAS.AKOR,LG 휘센 오브제컬렉션 제습기 + 건조케이스,PRODUCT,1108000,998000,50000,948000,True,25900.0,72.0,72_12_006,True,50000,https://www.lge.co.kr/dehumidifiers/dq256mwgas
+(소형)에어케어,소형,공기청정기,DQ256MEGAS,DQ256MEGAS.AKOR,LG 휘센 오브제컬렉션 제습기 + 건조케이스,PRODUCT,1108000,998000,50000,948000,True,,,,False,50000,https://www.lge.co.kr/dehumidifiers/dq256megas
+와인냉장고,소형,와인,W0082GBE,W0082GBE.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,566000,510000,50000,460000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0082gbe
+와인냉장고,소형,와인,W0082GPE,W0082GPE.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,530000,510000,50000,460000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0082gpe
+와인냉장고,소형,와인,W0082GLE,W0082GLE.AKOR,LG 디오스 오브제컬렉션 와인셀러,PRODUCT,530000,450000,0,450000,True,,,,False,0,https://www.lge.co.kr/winecellar/w0082gle
+(소형)틔운미니,소형,(소형)틔운미니,L023E1P42,L023E1P42.AKOR,LG 틔운 미니,PRODUCT,218000,199000,0,199000,True,,,,False,0,https://www.lge.co.kr/lg-tiiun/l023e1p42
+(소형)틔운미니,소형,(소형)틔운미니,L023M1P42,L023M1P42.AKOR,LG 틔운 미니,PRODUCT,218000,199000,0,199000,True,,,,False,0,https://www.lge.co.kr/lg-tiiun/l023m1p42
+(소형)틔운미니,소형,(소형)틔운미니,L023L1P42,L023L1P42.AKOR,LG 틔운 미니,PRODUCT,218000,199000,0,199000,True,,,,False,0,https://www.lge.co.kr/lg-tiiun/l023l1p42

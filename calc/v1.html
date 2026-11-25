@@ -9,7 +9,7 @@ function draw(){
   '<div class="box"><div class="row"><h2>할인 결제가</h2><span class="big red">'+won(r.pay)+'</span></div><div class="line"></div>'+
   '<div class="row"><span>판매가</span><span>'+won(r.list)+'</span></div><div class="row sub"><span>ㄴ 회원 할인</span><span>-'+won(r.member)+'</span></div><div class="row sub"><span>ㄴ 쿠폰 할인</span><span>-'+won(r.coupon)+'</span></div></div>'+
   '<div class="box"><div class="row"><h2>구매 후 예상 혜택</h2><span class="big">'+won(r.benefit)+'</span></div>'+cardSelect('card',card)+
-  '<div class="row" style="margin-top:8px"><span>다품목 캐시백</span><span>'+won(r.cash)+'</span></div><div class="row sub"><span>ㄴ 기본+추가 : '+r.large+'품목</span><span>'+won(r.multi)+'</span></div><div class="row sub"><span>ㄴ 소형가전 : '+r.small+'품목</span><span>'+won(r.smallCash)+'</span></div>'+
+  '<div class="row" style="margin-top:8px"><span>제품별 캐시백 (최대)</span><span>'+won(r.prodCash)+'</span></div><div class="row"><span>다품목 캐시백</span><span>'+won(r.multi+r.smallCash)+'</span></div><div class="row sub"><span>ㄴ 기본+추가 : '+r.large+'품목</span><span>'+won(r.multi)+'</span></div><div class="row sub"><span>ㄴ 소형가전 : '+r.small+'품목</span><span>'+won(r.smallCash)+'</span></div>'+
   '<div class="row"><span>결제일 할인 7% (최대)</span><span>'+won(r.payDc)+'</span></div><div class="row"><span>멤버십 포인트 적립</span><span>'+r.point.toLocaleString()+'P</span></div>'+
   '<div class="row sub"><span>포인트 직접 입력</span><input class="mini" id="pov" inputmode="numeric" value="'+pov+'" placeholder="자동"></div>'+
   (r.subCount?'<div class="line"></div><div class="row"><span>구독 '+r.subCount+'개 월 합계</span><b>'+won(r.subMonth)+'</b></div><div class="row sub"><span>ㄴ 구독 포인트(첫구독+품목)</span><span>'+r.subPoint.toLocaleString()+'P</span></div>':'')+

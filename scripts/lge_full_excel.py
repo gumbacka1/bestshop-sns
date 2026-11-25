@@ -42,8 +42,8 @@ def n(v):
     except Exception: return None
 
 
-def main():
-    P = load('products.json', []); R = load('ranking.json', {}); B = load('benefits.json', {}); M = load('meta.json', {})
+def main(P_only=None, out_name=None, no_common=False):
+    P = load('products.json', []) if P_only is None else P_only; R = load('ranking.json', {}); B = load('benefits.json', {}); M = load('meta.json', {})
     global ONLY
     ONLY = {q.get('modelName'): ('Y' if q.get('lgecomOnlyFlag') == 'Y' else 'N') for k in R.values() for l in k.values() for q in l}
     wb = Workbook(); ws = wb.active; ws.title = '요약'
@@ -144,9 +144,15 @@ def main():
     sheet(wb, '랭킹', ['품목', '구분', '순위', '모델', '제품명', '특징1', '특징2', '할인가', '최대혜택가', '닷컴 전용'],
           rows, [10, 8, 6, 16, 44, 10, 10, 13, 13, 9], money=(7, 8))
 
-    for old in glob.glob(os.path.join(D, '엘지닷컴_전모델_*.xlsx')): os.remove(old)
     day = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime('%y%m%d')
-    out = os.path.join(D, f'엘지닷컴_전모델_{day}_v1.xlsx')
+    if no_common:
+        for t in ['할인·행사 페이지', '제휴카드', '베스트샵 판촉', '혜택 안내 원문', '랭킹']:
+            if t in wb.sheetnames: del wb[t]
+    if out_name:
+        out = out_name.replace('{day}', day)
+    else:
+        for old in glob.glob(os.path.join(D, '엘지닷컴_전모델_*.xlsx')): os.remove(old)
+        out = os.path.join(D, f'엘지닷컴_전모델_{day}_v1.xlsx')
     wb.save(out)
     print('엑셀', out)
 

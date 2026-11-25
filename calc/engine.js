@@ -61,7 +61,8 @@ function calc(cart, opt = {}) {
     if (small >= 2 || (small >= 1 && large >= 1)) smallAmt = small * R.small;
   } else if (!buy.length && items.length) r.notes.push('구독만 담으면 다품목 캐시백이 없어요 (일시불 1건 이상 필요)');
   else if (!card.cb) r.notes.push(opt.card + '는 다품목 캐시백이 없어요');
-  r.multi = multi; r.smallCash = smallAmt; r.cash = multi + smallAmt;
+  r.prodCash = buy.length && card.cb ? buy.reduce((a, c) => a + (c.x.pc || 0), 0) : 0;   // 제품별 카드 캐시백
+  r.multi = multi; r.smallCash = smallAmt; r.cash = multi + smallAmt + r.prodCash;
   if (opt.shop && SHOP && SHOP.cashback && !(large in SHOP.cashback) && large >= 2) r.notes.push(large + '개 베스트샵 캐시백은 아직 미확인이라 닷컴 금액으로 넣었어요');
 
   // 결제일 할인
@@ -106,4 +107,4 @@ function load(key, d) { try { return JSON.parse(localStorage.getItem(key)) || d;
 const CARD_NAMES = Object.keys(R.cards);
 function cardSelect(id, v) { return `<select id="${id}">${CARD_NAMES.map(c => `<option ${c === v ? 'selected' : ''}>${c}</option>`).join('')}</select>`; }
 // 보내 주신 캡처 조합 (검증용)
-const SAMPLE = [{m:'M876GBB231', mode:'buy', coupon:569600},{m:'OLED83G5KW', mode:'buy', coupon:0}];
+const SAMPLE = [{m:'M876GBB231', mode:'buy', coupon:569600},{m:'OLED83G5KW', mode:'buy', coupon:1161100}];

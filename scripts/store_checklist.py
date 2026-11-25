@@ -38,6 +38,17 @@ for p in P:
                     orig, disc, sub72, 'Y' if p.get('다품목') == 'Y' else '', 'Y' if p.get('lgecomOnlyFlag') == 'Y' else '',
                     '판매예정' if p.get('modelStatusCode') == 'READY_FOR_SALE' else ('품절' if p.get('modelStatusCode') == 'SOLD_OUT' else ''),
                     rv(p.get('reviewCount'))])
+import csv
+_have = {(p.get('modelName') or '').upper() for p in P}
+_mp = os.path.join(B, 'data/lge_full/mltp/다품목_모델마스터.csv')
+if os.path.exists(_mp):
+    for r in csv.DictReader(open(_mp, encoding='utf-8-sig')):
+        if r['모델명'].upper() in _have or any(r['모델명'] == x[3] for x in MISSING): continue
+        gg = next((n for n, st in G if r['제품군'] in st), '기타')
+        if '냉장' in r['제품군']: gg = '냉장고'
+        elif any(k in r['제품군'] for k in ('오븐', '식기', '정수')): gg = '주방'
+        elif any(k in r['제품군'] for k in ('로봇', '안마', '청소', '공기')): gg = '공기·생활'
+        MISSING.append((gg, r['제품군'], '', r['모델명'], r['제품명'], int(float(r['정가'] or 0)) or None, int(float(r['구독월요금'] or 0)) or None))
 for g, c, s, m, n, o, sub in MISSING:
     rows[g].append(['', '수집 보완 중', c, s, m, n, '', '', o, o, sub, '', '', '목록 누락', 0])
 H = ['운영', '메모', '품목', '세부', '모델', '제품명', '출시', '용량·크기', '정상가', '할인가', '구독 6년 월', '다품목', '닷컴전용', '상태', '리뷰 수']
@@ -79,5 +90,5 @@ for g in order:
     dv = DataValidation(type='list', formula1='"O"', allow_blank=True); s.add_data_validation(dv); dv.add(f'A2:A{n}')
     s.conditional_formatting.add(f'A2:O{n}', FormulaRule(formula=['$A2="O"'], fill=on))
     s.freeze_panes = 'F2'; s.auto_filter.ref = f'A1:O{n}'; s.row_dimensions[1].height = 22
-out = os.path.join('/home/claude/out', f'베샵운영모델_체크_{day}_v1.xlsx')
+out = os.path.join('/home/claude/out', f'베샵운영모델_체크_{day}_v2.xlsx')
 wb.save(out); print(out, {g: len(rows[g]) for g in order}, round(os.path.getsize(out) / 1e6, 2), 'MB')
