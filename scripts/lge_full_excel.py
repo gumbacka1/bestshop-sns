@@ -126,6 +126,11 @@ def main():
     sheet(wb, '제휴카드', ['카드', '행사 기간', '전월 실적별 월 할인', '혜택 기간', '구독료 실적인정', '연회비', '조건', '주소'],
           rows, [26, 22, 34, 12, 10, 30, 50, 40])
 
+    BS = load('bestshop_promos.json', {}).get('pages', {})
+    rows = [[k.split('?')[0], v.get('title'), '\n'.join(v.get('기간') or []), '\n'.join(v.get('혜택') or [])[:30000],
+             '\n'.join(v.get('조건') or [])[:30000], v.get('url')] for k, v in BS.items()]
+    sheet(wb, '베스트샵 판촉', ['구분(경로)', '제목', '기간', '혜택 문구', '조건·유의', '주소'], rows, [28, 36, 26, 70, 60, 40])
+
     rows = [[k, v.get('url'), (v.get('text') or '')[:32000]] for k, v in B.items()]
     sheet(wb, '혜택 안내 원문', ['페이지', '주소', '내용'], rows, [18, 40, 120])
 

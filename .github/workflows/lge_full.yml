@@ -27,6 +27,8 @@ jobs:
           ONLY: ${{ github.event.inputs.only }}
           LIMIT: ${{ github.event.inputs.limit }}
           WORKERS: "6"
+      - run: python scripts/bestshop_promo_collect.py
+        continue-on-error: true
       - run: python scripts/lge_full_excel.py
       - run: |
           git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
