@@ -104,11 +104,16 @@ def main():
             for p in P for i, u in enumerate((p.get('images') or []) + (p.get('videos') or []))]
     sheet(wb, '사진·영상 링크', ['품목', '모델', '종류', '링크'], rows, [14, 16, 8, 90])
 
-    rows = []
+    rows, seen = [], set()
     for k, v in B.items():
         for c in v.get('cards') or []:
-            rows.append([k, c.get('카드'), '\n'.join(c.get('실적별') or []), '\n'.join(c.get('조건') or []), v.get('url')])
-    sheet(wb, '제휴카드', ['출처', '카드', '전월 실적별 할인', '조건', '주소'], rows, [16, 30, 50, 60, 40])
+            key = (c.get('카드'), tuple(c.get('실적별') or []))
+            if key in seen: continue
+            seen.add(key)
+            rows.append([c.get('카드'), c.get('기간', ''), '\n'.join(c.get('실적별') or []), c.get('혜택기간', ''),
+                         c.get('실적인정', ''), c.get('연회비', ''), '\n'.join(c.get('조건') or []), v.get('url')])
+    sheet(wb, '제휴카드', ['카드', '행사 기간', '전월 실적별 월 할인', '혜택 기간', '구독료 실적인정', '연회비', '조건', '주소'],
+          rows, [26, 22, 34, 12, 10, 30, 50, 40])
 
     rows = [[k, v.get('url'), (v.get('text') or '')[:32000]] for k, v in B.items()]
     sheet(wb, '혜택 안내 원문', ['페이지', '주소', '내용'], rows, [18, 40, 120])

@@ -235,17 +235,32 @@ def ranking(kind, cid):
 
 # ---------- 5. 안내 페이지(제휴카드·혜택) ----------
 def card_rows(t):
-    """'40만원 이상 | 8,000원 | 7,000원 | 15,000원' 같은 줄을 카드별로 묶는다."""
-    cards, cur = [], None
-    for line in t.split('\n'):
-        if re.search(r'\[(신한|롯데|우리|하나|KB|국민|현대|삼성|NH|농협|BC|비씨)[^\]]*\]|카드$|카드\)', line) and len(line) < 60:
-            cur = {'카드': line.strip(), '실적별': [], '조건': []}; cards.append(cur); continue
+    """카드별 상세 혜택: 카드 이름 → 기간 → 전월 실적별 할인 → 연회비 → 혜택 기간 → 구독료 실적인정."""
+    L = t.split('\n'); cards = []; cur = None
+    date = re.compile(r'\d{4}\.\d{1,2}\.\d{1,2}\s*~')
+    for i, x in enumerate(L):
+        nxt = L[i + 1] if i + 1 < len(L) else ''
+        if len(x) < 50 and date.search(nxt) and not re.match(r'^(기간|혜택|대상|이벤트)', x) and not date.search(x):
+            cur = {'카드': x.strip(), '기간': nxt.strip(), '실적별': [], '연회비': '', '혜택기간': '', '실적인정': '', '조건': []}
+            cards.append(cur); continue
         if cur is None: continue
-        if re.search(r'\d+\s*만\s*원\s*이상', line) and re.search(r'[\d,]+\s*원', line.split('이상', 1)[-1]):
-            cur['실적별'].append(line.strip())
-        elif re.search(r'최대|개월|연회비|기간|자동|청구|결제일', line) and len(line) < 200 and len(cur['조건']) < 12:
-            cur['조건'].append(line.strip())
-    return [c for c in cards if c['실적별'] or c['조건']]
+        m = re.match(r'^(\d+)\s*만\s*원\s*이상$', x)
+        if m:
+            for y in L[i + 1:i + 4]:
+                mm = re.search(r'([\d,]+)\s*원\s*(할인|적립|청구할인)', y)
+                if mm:
+                    cur['실적별'].append(f"{m.group(1)}만원 이상 → {mm.group(1)}원 {mm.group(2)}"); break
+            continue
+        if x == '연회비' and not cur['연회비']: cur['연회비'] = nxt
+        elif x == '혜택' and re.search(r'개월', nxt) and not cur['혜택기간']: cur['혜택기간'] = nxt
+        elif x.startswith('구독료 실적인정') and not cur['실적인정']: cur['실적인정'] = nxt
+        elif re.search(r'최대 \d+개월|월 1회|자동이체|프로모션', x) and len(x) < 160 and len(cur['조건']) < 6 and x not in cur['조건']:
+            cur['조건'].append(x)
+    seen, out = set(), []
+    for c in cards:
+        k = (c['카드'], c['기간'], tuple(c['실적별']))
+        if c['실적별'] and k not in seen: seen.add(k); out.append(c)
+    return out
 
 
 def main():
@@ -314,7 +329,7 @@ def main():
     info = {}
     for k, path in INFO_PAGES.items():
         raw, final = get(BASE + path)
-        t = text_of(raw, cap=30000)
+        t = text_of(raw, cap=120000)
         info[k] = {'url': final or BASE + path, 'text': t, 'cards': card_rows(t) if '카드' in k else []}
         time.sleep(0.5)
 
