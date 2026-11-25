@@ -40,6 +40,17 @@ def text_of(h, cap=40000):
     return '\n'.join(x for x in L if x)[:cap]
 
 
+def imgs(raw):
+    h = raw.replace('\\/', '/')
+    out = []
+    for u in re.findall(r'(?:https?:)?//[^"\'\s)<>]+?\.(?:jpg|jpeg|png|webp|gif)', h) + \
+             ['https://static-best.lge.co.kr' + x for x in re.findall(r'["\'(](/kr/upload/[^"\'\s)<>]+?\.(?:jpg|jpeg|png|webp|gif))', h)]:
+        u = ('https:' + u) if u.startswith('//') else u
+        if re.search(r'img_sns_share|/icons?/|logo|btn_|ico_|favicon|/common/', u): continue
+        if u not in out: out.append(u)
+    return out[:80]
+
+
 def page(path):
     raw = get(BASE + path)
     if not raw: return None, raw
@@ -52,7 +63,7 @@ def page(path):
          '혜택': [x for x in lines if re.search(r'\d+\s*%|\d[\d,]*\s*(만\s*)?(원|P|포인트)|캐시백|사은품|할인|증정|무료', x) and len(x) < 200][:80],
          '조건': [x for x in lines if re.search(r'대상|조건|유의|제외|한정|기간|구매 시|구독 시', x) and len(x) < 200][:40],
          'text': t,
-         'images': sorted(set(re.findall(r'https?://[^"\'\s)]+?\.(?:jpg|jpeg|png|webp)', raw)))[:40]}
+         'images': imgs(raw)}
     return d, raw
 
 
@@ -82,6 +93,13 @@ def main():
                         d, raw = page(l); seen.add(l); time.sleep(0.4)
                         if d: pages[l] = d
                 if t: break
+    from collections import Counter
+    cnt = Counter(x for v in pages.values() for x in set(v['text'].split('\n')))
+    common = {x for x, c in cnt.items() if c >= max(5, len(pages) * 0.3)}
+    for v in pages.values():
+        for k in ('혜택', '조건', '기간'):
+            v[k] = [x for x in v[k] if x not in common]
+        v['text'] = '\n'.join(x for x in v['text'].split('\n') if x not in common)
     ev = {k: v for k, v in pages.items() if '/event/detail/' in k}
     out = {'updated': (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%d %H:%M'),
            '페이지수': len(pages), '이벤트수': len(ev), 'endpoints': sorted(endpoints)[:200], 'pages': pages}

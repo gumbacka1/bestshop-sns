@@ -5,7 +5,7 @@ concurrency: { group: bestshop-promo, cancel-in-progress: false }
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
@@ -13,13 +13,17 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install -q openpyxl
       - run: python scripts/bestshop_promo_collect.py
+      - run: sudo apt-get -qq update && sudo apt-get -qq install -y tesseract-ocr tesseract-ocr-kor imagemagick >/dev/null
+      - run: python scripts/bestshop_ocr.py
+      - uses: actions/upload-artifact@v4
+        with: { name: bestshop-images, path: /tmp/bs_img, retention-days: 14 }
       - run: python scripts/lge_full_excel.py
       - run: |
           git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
-          cp data/lge_full/bestshop_promos.json /tmp/bp.json; cp data/lge_full/*.xlsx /tmp/ 2>/dev/null || true
+          cp data/lge_full/bestshop_promos.json /tmp/bp.json; cp data/lge_full/bestshop_ocr.json /tmp/bo.json; cp data/lge_full/*.xlsx /tmp/ 2>/dev/null || true
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
-            cp /tmp/bp.json data/lge_full/bestshop_promos.json
+            cp /tmp/bp.json data/lge_full/bestshop_promos.json; cp /tmp/bo.json data/lge_full/bestshop_ocr.json
             rm -f data/lge_full/*.xlsx; cp /tmp/*.xlsx data/lge_full/ 2>/dev/null || true
             git add -A data/lge_full
             git diff --cached --quiet && exit 0
