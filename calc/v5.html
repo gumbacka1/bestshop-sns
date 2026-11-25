@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>5. 고객용 선택지 A·B·B+·C</title><style>.opt{background:#fff;border-radius:14px;margin:12px;padding:18px;border:1px solid #ddd}.opt .k{font-size:28px;font-weight:800;color:#e4002b}.opt .v{font-size:26px;font-weight:700}.opt.rec{border:2px solid #e4002b}</style></head><body><div class="wrap" id="app"></div>
+<script>
+let base=load('c5',''),card=load('c5card','신한카드'),bundleCat=load('c5b','정수기');
+function upgrade(x){ const bm=subPrice(x,72); const c=MODELS.filter(y=>y.g===x.g&&y.m!==x.m&&subPrice(y,72)>bm&&subPrice(y,72)<=bm*1.6&&y.p>=x.p); return c.filter(y=>y.s===x.s).sort((a,b)=>b.rv-a.rv)[0]||c.sort((a,b)=>b.rv-a.rv)[0]; }
+function partner(cat){ return MODELS.filter(y=>y.c===cat&&y.mb&&subPrice(y,72)).sort((a,b)=>b.rv-a.rv)[0]; }
+function draw(){
+  save('c5',base);save('c5card',card);save('c5b',bundleCat);
+  let h=topBar('5. 고객용 선택지','고객에게 보여 주는 화면')+'<div class="box">'+pickerHTML('q')+'<div class="muted">고객이 닷컴에서 보고 온 모델을 고르세요</div>'+cardSelect('card',card)+
+  '<div style="margin-top:6px">묶음: '+['정수기','김치냉장고','의류관리기','식기세척기'].map(c=>'<span class="chip '+(c===bundleCat?'on':'')+'" data-b="'+c+'">'+c+'</span>').join('')+'</div></div>';
+  const x=MAP[base];
+  if(x){
+    const A=calc([{m:x.m,mode:'buy'}],{card}), bm=subPrice(x,72), up=upgrade(x), pt=partner(bundleCat);
+    const C=pt?calc([{m:x.m,mode:'sub',term:72},{m:pt.m,mode:'sub',term:72}],{card}):null;
+    h+='<div class="opt"><div class="k">A</div><div class="muted">닷컴에서 보신 그대로 · 일시불</div><div class="nm">'+x.n+'</div><div class="v">'+won(A.final)+'</div><div class="muted">혜택 '+won(A.benefit)+' 반영 · 케어 없음</div></div>';
+    if(bm) h+='<div class="opt"><div class="k">B</div><div class="muted">같은 제품 · 구독 6년</div><div class="v">월 '+won(bm)+'</div><div class="muted">6년 총 '+won(bm*72)+' · '+(x.care||'정기')+' 케어 포함</div></div>';
+    if(up) h+='<div class="opt rec"><div class="k">B+ <span style="font-size:14px">추천</span></div><div class="muted">한 단계 위 · 구독 6년</div><div class="nm">'+up.n+'<br><span class="muted">'+up.m+'</span></div><div class="v">월 '+won(subPrice(up,72))+'</div><div class="muted">B보다 월 '+won(subPrice(up,72)-bm)+' 더 · 하루 '+won((subPrice(up,72)-bm)/30)+'</div></div>';
+    if(C) h+='<div class="opt"><div class="k">C</div><div class="muted">'+bundleCat+'까지 같이 · 구독 6년 결합</div><div class="nm">'+pt.n+'</div><div class="v">월 '+won(C.subMonth)+'</div><div class="muted">따로면 월 '+won(C.subBase)+' → 결합 할인 월 '+won(C.subBase-C.subMonth)+' · 포인트 '+C.subPoint.toLocaleString()+'P</div></div>';
+    h+='<div class="muted" style="margin:0 16px">B+·C 모델은 같은 종류에서 리뷰 많은 순으로 자동 선택 · 매장 운영 모델로 바꾸는 기능은 다음 단계</div>';
+  }
+  app.innerHTML=h+footNote();
+  bindPicker('q',m=>{base=m;draw();});document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+  document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{bundleCat=b.dataset.b;draw();});
+}
+loadModels().then(draw);
+</script></body></html>

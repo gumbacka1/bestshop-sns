@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>9. 견적서</title><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><style>#sheet{background:#fff;margin:12px;padding:22px;border:1px solid #ccc}#sheet h1{font-size:20px;margin:0 0 4px;border-bottom:2px solid #111;padding-bottom:8px}@media print{.noprint{display:none}#sheet{border:0;margin:0}}</style></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c9',[]),card=load('c9card','신한카드'),info=load('c9i',{name:'',mgr:'',shop:'',memo:''});
+function text(r){ return '[견적] '+(info.name||'고객')+'님\n'+cart.map(c=>'- '+MAP[c.m].n+' ('+c.m+') '+(c.mode==='sub'?'구독 월 '+won(subPrice(MAP[c.m],c.term||72)):'일시불')).join('\n')+'\n할인 결제가 '+won(r.pay)+'\n혜택 -'+won(r.benefit)+' (캐시백 '+won(r.cash)+' · 결제일 '+won(r.payDc)+' · 포인트 '+r.point.toLocaleString()+'P)\n최종 '+won(r.final)+(r.subCount?'\n구독 월 '+won(r.subMonth):'')+'\n'+(info.shop||'LG전자 베스트샵')+' '+(info.mgr||''); }
+function draw(){
+  save('c9',cart);save('c9card',card);save('c9i',info);const r=calc(cart,{card});
+  const d=new Date(), ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
+  app.innerHTML='<div class="noprint">'+topBar('9. 견적서','저장·인쇄·카톡')+'<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart)+'</div>'+cardSelect('card',card)+
+  '<div class="grid2" style="margin-top:8px"><input class="n" id="nm" placeholder="고객 이름" value="'+info.name+'"><input class="n" id="mg" placeholder="담당 매니저" value="'+info.mgr+'"></div><input class="n" id="sh" style="margin-top:8px" placeholder="지점명" value="'+info.shop+'"><input class="n" id="me" style="margin-top:8px" placeholder="메모 (설치일·특이사항)" value="'+info.memo+'"></div></div>'+
+  '<div id="sheet"><h1>견적서</h1><div class="muted">'+ds+' · '+(info.shop||'LG전자 베스트샵')+' · 담당 '+(info.mgr||'-')+'</div><p><b>'+(info.name||'고객')+'</b>님</p><table><tr><th>제품</th><th>방법</th><th>금액</th></tr>'+
+  cart.filter(c=>MAP[c.m]).map(c=>{const x=MAP[c.m];return '<tr><td>'+x.n+'<br><span class="muted">'+c.m+'</span></td><td>'+(c.mode==='sub'?'구독 '+(c.term||72)/12+'년':'일시불')+'</td><td>'+(c.mode==='sub'?'월 '+won(subPrice(x,c.term||72)):won(x.p-x.d-(+c.coupon||0)))+'</td></tr>';}).join('')+'</table>'+
+  '<div class="row"><span>할인 결제가</span><b>'+won(r.pay)+'</b></div><div class="row sub"><span>다품목 캐시백</span><span>-'+won(r.cash)+'</span></div><div class="row sub"><span>결제일 할인 ('+card+')</span><span>-'+won(r.payDc)+'</span></div><div class="row sub"><span>멤버십 포인트</span><span>-'+won(r.point)+'</span></div>'+
+  '<div class="row" style="border-top:2px solid #111;margin-top:6px"><b>최종 혜택 적용 금액</b><span class="big red">'+won(r.final)+'</span></div>'+(r.subCount?'<div class="row"><b>구독 월 합계</b><b>'+won(r.subMonth)+'</b></div>':'')+(info.memo?'<p class="muted">'+info.memo+'</p>':'')+
+  '<div class="muted" style="margin-top:10px">캐시백·결제일 할인은 '+card+' 결제 조건 · 금액은 '+ds+' 기준이며 결제 시 달라질 수 있어요</div></div>'+
+  '<div class="noprint"><button class="btn" id="img">이미지로 저장</button><button class="btn k" id="cp">카톡용 글 복사</button><button class="btn k" onclick="print()">인쇄 / PDF</button></div>';
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+  [['nm','name'],['mg','mgr'],['sh','shop'],['me','memo']].forEach(([id,k])=>document.getElementById(id).onchange=e=>{info[k]=e.target.value;draw();});
+  img.onclick=()=>html2canvas(sheet,{scale:2}).then(c=>{const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='견적서_'+(info.name||'고객')+'.png';a.click();});
+  cp.onclick=()=>{navigator.clipboard.writeText(text(r)).then(()=>cp.textContent='복사됐어요');};
+}
+loadModels().then(draw);
+</script></body></html>

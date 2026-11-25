@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>7. 세트로 한 번에</title></head><body><div class="wrap" id="app"></div>
+<script>
+const SETS={'신혼 세트':['냉장고','세탁·건조','TV','에어컨','정수기','의류관리기'],'이사 세트':['냉장고','김치냉장고','세탁·건조','에어컨','TV'],'주방 세트':['냉장고','김치냉장고','식기세척기','전기레인지','정수기'],'세탁 세트':['세탁·건조','의류관리기','청소기'],'효도 세트':['안마의자','TV','공기청정기','정수기'],'에어케어 세트':['에어컨','공기청정기','제습기','가습기']};
+let setName=load('c7s','신혼 세트'),cart=load('c7',[]),card=load('c7card','신한카드');
+const tops=g=>MODELS.filter(x=>x.g===g&&x.mb&&x.p).sort((a,b)=>b.rv-a.rv).slice(0,8);
+function build(){ cart=SETS[setName].map(g=>tops(g)[0]).filter(Boolean).map(x=>({m:x.m,mode:'buy',term:72,coupon:0})); }
+function draw(){
+  save('c7',cart);save('c7s',setName);save('c7card',card);
+  const r=calc(cart,{card});
+  app.innerHTML=topBar('7. 세트로 한 번에','<b>'+r.count+'개 · '+won(r.final)+'</b>')+'<div class="box">'+Object.keys(SETS).map(s=>'<span class="chip '+(s===setName?'on':'')+'" data-s="'+s+'">'+s+'</span>').join('')+'<div class="muted">제품군별 리뷰 많은 다품목 모델로 채워요 · 모델은 바꿀 수 있어요</div>'+cardSelect('card',card)+'</div>'+
+  '<div class="box">'+cart.map((c,i)=>{const x=MAP[c.m];return '<div class="row"><select class="n sw" data-i="'+i+'">'+tops(x.g).map(y=>'<option value="'+y.m+'" '+(y.m===c.m?'selected':'')+'>'+y.c+' · '+y.m+' · '+won(y.p-y.d)+'</option>').join('')+'</select><div class="seg" style="flex:none"><button data-i="'+i+'" data-mode="buy" class="'+(c.mode!=='sub'?'on':'')+'">일시불</button><button data-i="'+i+'" data-mode="sub" class="'+(c.mode==='sub'?'on':'')+'" '+(subPrice(x,72)?'':'disabled')+'>구독</button></div></div>';}).join('')+'</div>'+
+  '<div class="box"><div class="row"><span>할인 결제가</span><b>'+won(r.pay)+'</b></div><div class="row"><span>다품목 캐시백 ('+r.eligible+'품목)</span><span>-'+won(r.cash)+'</span></div><div class="row"><span>결제일 할인</span><span>-'+won(r.payDc)+'</span></div><div class="row"><span>멤버십 포인트</span><span>-'+won(r.point)+'</span></div><div class="line"></div><div class="row"><b>최종</b><span class="big red">'+won(r.final)+'</span></div>'+(r.subCount?'<div class="row"><span>+ 구독 월</span><b>'+won(r.subMonth)+'</b></div>':'')+(r.gift?'<div class="muted">+ 사은품 '+man(r.gift)+' 상당</div>':'')+(r.notes.length?'<div class="note">'+r.notes.join('<br>')+'</div>':'')+'</div>'+footNote();
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{setName=b.dataset.s;build();draw();});
+  document.querySelectorAll('.sw').forEach(s=>s.onchange=()=>{cart[+s.dataset.i].m=s.value;draw();});
+  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{cart[+b.dataset.i].mode=b.dataset.mode;draw();});
+  document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+}
+loadModels().then(()=>{if(!cart.length)build();draw();});
+</script></body></html>

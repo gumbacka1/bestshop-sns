@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>6. 한 달에 얼마?</title></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c6',[]),card=load('c6card','신한카드'),term=72;
+function draw(){
+  save('c6',cart);save('c6card',card);
+  const A=calc(cart.map(c=>Object.assign({},c,{mode:'buy'})),{card}), B=calc(cart.map(c=>Object.assign({},c,{mode:subPrice(MAP[c.m]||{},term)?'sub':'buy',term})),{card});
+  const aM=A.final/term, bM=B.subMonth+(B.buyCount?B.final/term:0);
+  app.innerHTML=topBar('6. 한 달에 얼마?','큰돈을 월로 쪼개 보기')+'<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart,{mode:false,coupon:false})+'</div>'+cardSelect('card',card)+
+  '<div style="margin-top:10px">기간 <b id="tv">'+term/12+'년</b><input type="range" min="36" max="72" step="12" value="'+term+'" id="rg" style="width:100%"></div></div>'+
+  '<div class="box" style="text-align:center"><div class="muted">일시불을 '+term/12+'년으로 나누면</div><div class="big">월 '+won(aM)+'</div><div class="muted">하루 '+won(aM/30)+'</div><div class="line"></div>'+
+  '<div class="muted">구독하면</div><div class="big red">월 '+won(bM)+'</div><div class="muted">하루 '+won(bM/30)+' · 케어 포함</div><div class="line"></div>'+
+  '<div>차이 하루 <b>'+won(Math.abs(bM-aM)/30)+'</b> '+(bM>aM?'더 (커피 한 잔도 안 되는 돈으로 '+term/12+'년 케어)':'덜')+'</div></div>'+footNote();
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);
+  document.getElementById('card').onchange=e=>{card=e.target.value;draw();};rg.oninput=e=>{term=+e.target.value;draw();};
+}
+loadModels().then(draw);
+</script></body></html>

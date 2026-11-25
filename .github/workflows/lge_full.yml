@@ -30,13 +30,15 @@ jobs:
       - run: python scripts/bestshop_promo_collect.py
         continue-on-error: true
       - run: python scripts/lge_full_excel.py
+      - run: python scripts/calc_data.py
       - run: |
           git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
-          rm -rf /tmp/lge_full && cp -r data/lge_full /tmp/lge_full
+          rm -rf /tmp/lge_full && cp -r data/lge_full /tmp/lge_full && cp calc/models.json /tmp/calc_models.json
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             rm -rf data/lge_full && cp -r /tmp/lge_full data/lge_full
-            git add -A data/lge_full
+            cp /tmp/calc_models.json calc/models.json
+            git add -A data/lge_full calc/models.json
             git diff --cached --quiet && exit 0
             git commit -q -m "엘지닷컴 전 모델 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
             git push -q origin HEAD:main && exit 0

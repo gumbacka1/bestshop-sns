@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>8. 혜택 계단</title><style>.st{display:flex;gap:3px;align-items:flex-end;height:120px;margin:10px 0}.st div{flex:1;background:#ddd;border-radius:4px 4px 0 0;position:relative;font-size:10px;text-align:center}.st div.on{background:#e4002b}.st div.nx{background:#111}.st span{position:absolute;bottom:-16px;left:0;right:0;color:#666}.bar{height:14px;background:#eee;border-radius:7px;position:relative;margin:24px 0 6px}.bar i{position:absolute;top:0;bottom:0;left:0;background:#e4002b;border-radius:7px}.bar b{position:absolute;top:-18px;font-size:10px;color:#666;transform:translateX(-50%)}</style></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c8',[]),card=load('c8card','신한카드');
+function draw(){
+  save('c8',cart);save('c8card',card);const r=calc(cart,{card});
+  const steps=[2,3,4,5,6,7,8,9,10,11,12], mx=3000000;
+  const pmax=33000000, pct=Math.min(100,r.pointBase/pmax*100);
+  app.innerHTML=topBar('8. 혜택 계단','지금 몇 계단?')+'<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart,{coupon:false})+'</div>'+cardSelect('card',card)+'</div>'+
+  '<div class="box"><h2>다품목 캐시백 계단 · 지금 '+r.large+'품목 '+man(r.multi)+'</h2><div class="st">'+steps.map(n=>'<div class="'+(n===r.large?'on':n===r.large+1?'nx':'')+'" style="height:'+(R.cashback[n]/mx*100+8)+'%">'+(R.cashback[n]/10000)+'<span>'+n+'개</span></div>').join('')+'</div>'+
+  '<div class="muted" style="margin-top:20px">빨강 = 지금, 검정 = 한 품목 더 · 7개(105만)·10개(200만)·12개(300만)에서 크게 뛰어요</div></div>'+
+  '<div class="box"><h2>멤버십 포인트 계단 · '+r.point.toLocaleString()+'P</h2><div class="bar"><i style="width:'+pct+'%"></i>'+[...R.points].reverse().map(p=>'<b style="left:'+(p[0]/pmax*100)+'%">'+p[0]/10000+'</b>').join('')+'</div><div class="muted">기준 '+man(r.pointBase)+(r.nextPoint?' · '+man(r.nextPoint.need)+' 더 사면 '+r.nextPoint.amt.toLocaleString()+'P':'')+'</div></div>'+
+  '<div class="box"><h2>사은품 계단 · '+(r.gift?man(r.gift)+' 상당':'아직 없음')+'</h2><div class="row"><span>600만원↑</span><span>30만원 상당</span></div><div class="row"><span>1,200만원↑</span><span>40만원 상당</span></div><div class="row"><span>1,500만원↑</span><span>50만원 상당</span></div>'+(r.nextGift?'<div class="note">'+man(r.nextGift.need)+' 더 사면 '+man(r.nextGift.amt)+' 상당</div>':'')+'</div>'+footNote();
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+}
+loadModels().then(draw);
+</script></body></html>

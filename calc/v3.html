@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>3. 닷컴 vs 베스트샵</title></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c3',[]),card=load('c3card','신한카드'),shopExtra=load('c3ex',{dc:0,gift:0,memo:''});
+function draw(){
+  save('c3',cart);save('c3card',card);save('c3ex',shopExtra);
+  const D=calc(cart,{card}),S=calc(cart,{card,shop:true,extra:shopExtra.dc});
+  const sFinal=S.final-shopExtra.gift, gap=D.final-sFinal;
+  app.innerHTML=topBar('3. 닷컴 vs 베스트샵','<b>'+(gap>0?'매장이 '+man(gap)+' 유리':'')+'</b>')+
+  '<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart)+'</div>'+cardSelect('card',card)+'</div>'+
+  '<div class="grid2" style="margin:12px"><div class="col"><div class="muted">엘지닷컴</div><div class="big">'+won(D.final)+'</div></div><div class="col win"><div class="muted">베스트샵</div><div class="big red">'+won(sFinal)+'</div></div></div>'+
+  '<div class="box"><table><tr><th></th><th>닷컴</th><th>베스트샵</th></tr>'+
+  [['할인 결제가',D.pay,S.pay],['다품목 캐시백',D.cash,S.cash],['결제일 할인',D.payDc,S.payDc],['멤버십 포인트',D.point,S.point],['매장 추가 혜택',0,shopExtra.gift],['최종',D.final,sFinal]].map(r=>'<tr><td>'+r[0]+'</td><td>'+won(r[1])+'</td><td>'+won(r[2])+'</td></tr>').join('')+
+  (S.subCount?'<tr><td>구독 월</td><td>'+won(D.subMonth)+'</td><td>'+won(S.subMonth)+'</td></tr>':'')+'</table>'+
+  '<div class="muted" style="margin-top:6px">베스트샵 포인트 기준은 구독도 일시불 정상가로 합산 · 캐시백은 3·6·9·12개만 확인</div>'+((D.notes.concat(S.notes)).length?'<div class="note">'+[...new Set(D.notes.concat(S.notes))].join('<br>')+'</div>':'')+'</div>'+
+  '<div class="box"><h2>베스트샵 추가 판촉 (직접 입력)</h2><div class="row"><span>추가 할인</span><input class="mini" id="dc" inputmode="numeric" value="'+(shopExtra.dc||'')+'"></div><div class="row"><span>사은품·상품권</span><input class="mini" id="gf" inputmode="numeric" value="'+(shopExtra.gift||'')+'"></div><input class="n" id="memo" placeholder="판촉 내용 메모" value="'+(shopExtra.memo||'')+'"><div class="muted">베스트샵 판촉표를 받으면 자동으로 들어가게 바꿀 예정</div></div>'+footNote();
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);
+  document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+  dc.onchange=e=>{shopExtra.dc=+e.target.value.replace(/\D/g,'')||0;draw();};gf.onchange=e=>{shopExtra.gift=+e.target.value.replace(/\D/g,'')||0;draw();};memo.onchange=e=>{shopExtra.memo=e.target.value;save('c3ex',shopExtra);};
+}
+loadModels().then(draw);
+</script></body></html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>4. 하나 더 담으면?</title></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c4',[]),card=load('c4card','신한카드');
+function suggestions(){
+  const base=calc(cart,{card}), have=new Set(cart.map(c=>MAP[c.m]&&MAP[c.m].g));
+  const best={}; MODELS.forEach(x=>{ if(!x.mb||have.has(x.g)||!x.p) return; const b=best[x.g]; if(!b||x.rv>b.rv) best[x.g]=x; });
+  return Object.values(best).map(x=>{ const r=calc(cart.concat([{m:x.m,mode:'buy'}]),{card}); const add=r.benefit-base.benefit; const cost=(x.p-x.d)-add; return {x,add,cost,pay:x.p-x.d}; }).sort((a,b)=>a.cost-b.cost).slice(0,12);
+}
+function draw(){
+  save('c4',cart);save('c4card',card);
+  const r=calc(cart,{card}); const S=suggestions();
+  app.innerHTML=topBar('4. 하나 더 담으면?','혜택이 얼마나 늘까')+
+  '<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart,{coupon:false})+'</div>'+cardSelect('card',card)+'</div>'+
+  '<div class="box"><h2>지금</h2><div class="row"><span>다품목 '+r.large+'품목'+(r.small?' + 소형 '+r.small:'')+'</span><b>'+won(r.cash)+'</b></div><div class="row"><span>결제일 할인</span><b>'+won(r.payDc)+'</b></div><div class="row"><span>포인트</span><b>'+r.point.toLocaleString()+'P</b></div>'+
+  (r.nextCash?'<div class="note">한 품목 더 담으면 다품목 캐시백 <b>+'+man(r.nextCash.add)+'</b> ('+r.nextCash.n+'개 '+man(R.cashback[r.nextCash.n])+')</div>':'')+
+  (r.nextPoint?'<div class="note">'+man(r.nextPoint.need)+' 더 사면 포인트 '+r.nextPoint.amt.toLocaleString()+'P 구간</div>':'')+(r.nextGift?'<div class="note">'+man(r.nextGift.need)+' 더 사면 사은품 '+man(r.nextGift.amt)+' 상당</div>':'')+'</div>'+
+  '<div class="box"><h2>같이 담기 좋은 제품 (실제 더 내는 돈 적은 순)</h2><div class="muted">제품군마다 리뷰 많은 다품목 모델 1개 · 혜택 늘어난 만큼 뺀 금액</div>'+
+  S.map(s=>'<div class="item"><div class="t"><div class="nm">'+s.x.c+' · '+s.x.n+'</div><div class="md">'+s.x.m+' · '+won(s.pay)+'</div><div>혜택 <b class="red">+'+won(s.add)+'</b> → 실제 더 내는 돈 <b>'+won(s.cost)+'</b></div></div><button class="chip" data-add="'+s.x.m+'">담기</button></div>').join('')+'</div>'+footNote();
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);
+  document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{addToCart(cart,b.dataset.add);draw();});
+}
+loadModels().then(draw);
+</script></body></html>

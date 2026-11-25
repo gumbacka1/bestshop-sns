@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="common.css"><script src="engine.js"></script><script src="ui.js"></script><title>2. 일시불 vs 구독 나란히</title></head><body><div class="wrap" id="app"></div>
+<script>
+let cart=load('c2',[]),card=load('c2card','신한카드'),term=72;
+function draw(){
+  save('c2',cart);save('c2card',card);
+  const A=calc(cart.map(c=>Object.assign({},c,{mode:'buy'})),{card});
+  const B=calc(cart.map(c=>Object.assign({},c,{mode:MAP[c.m]&&subPrice(MAP[c.m],term)?'sub':'buy',term})),{card});
+  const months=term, aMonth=A.final/months, bTotal=B.subTotal+B.final, bMonthAll=B.subMonth+(B.buyCount?B.final/months:0);
+  app.innerHTML=topBar('2. 일시불 vs 구독','같은 제품, 두 가지 방법')+
+  '<div class="box">'+pickerHTML('q')+'<div id="cart">'+cartHTML(cart,{mode:false})+'</div>'+cardSelect('card',card)+
+  '<div style="margin-top:8px">'+[36,48,60,72].map(t=>'<span class="chip '+(t===term?'on':'')+'" data-t="'+t+'">구독 '+t/12+'년</span>').join('')+'</div></div>'+
+  '<div class="grid2" style="margin:12px">'+
+  '<div class="col"><div class="muted">일시불</div><div class="big">'+won(A.final)+'</div><div class="muted">혜택 '+won(A.benefit)+' 반영</div><div class="line"></div><div>월로 나누면</div><b>'+won(aMonth)+'</b><div class="muted">'+months+'개월 기준</div></div>'+
+  '<div class="col win"><div class="muted">구독 '+term/12+'년</div><div class="big red">월 '+won(B.subMonth)+'</div><div class="muted">'+(B.subs.some(s=>s.rate)?'결합 할인 반영':'결합 할인 없음')+'</div><div class="line"></div><div>총 '+won(B.subTotal)+'</div><div class="muted">케어 포함 · 포인트 '+B.subPoint.toLocaleString()+'P</div>'+(B.buyCount?'<div class="muted">+ 구독 안 되는 '+B.buyCount+'개 일시불 '+won(B.final)+'</div>':'')+'</div></div>'+
+  '<div class="box"><h2>한눈에</h2><table><tr><th></th><th>일시불</th><th>구독</th></tr>'+
+  '<tr><td>처음 내는 돈</td><td>'+won(A.final)+'</td><td>'+won(B.buyCount?B.final:0)+'</td></tr>'+
+  '<tr><td>매달</td><td>-</td><td>'+won(B.subMonth)+'</td></tr><tr><td>'+term/12+'년 합계</td><td>'+won(A.final)+'</td><td>'+won(bTotal)+'</td></tr>'+
+  '<tr><td>차이</td><td colspan="2">'+(bTotal>A.final?'구독이 '+won(bTotal-A.final)+' 더 (월 '+won((bTotal-A.final)/term)+')':'구독이 '+won(A.final-bTotal)+' 덜')+'</td></tr></table>'+
+  '<div class="muted" style="margin-top:8px">구독은 정기 케어·무상 수리가 포함돼요. 차이 금액은 케어 비용으로 설명해 주세요.</div>'+(B.notes.length?'<div class="note">'+B.notes.join('<br>')+'</div>':'')+'</div>'+footNote();
+  bindPicker('q',m=>{addToCart(cart,m);draw();});bindCart(document.getElementById('cart'),cart,draw);
+  document.getElementById('card').onchange=e=>{card=e.target.value;draw();};
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{term=+b.dataset.t;draw();});
+}
+loadModels().then(draw);
+</script></body></html>
