@@ -1,0 +1,43 @@
+name: 엘지닷컴 전 모델 수집(가격·구독·케어·제휴카드·사진 링크)
+on:
+  # 지금은 필요할 때 수동 실행(기초 데이터용). 주·월 단위 자동 실행은 나중에 schedule 추가
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "품목 제한(사이트 경로 이름, 쉼표로). 비우면 전체. 예: refrigerators"
+        required: false
+        default: ""
+      limit:
+        description: "품목당 모델 수 제한(시험용). 0이면 전체"
+        required: false
+        default: "0"
+concurrency: { group: lge-full, cancel-in-progress: false }
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q openpyxl
+      - run: python scripts/lge_full_collect.py
+        env:
+          ONLY: ${{ github.event.inputs.only }}
+          LIMIT: ${{ github.event.inputs.limit }}
+          WORKERS: "4"
+      - run: python scripts/lge_full_excel.py
+      - run: |
+          git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
+          rm -rf /tmp/lge_full && cp -r data/lge_full /tmp/lge_full
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            rm -rf data/lge_full && cp -r /tmp/lge_full data/lge_full
+            git add -A data/lge_full
+            git diff --cached --quiet && exit 0
+            git commit -q -m "엘지닷컴 전 모델 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+            git push -q origin HEAD:main && exit 0
+            sleep 7
+          done
+          exit 1
