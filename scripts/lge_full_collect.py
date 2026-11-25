@@ -4,7 +4,7 @@
 #           사양 전체, 구독료(3~6년)·케어 유형·방문 주기·케어 안내 글, 사진·영상 링크,
 #           제휴카드·구독 혜택·다품목 혜택 안내 글, 품목별 랭킹(일시불·구독).
 # 표준 라이브러리만 사용(엑셀은 lge_full_excel.py 에서 따로 만든다).
-import json, re, os, sys, time, html as H, datetime, urllib.request, urllib.parse
+import json, re, os, sys, time, html as H, datetime, urllib.request, urllib.parse, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 
 BASE = 'https://www.lge.co.kr'
@@ -44,10 +44,15 @@ def get(url, data=None, tries=3, timeout=40):
                 **({'X-Requested-With': 'XMLHttpRequest'} if data else {})})
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode('utf-8', 'ignore'), r.geturl()
+        except urllib.error.HTTPError as e:
+            err = e
+            if e.code in (400, 404, 410): break      # 없는 페이지는 다시 묻지 않는다
+            time.sleep(2 + i * 4)
         except Exception as e:
             err = e
             time.sleep(2 + i * 4)
-    print('실패', url, err, file=sys.stderr)
+    if not (isinstance(err, urllib.error.HTTPError) and err.code in (400, 404, 410)):
+        print('실패', url, err, file=sys.stderr)
     return '', url
 
 
@@ -166,8 +171,8 @@ def product(u):
 
 # ---------- 3. 구독 페이지 ----------
 def care_page(u):
-    raw, final = get(u)
-    if not raw: return None
+    raw, final = get(u, tries=2)
+    if not raw or ('care-solutions' not in (final or u)): return None
     h = unesc(raw)
     res = {'url': final or u}
     m = re.search(r'"priceMap":(\{.*?\}\}),"partnerPriceMap"', h)
@@ -252,11 +257,30 @@ def main():
         if not cat or SKIP_PATH.search(cat) or not re.search(r'\d', slug): continue
         if ONLY and cat not in ONLY: continue
         by_cat.setdefault(cat, []).append(u)
-    if LIMIT:
-        by_cat = {k: v[:LIMIT] for k, v in by_cat.items()}
+    seen = {path_cat(u)[1].lower() for v in by_cat.values() for u in v}
     care_by_slug = {}
     for u in care_urls:
-        care_by_slug.setdefault(path_cat(u.replace('/care-solutions', ''))[1].lower(), u)
+        if '/business/' in u: continue          # 사업자몰 구독 주소는 제외
+        cat, slug = path_cat(u.replace('/care-solutions', ''))
+        care_by_slug.setdefault(slug.lower(), u)
+        # 구독 전용으로만 올라온 모델도 상품 목록에 넣는다
+        if cat and not SKIP_PATH.search(cat) and (not ONLY or cat in ONLY):
+            pu = BASE + '/' + cat + '/' + slug
+            if slug.lower() not in seen:
+                by_cat.setdefault(cat, []).append(pu); seen.add(slug.lower())
+    # 랭킹에 있는데 사이트맵에 없는 모델도 넣는다
+    ranks = {}
+    for name, cid, sid in RANK_CATS:
+        ranks[name] = {'일시불': ranking('todays', cid), '구독': ranking('subscribe', sid)}
+        time.sleep(0.5)
+        for lst in ranks[name].values():
+            for q in lst:
+                up = q.get('modelUrlPath') or ''
+                cat, slug = path_cat(BASE + up)
+                if slug and slug.lower() not in seen and cat and (not ONLY or cat in ONLY):
+                    by_cat.setdefault(cat, []).append(BASE + up); seen.add(slug.lower())
+    if LIMIT:
+        by_cat = {k: v[:LIMIT] for k, v in by_cat.items()}
     urls = [u for v in by_cat.values() for u in v]
     print('수집 대상 품목', len(by_cat), '모델', len(urls), {k: len(v) for k, v in sorted(by_cat.items(), key=lambda x: -len(x[1]))})
 
@@ -268,8 +292,8 @@ def main():
         cat, slug = path_cat(u)
         p['경로품목'] = cat
         cu = care_by_slug.get(slug.lower())
-        if not cu and (p.get('rtFlag') == 'Y' or p.get('careshipFlag') == 'Y'):
-            cu = BASE + '/care-solutions/' + cat + '/' + slug
+        if not cu:
+            cu = BASE + '/care-solutions/' + cat + '/' + slug   # 사이트맵에 없어도 구독 페이지가 있는지 확인
         if cu:
             c = care_page(cu); time.sleep(0.3)
             if c:
@@ -280,11 +304,6 @@ def main():
         for i, p in enumerate(ex.map(work, urls), 1):
             if p: products.append(p)
             if i % 50 == 0: print(f'{i}/{len(urls)} 진행 ({int(time.time()-t0)}초)')
-
-    ranks = {}
-    for name, cid, sid in RANK_CATS:
-        ranks[name] = {'일시불': ranking('todays', cid), '구독': ranking('subscribe', sid)}
-        time.sleep(0.5)
 
     info = {}
     for k, path in INFO_PAGES.items():
