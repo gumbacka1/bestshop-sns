@@ -63,12 +63,28 @@ tr.df td{background:#fffbe0}tr.on td{background:#fdf1f4;font-weight:700}
 .pl{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;background:#fde8ec;color:#A50034;margin-left:4px}.pl.g{background:#eee;color:#555}.ab{border:1px solid #A50034;color:#A50034;background:#fff;border-radius:8px;padding:5px 12px;font-size:13px}
 .tot{position:sticky;bottom:0;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}.tot b{font-size:19px}
 body.cust .mgr{display:none!important}
-.fback{position:fixed;left:8px;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:0;background:rgba(165,0,52,.92);color:#fff;font-size:22px;line-height:44px;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer}.cbox{border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-top:8px;background:#fff}.crow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;font-size:14px}.crow.sub{color:#888;font-size:13px;padding-left:6px}.crow.big{font-size:16px;padding-bottom:6px}</style></head><body><div class="ph">
+.fback{position:fixed;left:8px;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:0;background:rgba(165,0,52,.92);color:#fff;font-size:22px;line-height:44px;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer}.cbox{border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-top:8px;background:#fff}.crow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;font-size:14px}.crow.sub{color:#888;font-size:13px;padding-left:6px}.crow.big{font-size:16px;padding-bottom:6px}
+@media (min-width:900px){
+ body{background:#e9e9ec}.ph{max-width:1280px;box-shadow:0 0 0 1px #e2e2e2}
+ .top{padding:16px 28px}.top h1{font-size:20px}
+ .mode{max-width:360px;margin:14px 28px 0}.cts,.gcs,.hd,.back,.foot{padding-left:28px;padding-right:28px}
+ .pm{margin:10px 28px}
+ .lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;padding:8px 28px}
+ .lst .it{border:1px solid #e6e6e6;border-radius:12px;padding:12px;background:#fff}.lst .it:hover{border-color:#A50034;box-shadow:0 2px 10px rgba(165,0,52,.12)}
+ .lst .it img{width:80px;height:80px}.nm{font-size:14px}
+ .dv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:0 28px;align-items:start}
+ .dv .vs,.dv .sec{padding-left:0;padding-right:0}.dv .shop{margin-left:0!important;margin-right:0!important}
+ .dr{position:sticky;top:70px;max-height:calc(100vh - 80px);overflow:auto;padding-right:4px}
+ .cd img{max-width:170px;height:170px}.pz{font-size:20px}
+ .cmp{padding:18px 28px 0}.cmp table{font-size:13px}.cmp td,.cmp th{padding:8px 10px}
+ .fback{left:max(12px,calc(50% - 680px))}
+}
+</style></head><body><div class="ph">
 <div class="top"><h1>닷컴 비교 판매 <span style="font-size:11px;font-weight:400;color:#f7c6d3">관리자 시험판</span></h1><div class="s" id="upd">불러오는 중…</div></div>
 <div id="app"></div>
 </div>
 <script>
-const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:20000,pre:'none',preAmt:0,pv:0,pcard:'신한카드',cmode:'dot',more:false,careship:false,ptAdd:0,dptAdd:0};let CV={};let D=null;
+const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:20000,pre:'none',preAmt:0,pv:0,pcard:'신한카드',cmode:'dot',more:false,careship:false,diffOnly:false,ptAdd:0,dptAdd:0};let CV={};let D=null;
 function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');if(!S.view||!view||S.view.m!==view.m){S.adds=[];S.addSel={};}S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
 function back(){const v=S.view;try{history.back()}catch(e){}setTimeout(()=>{if(S.view===v){S.view=null;S.conv=false;render()}},200);}
 window.addEventListener('popstate',e=>{const st=e.state||{};S.view=st.view||null;S.conv=!!st.conv;if(st.mode)S.mode=st.mode;if(st.cat!=null)S.cat=st.cat;if(st.grp!=null)S.grp=st.grp;render();});
@@ -111,7 +127,7 @@ function listView(){
   h+=`<div class="cts">${D.cats.map((x,i)=>`<button class="${i===S.cat?'on':''}" onclick="S.cat=${i};S.grp=0;render()">${esc(x.name)}</button>`).join('')}</div>`;
   h+=`<div class="gcs">${c.groups.map((x,i)=>`<button class="${i===S.grp?'on':''}" onclick="S.grp=${i};render()">${esc(x)} <small>${((S.mode==='buy'?c.buy:c.sub)[x]||[]).length}</small></button>`).join('')}</div>`;
   h+=`<div class="hd">${esc(c.name)} · ${esc(g)} ${S.mode==='buy'?'일시불':'구독'} TOP ${L.length}</div>`;
-  h+=L.map((x,j)=>row(c,x,j)).join('');
+  h+=`<div class="lst">`+L.map((x,j)=>row(c,x,j)).join('')+`</div>`;
   h+=`<div class="foot">매장 판매 = 불러온 판촉안에 있는 모델만. 판촉안에 없는 닷컴 모델은 판촉안 모델 중 같은 분류 · 용량 가까운 순 · 가격 가까운 순으로 추천해요.</div>`;
   return h;
 }
@@ -130,13 +146,12 @@ function storeCard(c,st,label){const r=st.row||{};return `<div class="cd st"><sp
  <div class="pz"><small>매장 일시불</small>${r['체감가']?won(r['체감가']):(r['결제가']?won(r['결제가']):'-')}</div><div class="sb" style="color:#A50034;font-weight:700">${r['최종구독월']?'구독 6년 월 '+won(r['최종구독월']):'구독 미운영'}</div></div>`}
 function storeTerms(st){const x=MD[st.m]||{},r=st.row||{},T=['36','48','60','72'],N={'36':'3년','48':'4년','60':'5년','72':'6년'};
  return `<table><tr><th style="width:30%">기간</th><th>매장 ${esc(st.m)}</th></tr>${T.filter(t=>(x.sub&&x.sub[t])||(t==='72'&&r['최종구독월'])).map(t=>`<tr class="${t==='72'?'on':''}"><td class="k">${N[t]}</td><td>${t==='72'&&r['최종구독월']?won(r['최종구독월'])+' <small>(판촉)</small>':won(x.sub[t][0])}</td></tr>`).join('')}</table>`}
-function specRows(a,b,x,st){const A=SP[a]||{},B=SP[b]||{},rows=[['크기·용량',x.sz,st.sz],['에너지',x.gr,st.gr]],same=[];
- Object.keys(A).forEach(k=>{if(!(k in B)||/색상|크기 \(|무게|모델명|출시/.test(k))return;(A[k]!==B[k]?rows:same).push(A[k]!==B[k]?[k,A[k],B[k]]:[k,A[k]])});return {rows:rows.slice(0,16),same:same.slice(0,6)}}
-function compareTable(c,x,st,lab){const sp=specRows(x.m,st.m,x,st);
- return `<div class="sec"><div class="st2">한눈에 비교 <span style="font-size:11px;font-weight:400;color:#888">노란 줄 = 다른 점</span></div><table><tr><th style="width:28%">항목</th><th>닷컴</th><th style="color:#A50034">${lab}</th></tr>`+
- sp.rows.map(r=>`<tr class="${r[1]!==r[2]?'df':''}"><td class="k">${esc(r[0])}</td><td>${esc(r[1]||'-')}</td><td>${esc(r[2]||'-')}</td></tr>`).join('')+
- `<tr><td class="k">판매가</td><td>${won(x.price)}</td><td>${won((st.row||{})['결제가']||st.price)}</td></tr><tr class="df"><td class="k">구매처</td><td>${x.only?'<b style="color:#A50034">닷컴 전용</b>':'닷컴·매장'}</td><td><b>매장</b></td></tr></table>`+
- (sp.same.length?`<div class="foot" style="padding:6px 0 0">같은 점: ${sp.same.map(s=>esc(s[0])+' '+esc(s[1])).join(' · ')}</div>`:'')+`</div>`}
+function specRows(a,b,x,st){const A=SP[a]||SP[(mdOf(a)||{}).m]||{},B=SP[b]||SP[(mdOf(b)||{}).m]||{},rows=[['크기·용량',x.sz,st.sz],['에너지',x.gr,st.gr]];
+ const keys=[...Object.keys(A),...Object.keys(B).filter(k=>!(k in A))].filter(k=>!/모델명/.test(k));keys.forEach(k=>rows.push([k,A[k],B[k]]));return {rows}}
+function compareTable(c,x,st,lab){const sp=specRows(x.m,st.m,x,st),df=r=>(r[1]||'-')!==(r[2]||'-'),nd=sp.rows.filter(df).length,L=S.diffOnly?sp.rows.filter(df):sp.rows;
+ return `<div class="sec cmp"><div class="st2">한눈에 비교 <span style="font-size:11px;font-weight:400;color:#888">전체 ${sp.rows.length}개 항목 · 노란 줄 = 다른 점 ${nd}개</span> <button class="ab" id="diffonly" style="float:right;font-size:12px;padding:3px 9px">${S.diffOnly?'전체 보기':'다른 점만'}</button></div><table><tr><th style="width:30%">항목</th><th>닷컴 ${esc(x.m)}</th><th style="color:#A50034">${lab}</th></tr>`+
+ L.map(r=>`<tr class="${df(r)?'df':''}"><td class="k">${esc(r[0])}</td><td>${esc(r[1]||'-')}</td><td>${esc(r[2]||'-')}</td></tr>`).join('')+
+ `<tr><td class="k">판매가</td><td>${won(x.price)}</td><td>${won((st.row||{})['결제가']||st.price)}</td></tr><tr class="df"><td class="k">구매처</td><td>${x.only?'<b style="color:#A50034">닷컴 전용</b>':'닷컴·매장'}</td><td><b>매장</b></td></tr></table></div>`}
 
 let CU={};function careOf(m){const x=MD[m]||mdOf(m)||{};if(!x.c)return null;const v=CV[x.c+'|'+(x.s||'')]||Object.entries(CV).find(([k])=>k.startsWith(x.c+'|'))?.[1];if(!v)return null;
  let u=CU[x.m]||CU[m];if(!u){try{const re=reOf(m);const k=Object.keys(CU).find(k=>re.test(k));if(k)u=CU[k]}catch(e){}}
@@ -159,7 +174,7 @@ function totalBlock(x,st){const r=st.row||{},sub=r['최종구독월'],pr=r['체�
  <div class="foot" style="padding:6px 0 0">${lumpFar?'매장 일시불이 닷컴보다 크게 높아 일시불 비교는 뺐어요. ':''}체감 총액 = 구독료×72 − 카드 할인×72 − 지불가치. 카드 할인 기본 20,000원(제휴카드 월 최대, 실적 조건).</div>`}
 function vsView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),f0=storeFor(c,S.view.m),f=f0.same?{list:[f0.bplus,f0.list[0]].filter(Boolean),why:f0.why,picked:true,up:true}:f0,stm=S.view.st||(f.list[0]&&f.list[0]['모델']),st=info(c,stm),r=st.row||{};
-  let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
+  let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div><div class="dv"><div class="dl">`;
   h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div>${x.only?'<div class="u" style="color:#A50034;font-weight:700">닷컴 전용</div>':''}<div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div>
   <div class="vsm">VS</div>${storeCard(c,st,!f.list.some(z=>z['모델']===stm)?'직접 선택':f.up&&st.m!==x.m?'한 단계 위':'매장 추천')}</div>`;
   if(f.why&&f.list.some(z=>z['모델']===stm))h+=`<div class="shop" style="margin:8px 12px 0"><b>왜 이 모델?</b> ${esc(f.why)}</div>`;
@@ -168,13 +183,13 @@ function vsView(){
   const pr=r['체감가']||r['결제가'];
   h+=`<div class="sec">`+totalBlock(x,st);
   if(r['비고'])h+=`<div class="foot" style="padding:6px 0 0">${esc(note(r['비고']))}</div>`;
-  h+=`</div>`+calcBlock(x.m,st.m)+addBlock2()+compareTable(c,x,st,'매장 '+esc(st.m));
+  h+=`</div></div><div class="dr">`+calcBlock(x.m,st.m)+addBlock2()+`</div></div>`+compareTable(c,x,st,'매장 '+esc(st.m));
   h+=`<div class="foot">닷컴 최대혜택가 = 엘지닷컴 표시(쿠폰·제휴카드 청구할인 포함, ${esc(D.updated)}). 매장 = 불러온 판촉안 기준.</div>`;
   return h;
 }
 function oneView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),r=x.row||{},pr=r['체감가']||r['결제가'];
-  let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
+  let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div><div class="dv"><div class="dl">`;
   h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div><div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div><div class="vsm">=</div>${storeCard(c,x,'매장에서도 판매')}</div>`;
   const f=storeFor(c,x.m),same=r['모델'],recs=(f.rec||[]).filter(z=>z!==r),bp=f.bplus&&!recs.includes(f.bplus)?[f.bplus]:[],rest=recCands(c).filter(z=>z!==r&&!recs.includes(z)&&!bp.includes(z)),lab=z=>`${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${(z['체감가']||z['결제가'])?' · 일시불 '+won(z['체감가']||z['결제가']):''}`;
   h+=`<div class="sec" style="padding-top:6px"><div style="font-size:12px;color:#888;margin-bottom:4px">매장 모델 바꾸기 (추천 · 판촉안 ${esc(c.name)} 전체)</div><select id="stsel" data-one="1" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px"><option value="${esc(same)}" selected>같은 모델: ${lab(r)}</option>${recs.length?`<optgroup label="이번 주 추천">${recs.map((z,i)=>`<option value="${esc(z['모델'])}">추천 ${i+1}: ${lab(z)}</option>`).join('')}</optgroup>`:''}${bp.length?`<optgroup label="한 단계 위">${bp.map(z=>`<option value="${esc(z['모델'])}">${lab(z)}</option>`).join('')}</optgroup>`:''}${rest.length?`<optgroup label="판촉안 다른 모델">${rest.map(z=>`<option value="${esc(z['모델'])}">${esc(z['구분'])} · ${lab(z)}</option>`).join('')}</optgroup>`:''}</select></div>`;
@@ -183,7 +198,7 @@ function oneView(){
   h+=`</div>`;
   if(f.bplus){const b=f.bplus,d=(b['최종구독월']||0)-(r['최종구독월']||0);h+=`<div class="sec"><div class="st2">이 모델 대신 한 단계 위는?</div><div class="shop"><b>${esc(b['모델'])}</b> · ${esc(b['구분'])}<br>${b['최종구독월']?'구독 월 <b>'+won(b['최종구독월'])+'원</b>':''}${b['최종구독월']&&r['최종구독월']?' ('+(d<=0?'월 '+won(-d)+'원 더 저렴':'월 '+won(d)+'원 더')+')':''}${b['체감가']?' · 일시불 '+won(b['체감가']):''}<div style="margin-top:4px">${esc(f.why||'')}</div></div><button class="cta" style="margin-top:8px" onclick="go({type:'vs',m:'${x.m}',st:'${esc(b['모델'])}'},false)">대결카드로 비교하기<small>${esc(x.m)} vs ${esc(b['모델'])}</small></button></div>`}
   else if(f.why)h+=`<div class="sec"><div class="shop">${esc(f.why)}</div></div>`;
-  h+=calcBlock(x.m,x.m)+addBlock2()+`<div class="foot">닷컴 최대혜택가 = 엘지닷컴 표시 기준. 매장 = 불러온 판촉안 기준.</div>`;
+  h+=`</div><div class="dr">`+calcBlock(x.m,x.m)+addBlock2()+`</div></div>`+compareTable(c,x,x,'매장 '+esc(r['모델']||x.m))+`<div class="foot">닷컴 최대혜택가 = 엘지닷컴 표시 기준. 매장 = 불러온 판촉안 기준.</div>`;
   return h;
 }
 /* ── 매장 판촉(이 PC 브라우저에만 저장, 서버로 안 보냄) + 하나 더 담기 ── */
@@ -210,6 +225,7 @@ function bindPromo(){const cb=document.getElementById('carebtn');if(cb)cb.onclic
  document.querySelectorAll('[data-cm]').forEach(b=>b.onclick=()=>{S.cmode=b.dataset.cm;render(true)});
  const pc=document.getElementById('pcard');if(pc)pc.onchange=()=>{S.pcard=pc.value;render(true)};
  const cs=document.getElementById('cship');if(cs)cs.onchange=()=>{S.careship=cs.checked;render(true)};
+ const dO=document.getElementById('diffonly');if(dO)dO.onclick=()=>{S.diffOnly=!S.diffOnly;render(true)};
  const mo=document.getElementById('more');if(mo)mo.onclick=()=>{S.more=!S.more;render(true)};
  const rs=document.getElementById('recset');if(rs)rs.onclick=()=>go({type:'rec'});
  document.querySelectorAll('[data-rcat]').forEach(b=>b.onclick=()=>{S.cat=+b.dataset.rcat;render(true)});
