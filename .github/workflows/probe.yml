@@ -4,7 +4,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          U=https://static.lge.co.kr/kr/images/tvs/md10799850/md10799850-350x350.jpg
-          for R in "" "https://gumbacka1.github.io/" "https://claude.ai/" "https://www.claudeusercontent.com/" "https://www.lge.co.kr/"; do
-            echo "REF[$R] $(curl -s -o /dev/null -w '%{http_code} %{content_type} %{size_download}' -A 'Mozilla/5.0 Chrome/124' ${R:+-e $R} $U)"; done
+      - uses: actions/checkout@v4
+      - run: pip install -q pillow && python3 scripts/thumbs.py
+      - uses: actions/upload-artifact@v4
+        with: { name: thumbs, path: thumbs.json, retention-days: 2 }
