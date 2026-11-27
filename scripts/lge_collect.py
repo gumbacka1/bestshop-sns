@@ -12,8 +12,8 @@ CATS = [
     ('tv', 'TV', 'CT50000025', 'CT50238002', ['OLED TV', 'LED TV']),
     ('ref', '냉장고', 'CT50000065', 'CT50178000', ['양문형', '600L급', '800L급']),
     ('wm', '세탁기', 'CT50000101', 'CT50136000', ['드럼', '통돌이']),
-    ('dr', '건조기', 'CT50000107', 'CT50000178', ['건조기']),
-    ('wt', '워시타워', 'CT50387000', 'CT50390000', ['워시타워', '워시콤보']),
+    ('dr', '의류건조기', 'CT50000107', 'CT50000178', ['건조기']),
+    ('wt', '세탁 건조기', 'CT50387000', 'CT50390000', ['워시타워', '워시콤보']),
     ('ac', '에어컨', 'CT50000131', 'CT50080000', ['2in1', '스탠드', '벽걸이']),
 ]
 LINES = ['컴팩트', '매직스페이스', 'Fit & Max', '컨버터블', '뷰', '위너', '쿨', '타워', '듀얼쿨', '사계절',
@@ -34,6 +34,33 @@ def get(url, data=None, tries=3):
             time.sleep(2 + i * 3)
     print('실패', url, err, file=sys.stderr)
     return ''
+
+
+CAT_API = BASE + '/mkt/api/bestRanking/retrieveCategoryList.lgajax'
+SKIP_CAT = {'노트북', '모니터', '프로젝터', '오디오', '일체형/데스크톱/태블릿'}
+
+
+def cat_list(kind):
+    t = get(CAT_API, urllib.parse.urlencode({'rankingType': kind}).encode())
+    try:
+        return json.loads(t)['data'][0]['categoryList'] or []
+    except Exception:
+        return []
+
+
+def all_cats():
+    # 엘지닷컴 베스트 랭킹 탭 순서 그대로. 직접 세부 분류를 정한 6개는 유지, 나머지는 세부 분류(subCategory)로 자동 묶음
+    fixed = {c[2]: c for c in CATS}
+    subs = {c['categoryName']: c['categoryId'] for c in cat_list('subscribe')}
+    out = []
+    for c in cat_list('todays'):
+        cid, name = c['categoryId'], c['categoryName']
+        if cid in fixed: out.append(fixed[cid]); continue
+        if name in SKIP_CAT: continue
+        out.append(('c' + cid[-6:], name, cid, subs.get(name, ''), None))
+    for c in CATS:
+        if c not in out: out.append(c)
+    return out
 
 
 def ranking(kind, cid):
@@ -79,6 +106,7 @@ def group(c, p):
     if c == 'dr': return '건조기'
     if c == 'wt': return '워시콤보' if '콤보' in s else '워시타워'
     if c == 'ac': return '벽걸이' if '벽걸이' in s else ('2in1' if '2in1' in s else '스탠드')
+    return s or '전체'
 
 
 def short(name):
@@ -165,17 +193,26 @@ def main():
             care_cache[model] = care_prices(get(url)); time.sleep(0.4)
         return care_cache[model]
 
-    for key, name, cid, sid, groups in CATS:
+    for key, name, cid, sid, groups in all_cats():
         buy = [item(key, p, i + 1) for i, p in enumerate(ranking('todays', cid))]
         time.sleep(0.5)
-        subl = ranking('subscribe', sid)
+        subl = ranking('subscribe', sid) if sid else []
         sub = [item(key, p, i + 1, True) for i, p in enumerate(subl)]
         sub_url = {p['modelName']: BASE + p['modelUrlPath'] for p in subl if p.get('modelUrlPath')}
         time.sleep(0.5)
+        if groups is None:
+            cnt = {}
+            for x in buy + sub: cnt[x['g']] = cnt.get(x['g'], 0) + 1
+            groups = [g for g, n in sorted(cnt.items(), key=lambda a: -a[1]) if n >= 2][:4] or ['전체']
+            if len(groups) == 1 or sum(cnt.get(g, 0) for g in groups) < len(buy + sub) * 0.7:
+                groups = ['전체'] + [g for g in groups if g != '전체'][:3]
+            for x in buy + sub:
+                if x['g'] not in groups: x['g'] = '전체' if '전체' in groups else groups[0]
+        if not buy and not sub: continue
         cat = {'key': key, 'name': name, 'groups': groups, 'buy': {}, 'sub': {}, 'n_buy': len(buy), 'n_sub': len(sub), 'all': buy}
         for g in groups:
-            cat['buy'][g] = [x for x in buy if x['g'] == g][:10]
-            cat['sub'][g] = [x for x in sub if x['g'] == g][:10]
+            cat['buy'][g] = [x for x in buy if g == '전체' or x['g'] == g][:10]
+            cat['sub'][g] = [x for x in sub if g == '전체' or x['g'] == g][:10]
         for g in groups:
             for x in cat['buy'][g]:
                 if x['only']:
