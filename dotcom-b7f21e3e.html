@@ -227,50 +227,12 @@ function brk(t,v){let a=0;for(const[m,p]of t||[])if(v>=m*1000)a=p*1000;return a}
 function bundle(list){const gs=new Set(list.map(x=>x.g)),bind=list.length>=2&&gs.size>=2,keys=new Set(list.map(x=>LSPKEY[x.g]||x.g));let lsp=null;
  if(P&&P.rules&&P.rules['라스패'])for(const[n,rate,need]of P.rules['라스패']['패키지'])if(need.every(k=>keys.has(k))&&(!lsp||rate>lsp.rate||(rate===lsp.rate&&need.length>lsp.need.length)))lsp={n,rate,need};
  let month=0;const det=list.map(x=>{let v=x.sub;const b=bind?v-f100(v*0.95):0,l=lsp&&lsp.need.includes(LSPKEY[x.g]||x.g)?f100(v*lsp.rate/100):0;v-=b+l;month+=v;return Object.assign({},x,{dc:b+l,month:v})});
- const fit=list.some(x=>x.g==='냉장고'&&/^(D646|G646)/.test(x.m))&&list.some(x=>x.g==='김치냉장고'&&/^Z386/.test(x.m));
+ const FM=CK().fitmax,fit=!!FM&&list.some(x=>x.g==='냉장고'&&new RegExp(FM['냉장고']).test(x.m))&&list.some(x=>x.g==='김치냉장고'&&new RegExp(FM['김치냉장고']).test(x.m));
  const base=list.reduce((a,x)=>a+(x.list||0),0),pts=P&&P.rules?brk(P.rules['금액대포인트_총구매_11월17~30'],base)+brk(P.rules['금액대포인트_구독추가_11월17~30'],base):0;
- return {month,det,bind,lsp,fit,once:fit?300000:0,pts}}
+ return {month,det,bind,lsp,fit,once:fit?FM['금액']:0,pts}}
 const it=r=>({m:r['모델'],g:r.g,sub:r['최종구독월'],list:r['결제가']||0,row:r});
 function lspHint(list){if(!P||!P.rules||!P.rules['라스패'])return [];const keys=new Set(list.map(x=>LSPKEY[x.g]||x.g)),o=[];
  for(const[n,rate,need]of P.rules['라스패']['패키지']){const miss=need.filter(k=>!keys.has(k));if(miss.length===1&&need.length-1<=keys.size)o.push(n+' '+rate+'%까지 '+miss[0]+' 1개')}return o.slice(0,3)}
-
-function pilgu(cur,now){
- const card=+S.card||0,one=cur[0],oneM=Math.max(0,one.sub-card),sum=now.month;
- const need=Math.max(0,Math.ceil((sum-card-oneM)*72/100)*100);
- const P0=S.pre==='two'?need:S.pre==='chun'?10000000:S.pre==='custom'?(+S.preAmt||0):0,cap=Math.floor((sum-card)*72/100)*100,P=Math.min(P0,cap),over=P0>cap;
- const B=Math.max(0,sum-Math.ceil(P/72/100)*100-card),pv=+S.pv||0,lump=cur.reduce((a,x)=>a+((x.row&&(x.row['체감가']||x.row['결제가']))||0),0);
- const fin=P+B*72-pv,step=cur.length>=3?'천다필구·다필구':'두필구';
- let h=`<div class="sec"><div class="st2">${esc(step)} 계산 <span style="font-size:11px;font-weight:400;color:#888">최종가 = 선납금 + 할인 구독료 × 72 − 지불가치</span></div>
- <div class="pm" style="margin:0"><div>카드 할인(월) <input id="pg2_card" inputmode="numeric" value="${card||''}" placeholder="0" style="width:90px;padding:5px;border:1px solid #ccc;border-radius:6px"> <button data-cardp="17000">17,000</button><button data-cardp="0">없음</button></div>
- <div style="margin-top:6px">선납 ${[['none','없음'],['two','두필구(1품목 요금 맞추기)'],['chun','천필구 1,000만'],['custom','직접']].map(([k,t])=>`<button data-pre="${k}" style="${S.pre===k?'background:#A50034;color:#fff;border-color:#A50034':''}">${t}</button>`).join('')}${S.pre==='custom'?` <input id="pg_pre" inputmode="numeric" value="${S.preAmt||''}" placeholder="선납금" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px">`:''}</div>
- <div style="margin-top:6px">지불가치(6년 합계, BEST AI) <input id="pg2_pv" inputmode="numeric" value="${pv||''}" placeholder="0" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px"></div></div>
- <table style="margin-top:8px"><tr><th>구분</th><th>${esc(one.m)} 1품목</th><th>담은 ${cur.length}품목</th></tr>
- <tr><td class="k">선납금</td><td>-</td><td>${won(P)}</td></tr>
- <tr><td class="k">월 구독료(카드 후)</td><td>${won(oneM)}</td><td><b style="color:#A50034">${won(B)}</b></td></tr>
- <tr><td class="k">72개월 납부</td><td>${won(oneM*72)}</td><td>${won(B*72)}</td></tr>
- <tr><td class="k">최종가</td><td>${won(oneM*72)}</td><td><b>${won(fin)}</b>${pv?` <small>(지불가치 −${won(pv)})</small>`:''}</td></tr>
- ${lump?`<tr><td class="k">일시불이면</td><td colspan="2">매장 체감가 합 ${won(lump)} → 구독 최종가와 ${fin<=lump?'<b>'+won(lump-fin)+'원 유리</b>':won(fin-lump)+'원 차이'}</td></tr>`:''}</table>
- <div class="calc">${S.pre==='two'?`<b>두필구 멘트</b><br>"선납 ${won(P)}원만 넣으시면 ${cur.map(x=>esc(x.g)).join('+')} ${cur.length}개를 지금 ${esc(one.g)} 하나 값(월 ${won(oneM)}원)으로 쓰실 수 있어요."`:S.pre==='chun'?(over?`<b>천필구까지 ${won(P0-cap)}원 남았어요</b><br>지금 구성 6년 총액이 ${won(cap)}원이라 선납 1,000만 원을 다 못 넣어요. 품목을 더 담으면 천필구가 완성돼요.`:`<b>천필구 멘트</b><br>"선납 1,000만 원이면 ${cur.length}품목이 월 ${won(B)}원이에요.${lump?' 일시불 '+won(lump)+'원과 비교해 보세요.':''}"`):`선납을 넣으면 월 요금이 내려가요. <b>두필구</b>는 1품목 요금에 맞추는 선납금(${won(need)}원)을 자동으로 계산해요.`}</div>
- <div class="foot" style="padding:6px 0 0">선납 후 월 = 구독료 − 선납금÷72(100원 올림) − 카드 할인. 선납 할인율·한도는 판촉 조건에 따라 달라요. 지불가치는 BEST AI 값을 넣어 주세요.</div></div>`;
- return h}
-function addBlock(c,m,dot6){if(!P)return '';const r=promoOf(m),g=r?r.g:(LSPKEY[c.name]?c.name:c.name);
- const base={m,g,sub:(r&&r['최종구독월'])||dot6||0,list:(r&&r['결제가'])||0,row:r};if(!base.sub)return '';
- const cur=[base].concat(S.adds.map(it)),now=bundle(cur),have=new Set(cur.map(x=>x.g)),by={};
- prow().forEach(z=>{if(!z['최종구독월']||isOff(z)||have.has(z.g)||['소형','밥솥','틔운','아이어닝','제습기'].includes(z.g))return;(by[z.g]=by[z.g]||[]).push(z)});
- const C=Object.entries(by).map(([gg,list])=>{list.sort((a,b)=>((b['구독할인']||0)-(a['구독할인']||0))||(a['최종구독월']-b['최종구독월']));
-  const sel=(S.addSel[gg]&&list.find(z=>z['모델']===S.addSel[gg]))||(gg==='김치냉장고'&&cur.some(x=>/^(D646|G646)/.test(x.m))&&list.find(z=>/^Z386/.test(z['모델'])))||list[0];
-  const nx=bundle(cur.concat([it(sel)]));return {g:gg,list,sel,real:nx.month-now.month,once:nx.once-now.once,lsp:nx.lsp&&(!now.lsp||nx.lsp.n!==now.lsp.n)?nx.lsp:null}})
-  .sort((a,b)=>(b.once-a.once)||((ORDER.indexOf(a.g)+1||99)-(ORDER.indexOf(b.g)+1||99))||(a.real-b.real));window.__cands=C;const hint=lspHint(cur);
- let h=`<div class="sec"><div class="st2">하나 더 담으면 얼마? <span style="font-size:11px;font-weight:400;color:#888">같이 구독하면 결합 5% · 실제 더 내는 월 금액</span></div>`;
- h+=S.adds.map((a,i)=>`<div class="add in"><b>${esc(a.g)} · ${esc(a['모델'])}</b> <button class="ab" style="float:right" data-rm="${i}">빼기</button></div>`).join('');
- if(hint.length)h+=`<div class="note">라스패: ${esc(hint.join(' / '))}</div>`;
- h+=C.map(x=>`<div class="add"><b>+ ${esc(x.g)}</b>${x.once?'<span class="pl">Fit&Max 30만</span>':''}${x.lsp?`<span class="pl">라스패 ${x.lsp.rate}%</span>`:''}${['식기세척기','스타일러','전기레인지'].includes(x.g)?'<span class="pl g">M&B</span>':''}
-  <select data-g="${esc(x.g)}">${x.list.map(z=>`<option value="${esc(z['모델'])}" ${z===x.sel?'selected':''}>${esc(z['모델'])} · 월 ${won(z['최종구독월'])}</option>`).join('')}</select>
-  <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:#888">월 ${won(x.sel['최종구독월'])}${x.real<x.sel['최종구독월']?' − 할인 '+won(x.sel['최종구독월']-x.real):''}${x.once?' · 동시 구독 30만':''}</span><b style="color:#A50034">실제 월 +${won(x.real)}원</b></div>
-  <div style="text-align:right;margin-top:6px"><button class="ab" data-add="${esc(x.g)}">담기</button></div></div>`).join('');
- if(S.adds.length){h+=`<table><tr><th>제품</th><th>판촉 월</th><th>할인</th><th>월</th></tr>${now.det.map(d=>`<tr><td class="k">${esc(d.g)}<br><span style="font-size:11px;color:#888">${esc(d.m)}</span></td><td>${won(d.sub)}</td><td>${d.dc?'-'+won(d.dc):'-'}</td><td><b>${won(d.month)}</b></td></tr>`).join('')}</table>
-  <div class="foot" style="padding:6px 0 0">${now.bind?'결합 5% ':''}${now.lsp?'· 라스패 '+esc(now.lsp.n)+' '+now.lsp.rate+'% ':''}${now.fit?'· Fit&Max 동시 구독 30만 ':''}${now.pts?'· 금액대 포인트 '+won(now.pts)+'P(참고)':''} · 6년 총 ${won(now.month*72)}원 · 고객맞춤플래너 결과와 한 번 맞춰 보세요</div>`}
- h+=`</div>`+(S.adds.length?pilgu(cur,now):'')+(S.adds.length?`<div class="tot"><span>${cur.length}개 구독 · 월</span><b>${won(now.month)}원</b></div>`:'');return h}
 
 /* ── 이번 주 추천 (제품군별 5개, 이 기기 저장 + 판촉 파일과 함께 내보내 공유) ── */
 const LSR='kgf_rec_v1';let REC={};try{REC=JSON.parse(localStorage.getItem(LSR)||'{}')}catch(e){REC={}}
@@ -289,7 +251,7 @@ function recView(){const c=D.cats[S.cat],L=recCands(c);
 
 /* ── 닷컴 계산기 그대로 (계산기 목록 1번과 같은 구성) ── */
 const CR={cash:{2:100000,3:150000,4:400000,5:500000,6:600000,7:1050000,8:1200000,9:1350000,10:2000000,11:2200000,12:3000000,13:3250000,14:3500000,15:3750000},
- shopCash:{3:300000,6:900000,9:1800000,12:3000000},small:30000,
+ small:30000,
  points:[[30000000,1400000],[27000000,1200000],[24000000,1000000],[21000000,800000],[18000000,650000],[15000000,600000],[12000000,500000],[9000000,350000],[6000000,150000],[3000000,50000]],
  gifts:[[15000000,500000],[12000000,400000],[6000000,300000]],
  cards:{'신한카드':{cb:1,pay:1},'KB국민카드':{cb:1,pay:1},'롯데카드':{cb:1,pay:1},'우리카드':{cb:1,pay:1},'현대카드':{cb:0,pay:1},'하나카드':{cb:1,pay:0},'NH농협카드':{cb:1,pay:0},'기타 결제':{cb:0,pay:0}}};
@@ -302,7 +264,7 @@ function calc2(lines,mode,cardName){const card=CR.cards[cardName]||CR.cards['기
  o.list=lines.reduce((a,l)=>a+l.p,0);o.member=lines.reduce((a,l)=>a+l.d,0);o.coupon=lines.reduce((a,l)=>a+l.cp,0);o.pay=Math.max(0,o.list-o.member-o.coupon);
  const seen=new Set();let lg=0,sm=0;lines.forEach(l=>{if(!l.mb||seen.has(l.g))return;seen.add(l.g);l.sm?sm++:lg++});o.large=lg;o.small=sm;
  let multi=0,sa=0;const okCard=mode==='shop'||card.cb;
- if(okCard){if(lg>=2){multi=mode==='shop'&&CR.shopCash[lg]!=null?CR.shopCash[lg]:(CR.cash[Math.min(lg,15)]||0);if(mode==='shop'&&CR.shopCash[lg]==null)o.notes.push(lg+'품목 매장 다품목 캐시백은 미확인이라 닷컴 금액으로 넣었어요')}
+ if(okCard){if(lg>=2){multi=CR.cash[Math.min(lg,15)]||0;if(0)o.notes.push(lg+'품목 매장 다품목 캐시백은 미확인이라 닷컴 금액으로 넣었어요')}
   else if(lg===1&&sm>=1)multi=50000;if(sm>=2||(sm>=1&&lg>=1))sa=sm*CR.small}
  else if(lines.length)o.notes.push(cardName+'는 다품목 캐시백이 없어요');
  o.prodCash=card.cb?lines.reduce((a,l)=>a+(l.pc||0),0):0;o.multi=multi;o.smallCash=sa;o.cash=multi+sa+o.prodCash;
@@ -325,58 +287,60 @@ function calcBlock(dm,sm){if(!P&&S.cmode==='shop')S.cmode='dot';const L=cartLine
  <div class="cbox"><div class="crow big"><b>최종 혜택 적용 금액</b><b style="color:#A50034">${won(r.final)}원</b></div>${r.gift?`<div style="font-size:12px;color:#888">+ 금액대 사은품 ${won(r.gift)}원 상당</div>`:''}</div></div>`}`}
 
 
-/* ── 매장 기준 = 구독 계산기 (판촉안 규칙: 결합·라스패·케어십·Fit&Max·다품목 캐시백·금액대 포인트) ── */
+/* ── 매장 기준 = 구독 계산기 (규칙·금액은 모두 불러온 판촉 파일에서 읽음, 코드에는 없음) ── */
+const CK=()=>(P&&P.rules&&P.rules['_계산'])||{};
 const PKEY=g=>/워시타워|세탁기|건조기/.test(g)?'세탁기':g;
-function eligMB(r){const g=r.g,c=r['구분']||'',m=r['모델'];if(g==='스탠바이미'||g==='로봇청소기')return g;if(g==='TV'){const v=capOf(m)||0;if(/OLED/.test(m))return v>=65?'TV':'';if(/QNED70BK/.test(m))return '';if(/QNED/.test(m))return v>=75||/65QNED85AKS/.test(m)?'TV':'';if(/LX7BKNA/.test(m))return 'TV';if(/MRGB/.test(m))return 'TV';return ''}
- if(PKEY(g)==='세탁기')return /워시타워|워시콤보|건조기/.test(c)?'세탁기':'';return ['냉장고','김치냉장고','식기세척기','전기레인지','광파오븐','정수기','스타일러','안마의자','에어컨','공기청정기','바스에어'].includes(g)?g:''}
+function eligMB(r){const E=CK()['다품목대상'];if(!E)return '';const g=r.g,c=r['구분']||'',m=r['모델']||'';
+ if(g==='TV'){const v=capOf(m)||0;if(E['TV_포함']&&new RegExp(E['TV_포함']).test(m))return 'TV';if(E['TV_제외']&&new RegExp(E['TV_제외']).test(m))return '';if(/OLED/.test(m))return v>=E['TV_OLED최소']?'TV':'';if(/QNED/.test(m))return v>=E['TV_QNED최소']?'TV':'';return ''}
+ if(PKEY(g)==='세탁기')return E['세탁기']&&new RegExp(E['세탁기']).test(c)?'세탁기':'';return (E['품목']||[]).includes(g)?g:''}
 function shopCalc(rows){const R=(P&&P.rules)||{},items=rows.filter(r=>r&&r['최종구독월']).map(it),miss=rows.filter(r=>r&&!r['최종구독월']).map(r=>r['모델']);
  const o={items,miss,notes:[]};if(!items.length)return o;const b=bundle(items);o.b=b;o.base=items.reduce((a,x)=>a+x.sub,0);
- o.care=S.careship?b.det.filter(d=>d.g!=='정수기').reduce((a,d)=>a+f100(d.sub*0.05),0):0;
+ const CS=CK()['케어십'];o.care=S.careship&&CS?b.det.filter(d=>!(CS['제외']||[]).includes(d.g)).reduce((a,d)=>a+f100(d.sub*CS['율']),0):0;
  const big=Math.max(...b.det.map(d=>d.month));o.card=Math.min(+S.card||0,big);o.month=b.month-o.care-o.card;
- o.half=items.filter(x=>x.g==='정수기').reduce((a,x)=>a+Math.round(x.sub/2)*6,0);o.total=o.month*72-o.half;
+ const HV=CK()['반값'];o.half=HV?items.filter(x=>x.g===HV['품목']).reduce((a,x)=>a+Math.round(x.sub/2)*HV['개월'],0):0;o.total=o.month*72-o.half;
  const seen=new Set();items.forEach(x=>{const k=eligMB(x.row||{});if(k)seen.add(k)});o.mbN=seen.size;
- const MBT=(R['다품목캐시백_매장']&&R['다품목캐시백_매장']['표'])||{1:50000,2:100000,3:300000,4:400000,5:500000,6:900000,7:1050000,8:1200000,9:1800000,10:2000000,11:2200000,12:3000000};o.mbCash=o.mbN?(MBT[Math.min(o.mbN,12)]||0)+(o.mbN>12?(o.mbN-12)*250000:0):0;o.mbPer=o.mbN?Math.round(o.mbCash/o.mbN):0;
- o.ptMB=Math.floor(items.filter(x=>eligMB(x.row||{})).reduce((a,x)=>a+(x.row['결제가']||(mdOf(x.m)||{}).p||0),0)*((R['다품목_구독포인트']&&R['다품목_구독포인트']['율'])||0.05)/100)*100;
+ const MBT=(R['다품목캐시백_매장']&&R['다품목캐시백_매장']['표'])||{},mx=Math.max(0,...Object.keys(MBT).map(Number));o.mbCash=o.mbN&&mx?(MBT[Math.min(o.mbN,mx)]||0)+(o.mbN>mx?(o.mbN-mx)*Math.round((MBT[mx]||0)/mx):0):0;o.mbPer=o.mbN?Math.round(o.mbCash/o.mbN):0;
+ o.ptMB=Math.floor(items.filter(x=>eligMB(x.row||{})).reduce((a,x)=>a+(x.row['결제가']||(mdOf(x.m)||{}).p||0),0)*((R['다품목_구독포인트']&&R['다품목_구독포인트']['율'])||0)/100)*100;
  o.ptBase=items.reduce((a,x)=>a+(x.row['결제가']||(mdOf(x.m)||{}).p||0),0);
  const T1=R['금액대포인트_총구매_적용']||R['금액대포인트_총구매_11월17~30']||[],T2=R['금액대포인트_구독추가_적용']||R['금액대포인트_구독추가_11월17~30']||[];
- o.pt1=brk(T1,o.ptBase);o.pt2=brk(T2,o.ptBase);o.ptW=items.filter(x=>/8만P\+7만P/.test(x.row['비고']||'')).length*150000;
+ o.pt1=brk(T1,o.ptBase);o.pt2=brk(T2,o.ptBase);const WP=CK()['구독포인트'];o.ptW=WP?items.filter(x=>(x.row['비고']||'').includes(WP['비고키'])).length*WP['금액']:0;
  const nx=(T1.find(([m])=>m*1000>o.ptBase));o.next=nx?{need:nx[0]*1000-o.ptBase,p1:nx[1]*1000-o.pt1,p2:brk(T2,nx[0]*1000)-o.pt2}:null;
  o.ptAdd=+S.ptAdd||0;o.once=b.once;o.benefit=o.mbCash+o.once+o.pt1+o.pt2+o.ptW+o.ptMB+o.ptAdd;o.final=o.total-o.benefit;
  if(miss.length)o.notes.push(miss.join(', ')+'는 판촉안에 구독이 없어서 빠졌어요');
- if(items.some(x=>x.g==='TV'&&/MRGB/.test(x.m)))o.notes.push('MRGB의 다품목 인정 여부는 장표에서 다 안 보여서 인정으로 넣었어요');
+ 
  return o}
 function shopCalcHTML(sm){const rows=[promoOf(sm)].concat(S.adds),o=shopCalc(rows),R0=(x,y,c)=>`<div class="crow${c?' '+c:''}"><span>${x}</span><span>${y}</span></div>`;
  if(!o.items.length)return `<div class="cbox">${esc(sm)}는 판촉안에 구독이 없어요. 닷컴 기준(일시불)으로 보세요.</div>`;const b=o.b;
  return `<div class="cbox">${b.det.map(d=>`<div class="crow"><span><b>${esc(d.m)}</b>${eligMB(d.row||{})?' <span class="pl">다품목</span>':''}<br><small style="color:#888">${esc(d.g)} · 판촉 월 ${won(d.sub)}원</small></span><span>월 ${won(d.month)}원</span></div>`).join('')}</div>
  <div class="cbox"><div class="crow big"><b>월 구독료</b><b style="color:#A50034">${won(o.month)}원</b></div>${R0('판촉 월 합계',won(o.base)+'원')}
   ${b.bind?R0('ㄴ 신규결합 5%','-'+won(b.det.reduce((a,d)=>a+(d.sub-f100(d.sub*0.95)),0))+'원','sub'):''}${b.lsp?R0('ㄴ 라스패 '+esc(b.lsp.n)+' '+b.lsp.rate+'%','-'+won(b.det.reduce((a,d)=>a+d.dc,0)-(b.bind?b.det.reduce((x,d)=>x+(d.sub-f100(d.sub*0.95)),0):0))+'원','sub'):''}
-  <div class="crow sub"><span><label><input type="checkbox" id="cship" ${S.careship?'checked':''}> 케어십 보유 고객 5% (정수기 제외)</label></span><span>${o.care?'-'+won(o.care)+'원':''}</span></div>
+  ${CK()['케어십']?`<div class="crow sub"><span><label><input type="checkbox" id="cship" ${S.careship?'checked':''}> ${esc(CK()['케어십']['이름'])}</label></span><span>${o.care?'-'+won(o.care)+'원':''}</span></div>`:''}
   <div class="crow sub"><span>ㄴ 제휴카드 (월, 1계약) <input id="pg3_card" inputmode="numeric" value="${S.card||''}" style="width:70px;padding:2px;border:1px solid #ccc;border-radius:5px"></span><span>-${won(o.card)}원</span></div>
-  ${R0('6년 총액 (×72'+(o.half?' − 정수기 6개월 반값':'')+')',won(o.total)+'원')}</div>
+  ${R0('6년 총액 (×72'+(o.half?' − '+esc(CK()['반값']['이름']):'')+')',won(o.total)+'원')}</div>
  <div class="cbox"><div class="crow big"><b>구독 후 예상 혜택</b><b>${won(o.benefit)}원</b></div>
-  ${R0('다품목 캐시백 : '+o.mbN+'품목',won(o.mbCash)+'원')}${o.once?R0('Fit&Max 동시 구독','300,000원'):''}
-  ${R0('금액대 포인트 (총구매 '+won(Math.round(o.ptBase/10000))+'만)',won(o.pt1)+'P')}${R0('ㄴ 구독 금액대 추가',won(o.pt2)+'P','sub')}${o.ptMB?R0('다품목 모델 구독 포인트 (정상가 5%)',won(o.ptMB)+'P'):''}${o.ptW?R0('정수기 구독 포인트 (8만+7만)',won(o.ptW)+'P'):''}<div class="crow"><span>포인트 직접 입력 (추가)</span><span><input id="ptadd" inputmode="numeric" value="${S.ptAdd||''}" placeholder="0" style="width:90px;padding:2px;border:1px solid #ccc;border-radius:5px;text-align:right">P</span></div>
+  ${R0('다품목 캐시백 : '+o.mbN+'품목',won(o.mbCash)+'원')}${o.once?R0(esc(CK().fitmax['이름']),won(o.once)+'원'):''}
+  ${R0('금액대 포인트 (총구매 '+won(Math.round(o.ptBase/10000))+'만)',won(o.pt1)+'P')}${R0('ㄴ 구독 금액대 추가',won(o.pt2)+'P','sub')}${o.ptMB?R0(esc(CK()['다품목구독포인트이름']||'다품목 구독 포인트'),won(o.ptMB)+'P'):''}${o.ptW?R0(esc(CK()['구독포인트']['이름']),won(o.ptW)+'P'):''}<div class="crow"><span>포인트 직접 입력 (추가)</span><span><input id="ptadd" inputmode="numeric" value="${S.ptAdd||''}" placeholder="0" style="width:90px;padding:2px;border:1px solid #ccc;border-radius:5px;text-align:right">P</span></div>
   ${o.next?`<div class="note" style="margin-top:6px">${won(o.next.need)}원 더 담으면 금액대 포인트 <b>+${won(o.next.p1+o.next.p2)}P</b></div>`:''}
   ${o.notes.length?`<div class="note" style="margin-top:6px">${o.notes.map(esc).join('<br>')}</div>`:''}</div>
  <div class="cbox"><div class="crow big"><b>6년 실제 부담</b><b style="color:#A50034">${won(o.final)}원</b></div><div style="font-size:12px;color:#888">6년 총액 − 혜택 · 월 환산 약 ${won(Math.round(o.final/72/100)*100)}원 · 금액대 포인트 기준금액은 일시불 판매가 합계(구독 포함)</div></div>`}
 /* ── 하나 더 담으면 (일시불 · 바스에어·M&B 위주 · 실제 더 내는 돈 적은 순) ── */
-const FOCUS=['바스에어','스탠바이미','로봇청소기','스타일러','식기세척기'];
+const FOC=()=>CK()['중점']||{};
 function addBlock2(){if(!P)return '';const [dm,sm]=window.__cl,mode=S.cmode,base=calc2(cartLines(dm,sm),mode,S.pcard);
  const have=new Set(cartLines(dm,sm).map(l=>l.g).concat(cartLines(dm,sm).map(l=>(promoOf(l.m)||{}).g)));const by={};
  prow().forEach(z=>{if(isOff(z)||!(mode==='shop'?z['최종구독월']:(z['결제가']||z['체감가']))||have.has(z.g)||['소형','밥솥','틔운','아이어닝','OS Living·계절','제습기'].includes(z.g))return;const x=mdOf(z['모델']);if(x&&have.has(x.g))return;(by[z.g]=by[z.g]||[]).push(z)});
  const C=Object.entries(by).map(([g,list])=>{list.sort((a,b)=>((mdOf(b['모델'])||{}).mb||0)-((mdOf(a['모델'])||{}).mb||0)||((mdOf(b['모델'])||{}).rv||0)-((mdOf(a['모델'])||{}).rv||0));
-   const sel=(S.addSel[g]&&list.find(z=>z['모델']===S.addSel[g]))||list[0];if(mode==='shop'){const o0=shopCalc([promoOf(sm)].concat(S.adds)),o1=shopCalc([promoOf(sm)].concat(S.adds,[sel])),dm2=(o1.month||0)-(o0.month||0),add=(o1.benefit||0)-(o0.benefit||0);return {g,list,sel,pay:sel['결제가']||0,mon:dm2,add,cost:(o1.final||0)-(o0.final||0),focus:FOCUS.includes(g),mb:!!eligMB(sel)}}
+   const sel=(S.addSel[g]&&list.find(z=>z['모델']===S.addSel[g]))||list[0];if(mode==='shop'){const o0=shopCalc([promoOf(sm)].concat(S.adds)),o1=shopCalc([promoOf(sm)].concat(S.adds,[sel])),dm2=(o1.month||0)-(o0.month||0),add=(o1.benefit||0)-(o0.benefit||0);return {g,list,sel,pay:sel['결제가']||0,mon:dm2,add,cost:(o1.final||0)-(o0.final||0),focus:g in FOC(),mb:!!eligMB(sel)}}
    const ln=lineOf(sel['모델'],mode),r=calc2(cartLines(dm,sm).concat([ln]),mode,S.pcard),pay=ln.p-ln.d-ln.cp,add=r.benefit-base.benefit;
-   return {g,list,sel,pay,add,cost:pay-add,focus:FOCUS.includes(g),mb:!!(mdOf(sel['모델'])||{}).mb}}).sort((a,b)=>a.cost-b.cost);
+   return {g,list,sel,pay,add,cost:pay-add,focus:g in FOC(),mb:!!(mdOf(sel['모델'])||{}).mb}}).sort((a,b)=>a.cost-b.cost);
  window.__cands=C;const F=C.filter(x=>x.focus),O=C.filter(x=>!x.focus);
- const card=x=>`<div class="add"><b>+ ${esc(x.g)}</b>${x.g==='바스에어'?'<span class="pl">중점</span>':'<span class="pl g">M&B</span>'}${x.mb?'<span class="pl">다품목</span>':''}
+ const card=x=>`<div class="add"><b>+ ${esc(x.g)}</b>${FOC()[x.g]?`<span class="pl${FOC()[x.g]==='중점'?'':' g'}">${esc(FOC()[x.g])}</span>`:''}${x.mb?'<span class="pl">다품목</span>':''}
   <select data-g="${esc(x.g)}">${x.list.map(z=>{const q=lineOf(z['모델'],mode);return `<option value="${esc(z['모델'])}" ${z===x.sel?'selected':''}>${esc(z['모델'])} · ${mode==='shop'?'월 '+won(z['최종구독월'])+'원':won(q.p-q.d-q.cp)+'원'}</option>`}).join('')}</select>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:4px"><span style="color:#888">${mode==='shop'?'월 +'+won(x.mon)+'원 · 일시불가 '+won(x.pay)+'원':'일시불 '+won(x.pay)+'원'} · 혜택 <b style="color:#A50034">+${won(x.add)}원</b></span><b>${mode==='shop'?'6년 ':''}실제 더 내는 돈 ${won(x.cost)}원</b></div>
   <div style="text-align:right;margin-top:6px"><button class="ab" data-add="${esc(x.g)}">담기</button></div></div>`;
  let h=`<div class="sec"><div class="st2">하나 더 담으면 얼마? <span style="font-size:11px;font-weight:400;color:#888">같이 담기 좋은 제품 (실제 더 내는 돈 적은 순)</span></div><div class="foot" style="padding:0 0 6px">제품군마다 리뷰 많은 다품목 모델 1개 · 혜택 늘어난 만큼 뺀 금액 · 위 계산기(${S.cmode==='shop'?'매장 판촉':'닷컴'} 기준)와 같은 조건</div>`;
  h+=S.adds.map((a,i)=>`<div class="add in"><b>${esc(a.g)} · ${esc(a['모델'])}</b> <button class="ab" style="float:right" data-rm="${i}">빼기</button></div>`).join('');
  h+=F.map(card).join('');
- if(O.length)h+=S.more?O.map(x=>card(x).replace('<span class="pl g">M&B</span>','')).join('')+`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목 접기</button>`:`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목도 보기 (${O.length})</button>`;
+ if(O.length)h+=S.more?O.map(card).join('')+`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목 접기</button>`:`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목도 보기 (${O.length})</button>`;
  return h+`</div>`}
 load();
 </script></body></html>

@@ -4,3 +4,4 @@ scripts/__pycache__/
 data/bestshop/
 scripts/bestshop_kgf_data.py
 scripts/bestshop_kgf_build.py
+calc/bestshop.json
