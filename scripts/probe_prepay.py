@@ -1,14 +1,28 @@
-import urllib.request,re
-UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36'
-def get(u,h=None):
-    r=urllib.request.Request(u,headers=dict({'User-Agent':UA},**(h or {})))
-    with urllib.request.urlopen(r,timeout=40) as x: return x.status,x.read().decode('utf-8','ignore')
-t=get('https://www.lge.co.kr/product/care-solutions/refrigerators/s834mee141')[1]
-js=[j for j in set(re.findall(r'src="([^"]+\.js[^"]*)"',t)) if '4150-' in j][0]
-s=get(js if js.startswith('http') else 'https://www.lge.co.kr'+js)[1]
-for m in set(re.findall(r'"(https?://[^"]{5,80})"',s)): print('URL',m)
-i=s.find('summary/subscription/monthly'); print('CTX',s[max(0,i-3000):i-1500].replace('\n',' ')[:1500])
-for base in ['https://www.lge.co.kr','https://www.lge.co.kr/product','https://www.lge.co.kr/api','https://www.lge.co.kr/product/api']:
-    for path in ['/ajax/v2/models/MD10635828/summary/subscription/options','/ajax/v1/models/MD10635828/summary/subscription/options']:
-        try: st,b=get(base+path,{'Accept':'application/json','X-Requested-With':'XMLHttpRequest'});print('TRY',base+path,st,b[:300])
-        except Exception as e: print('TRY',base+path,e)
+# 엘지닷컴 구독 상세 페이지를 브라우저로 열어 선납 선택 화면과 금액을 그대로 읽음
+import json, sys
+from playwright.sync_api import sync_playwright
+url = 'https://www.lge.co.kr/product/care-solutions/refrigerators/s834mee141'
+seen = []
+with sync_playwright() as pw:
+    b = pw.chromium.launch(); pg = b.new_page(viewport={'width': 1400, 'height': 1600}, locale='ko-KR')
+    def on_resp(r):
+        if 'subscription' in r.url and r.request.resource_type in ('xhr', 'fetch'):
+            try: seen.append({'url': r.url, 'body': r.json()})
+            except Exception: pass
+    pg.on('response', on_resp)
+    pg.goto(url, wait_until='domcontentloaded', timeout=60000); pg.wait_for_timeout(5000)
+    for _ in range(6): pg.mouse.wheel(0, 1500); pg.wait_for_timeout(400)
+    txt = pg.inner_text('body')
+    i = 0
+    for k in range(8):
+        i = txt.find('선납', i + 1)
+        if i < 0: break
+        print('TXT', txt[max(0, i - 200):i + 300].replace('\n', ' / '))
+    els = pg.query_selector_all('button, label, [role=radio], [role=tab], option, a')
+    for e in els:
+        t = (e.inner_text() or '').strip()
+        if '선납' in t or '%' in t and len(t) < 20: print('EL', e.evaluate('x=>x.tagName'), t[:60])
+    pg.screenshot(path='shot.png', full_page=False)
+    b.close()
+json.dump(seen, open('prepay.json', 'w'), ensure_ascii=False, indent=1)
+print('RESP', len(seen), [s['url'][:140] for s in seen][:20])
