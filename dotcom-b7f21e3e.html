@@ -94,7 +94,10 @@ function info(c,m){const it=(c.all||[]).find(i=>i.m===m)||c.groups.map(g=>(c.buy
  return {m,n:it.n||x.n||m,img:it.img||x.img||'',sz:it.sz||(v?(c.name==='냉장고'?v+'L':v+''):''),gr:it.gr||((SP[m]||{})['에너지 소비효율등급']||''),rel:it.rel||'',
   max:it.max||x.mx||(x.p?x.p-x.d:0),price:it.price||(x.p?x.p-x.d:0),only:it.only,row:r}}
 const pre=(a,b)=>{let i=0;while(i<a.length&&a[i]===b[i])i++;return i};
-function storeFor(c,m){const same=promoOf(m);if(same)return {same:true,list:[same]};const g=CATG[c.name];if(!g)return {same:false,list:[]};
+function storeFor(c,m){const mp=P&&P.rules&&P.rules['추천매칭']&&P.rules['추천매칭'][m],same=promoOf(m);
+ if(same)return {same:true,list:[same],bplus:mp&&mp[1]!==same['모델']?promoOf(mp[1]):null,why:mp?mp[2]:''};
+ if(mp){const L=[promoOf(mp[0]),promoOf(mp[1])].filter(Boolean).filter((r,i,a)=>a.indexOf(r)===i);if(L.length)return {same:false,list:L,why:mp[2],picked:true}}
+ const g=CATG[c.name];if(!g)return {same:false,list:[]};
  const sg=subgrp(c,m),v=capOf(m),me=info(c,m);
  const L=prow().filter(r=>r.g===g&&(r['최종구독월']||r['결제가'])&&!isOff(r)).map(r=>{const rm=r['모델'],rv=capOf(rm),pr=r['체감가']||r['결제가']||0;
   const sg2=subgrp(c,rm),near=(sg==='2in1'&&sg2==='스탠드')||(sg==='스탠드'&&sg2==='2in1');const sc=(sg&&sg2!==sg?(near?2:10):0)+(r['최종구독월']?0:5)+(v&&rv?Math.abs(rv-v)/v*3:1)+(me.max&&pr?Math.abs(pr-me.max)/me.max:0.5)-(r['구독할인']?0.05:0)-Math.min(pre(m,rm),7)*0.3;return {r,sc}}).sort((a,b)=>a.sc-b.sc);
@@ -132,11 +135,12 @@ function compareTable(c,x,st,lab){const sp=specRows(x.m,st.m,x,st);
  `<tr><td class="k">판매가</td><td>${won(x.price)}</td><td>${won((st.row||{})['결제가']||st.price)}</td></tr><tr class="df"><td class="k">구매처</td><td>${x.only?'<b style="color:#A50034">닷컴 전용</b>':'닷컴·매장'}</td><td><b>매장</b></td></tr></table>`+
  (sp.same.length?`<div class="foot" style="padding:6px 0 0">같은 점: ${sp.same.map(s=>esc(s[0])+' '+esc(s[1])).join(' · ')}</div>`:'')+`</div>`}
 function vsView(){
-  const c=D.cats[S.cat],x=info(c,S.view.m),f=storeFor(c,S.view.m),stm=S.view.st||(f.list[0]&&f.list[0]['모델']),st=info(c,stm),r=st.row||{};
+  const c=D.cats[S.cat],x=info(c,S.view.m),f0=storeFor(c,S.view.m),f=f0.same?{list:[f0.bplus,f0.list[0]].filter(Boolean),why:f0.why,picked:true,up:true}:f0,stm=S.view.st||(f.list[0]&&f.list[0]['모델']),st=info(c,stm),r=st.row||{};
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
   h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div>${x.only?'<div class="u" style="color:#A50034;font-weight:700">닷컴 전용</div>':''}<div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div>
-  <div class="vsm">VS</div>${storeCard(c,st,'매장 추천')}</div>`;
-  if(f.list.length>1)h+=`<div class="sec" style="padding-top:6px"><select id="stsel" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px">${f.list.map(z=>`<option value="${esc(z['모델'])}" ${z['모델']===stm?'selected':''}>다른 추천: ${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${z['체감가']?' · 일시불 '+won(z['체감가']):''}</option>`).join('')}</select></div>`;
+  <div class="vsm">VS</div>${storeCard(c,st,f.up&&st.m!==x.m?'한 단계 위':'매장 추천')}</div>`;
+  if(f.why)h+=`<div class="shop" style="margin:8px 12px 0"><b>왜 이 모델?</b> ${esc(f.why)}</div>`;
+  if(f.list.length>1)h+=`<div class="sec" style="padding-top:6px"><select id="stsel" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px">${f.list.map((z,i)=>`<option value="${esc(z['모델'])}" ${z['모델']===stm?'selected':''}>${f.picked?(f.up?(i===0?'한 단계 위':'같은 모델'):(i===0?'매장 추천':i===1?'한 단계 위':'다른 추천')):'다른 추천'}: ${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${z['체감가']?' · 일시불 '+won(z['체감가']):''}</option>`).join('')}</select></div>`;
   const pr=r['체감가']||r['결제가'];
   h+=`<div class="sec"><div class="gap"><div class="gb"><div class="t">일시불 차이 (매장 − 닷컴)</div><div class="v r">${pr&&x.max?signed(pr-x.max)+'원':'-'}</div><div class="t">닷컴 최대혜택가 vs 매장 체감가</div></div><div class="gb"><div class="t">매장 구독 6년</div><div class="v r">${r['최종구독월']?'월 '+won(r['최종구독월'])+'원':'-'}</div><div class="t">${r['최종구독월']?'6년 총 '+won(r['최종구독월']*72)+'원':''}</div></div></div>`;
   if(r['비고'])h+=`<div class="foot" style="padding:6px 0 0">${esc(note(r['비고']))}</div>`;
@@ -153,7 +157,10 @@ function oneView(){
   h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div><div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div><div class="vsm">=</div>${storeCard(c,x,'매장에서도 판매')}</div>`;
   h+=`<div class="sec"><div class="gap"><div class="gb"><div class="t">일시불 차이 (매장 − 닷컴)</div><div class="v r">${pr&&x.max?signed(pr-x.max)+'원':'-'}</div></div><div class="gb"><div class="t">매장 구독 6년</div><div class="v r">${r['최종구독월']?'월 '+won(r['최종구독월'])+'원':'-'}</div><div class="t">${r['최종구독월']?'6년 총 '+won(r['최종구독월']*72)+'원':''}</div></div></div>`;
   if(r['비고'])h+=`<div class="foot" style="padding:6px 0 0">${esc(note(r['비고']))}</div>`;
-  h+=storeTerms(x)+`</div>`+addBlock(c,x.m,null)+`<div class="foot">닷컴 최대혜택가 = 엘지닷컴 표시 기준. 매장 = 불러온 판촉안 기준.</div>`;
+  h+=storeTerms(x)+`</div>`;const f=storeFor(c,x.m);
+  if(f.bplus){const b=f.bplus,d=(b['최종구독월']||0)-(r['최종구독월']||0);h+=`<div class="sec"><div class="st2">이 모델 대신 한 단계 위는?</div><div class="shop"><b>${esc(b['모델'])}</b> · ${esc(b['구분'])}<br>${b['최종구독월']?'구독 월 <b>'+won(b['최종구독월'])+'원</b>':''}${b['최종구독월']&&r['최종구독월']?' ('+(d<=0?'월 '+won(-d)+'원 더 저렴':'월 '+won(d)+'원 더')+')':''}${b['체감가']?' · 일시불 '+won(b['체감가']):''}<div style="margin-top:4px">${esc(f.why||'')}</div></div><button class="cta" style="margin-top:8px" onclick="go({type:'vs',m:'${x.m}',st:'${esc(b['모델'])}'},false)">대결카드로 비교하기<small>${esc(x.m)} vs ${esc(b['모델'])}</small></button></div>`}
+  else if(f.why)h+=`<div class="sec"><div class="shop">${esc(f.why)}</div></div>`;
+  h+=addBlock(c,x.m,null)+`<div class="foot">닷컴 최대혜택가 = 엘지닷컴 표시 기준. 매장 = 불러온 판촉안 기준.</div>`;
   return h;
 }
 /* ── 매장 판촉(이 PC 브라우저에만 저장, 서버로 안 보냄) + 하나 더 담기 ── */
