@@ -57,13 +57,19 @@ tr.df td{background:#fffbe0}tr.on td{background:#fdf1f4;font-weight:700}
 .inc{margin-top:10px;border:1px solid #e3e3e3;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.7}
 .calc{margin-top:8px;background:#fff8d6;border-radius:8px;padding:9px 11px;font-size:12px;line-height:1.6}
 .note{margin:10px 16px 0;font-size:11.5px;background:#fff1c2;color:#6b4a00;border-radius:8px;padding:8px 10px;line-height:1.5}
+.pm{margin:8px 12px;padding:10px 12px;border:1px solid #ddd;border-radius:10px;background:#fff;font-size:13px}.pm label,.pm button{display:inline-block;border:1px solid #bbb;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;margin:6px 4px 0 0}
+.shop{margin-top:8px;padding:10px;border-radius:10px;background:#fff5f7;border:1px solid #f3c2cf;font-size:13px}.shop b{color:#A50034}
+.add{border:1px solid #ddd;border-radius:10px;padding:10px;margin:8px 0;background:#fff}.add.in{border:2px solid #A50034;background:#fffafa}.add select{width:100%;padding:7px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin:6px 0}
+.pl{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;background:#fde8ec;color:#A50034;margin-left:4px}.pl.g{background:#eee;color:#555}.ab{border:1px solid #A50034;color:#A50034;background:#fff;border-radius:8px;padding:5px 12px;font-size:13px}
+.tot{position:sticky;bottom:0;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}.tot b{font-size:19px}
+body.cust .mgr{display:none!important}
 </style></head><body><div class="ph">
 <div class="top"><h1>닷컴 비교 판매 <span style="font-size:11px;font-weight:400;color:#f7c6d3">관리자 시험판</span></h1><div class="s" id="upd">불러오는 중…</div></div>
 <div id="app"></div>
 </div>
 <script>
-const S={mode:'buy',cat:0,grp:0,view:null,conv:false};let D=null;
-function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
+const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false};let D=null;
+function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');if(!S.view||!view||S.view.m!==view.m){S.adds=[];S.addSel={};}S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
 function back(){history.back();}
 window.addEventListener('popstate',e=>{const st=e.state||{};S.view=st.view||null;S.conv=!!st.conv;if(st.mode)S.mode=st.mode;if(st.cat!=null)S.cat=st.cat;if(st.grp!=null)S.grp=st.grp;render();});
 const won=x=>x||x===0?Number(x).toLocaleString('ko-KR'):'-';
@@ -77,7 +83,7 @@ async function load(){
   document.getElementById('upd').innerHTML='엘지닷컴 오늘의 랭킹 · '+esc(D.updated)+' 기준 · <a href="admin-b7f21e3e.html">관리자 화면</a>';
   history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
 }
-function render(){window.scrollTo(0,0);document.getElementById('app').innerHTML=S.view?(S.view.type==='vs'?vsView():oneView()):listView();}
+function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():oneView()):listView());bindPromo();}
 function listView(){
   const c=D.cats[S.cat],g=c.groups[S.grp],L=(S.mode==='buy'?c.buy:c.sub)[g]||[];
   let h=`<div class="mode"><button class="${S.mode==='buy'?'on':''}" onclick="S.mode='buy';render()">일시불</button><button class="${S.mode==='sub'?'on':''}" onclick="S.mode='sub';render()">구독</button></div>`;
@@ -137,6 +143,7 @@ function vsView(){
       const m=Math.round(st.max/72/100)*100;h+=careBox(st.m)+`<div class="calc"><b>"일시불이 더 싸지 않아요?" 물으면</b><br>일시불 ${won(st.max)} ÷ 72개월 = 월 약 ${won(m)}원 → 구독 ${won(b6)}원과 월 약 ${won(b6-m)}원 차이가 6년간 방문 케어·무상 A/S 값이라고 솔직하게 설명</div>`;}
     h+=`</div><button class="cta" style="background:#555" onclick="back()">일시불 비교로 돌아가기</button>`;
   }
+  h+=shopBox(st.m,b6)+addBlock(c,st.m,b6);
   h+=`<div class="foot">최대혜택가 = 엘지닷컴 표시 그대로(판매가 − 쿠폰 할인 − 제휴카드 청구할인, 카드 실적 조건). 가격·사양: ${esc(D.updated)} 엘지닷컴 표시 기준. 구독 요금은 회원할인 반영·기본 방문주기 기준, 제휴카드 할인 제외. 매장 행사가 미포함.</div>`;
   return h;
 }
@@ -148,8 +155,62 @@ function oneView(){
   h+=`<div class="sec"><div class="st2">구독으로 전환하면</div>${termsTable([x.m],['월 요금'])}`;
   if(b6&&!x.sub){const m=Math.round(x.max/72/100)*100;h+=`<div class="gap"><div class="gb"><div class="t">6년 구독 월</div><div class="v r">${won(b6)}원</div></div><div class="gb"><div class="t">일시불 월 환산(72개월)</div><div class="v">${won(m)}원</div></div></div>`+careBox(x.m)+`<div class="calc">월 약 ${won(b6-m)}원 차이가 6년간 방문 케어·무상 A/S 값이에요. 같은 모델이라 매장 혜택(카드·결합)을 더하면 차이가 더 줄어요.</div>`}
   else h+=careBox(x.m);
-  h+=`</div><div class="foot">엘지닷컴 표시 기준. 매장 행사가·카드 혜택은 지점에서 더해서 안내하세요.</div>`;
+  h+=`</div>`+shopBox(x.m,b6)+addBlock(c,x.m,b6)+`<div class="foot">엘지닷컴 표시 기준. 매장 판촉은 불러온 판촉 파일 기준.</div>`;
   return h;
 }
+/* ── 매장 판촉(이 PC 브라우저에만 저장, 서버로 안 보냄) + 하나 더 담기 ── */
+const LS='kgf_promo_v1';let P=null;try{P=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}
+const GROUPS=[['김치냉장고',/김치/],['냉장고',/냉장고/],['에어컨',/스탠드|사계절|벽걸이|에어컨/],['스타일러',/스타일러/],['식기세척기',/식기세척기/],['전기레인지',/전기레인지/],['광파오븐',/광파오븐/],['정수기',/정수기/],['안마의자',/안마의자/],['바스에어',/바스에어/],['공기청정기',/공기청정기/],['제습기',/제습기/],['틔운',/틔운/],['밥솥',/밥솥/],['소형',/OS Living/],['아이어닝',/아이어닝/]];
+const LSPKEY={'냉장고':'DIOS','김치냉장고':'김치냉장고','에어컨':'에어컨','스타일러':'스타일러','식기세척기':'식기세척기','전기레인지':'전기레인지','공기청정기':'공기청정기','TV':'TV','세탁기':'TROMM','건조기':'TROMM','워시타워':'TROMM'};
+const ORDER=['김치냉장고','식기세척기','스타일러','전기레인지','정수기','에어컨','공기청정기','안마의자','바스에어','광파오븐'];
+const f100=n=>Math.floor(n/100)*100;
+const grpOf=r=>{for(const[g,re]of GROUPS)if(re.test(r['구분']))return g;return r['구분']};
+const reOf=k=>new RegExp('^'+k.replace(/\*/g,'.*').replace(/\(([^)]*)\)/g,(a,b)=>'('+b.split(/[,\/]/).join('|')+')')+'$');
+const prow=()=>P?P.rows.map(r=>Object.assign({g:grpOf(r)},r)):[];
+function promoOf(m){for(const r of prow()){try{if(r['모델']===m||reOf(r['모델']).test(m))return r}catch(e){}}return null}
+const isOff=r=>/단종|소진|운영 종료|보관재고/.test(r['비고']||'');
+const note=n=>S.cust?(n||'').split(' · ').filter(x=>!/컨테스트|추할가|할당|찐할세|활성화|역대|도전/.test(x)).join(' · '):(n||'');
+function promoBar(){return `<div class="pm mgr">${P?`매장 판촉: <b>${esc(P.rules&&P.rules['행사']||'불러옴')}</b> · ${P.rows.length}개 모델 <span style="color:#888">(이 기기에만 저장)</span>`:'<b style="color:#A50034">매장 판촉 자료가 없어요.</b> 불러오면 매장 판촉가와 "하나 더 담기"가 열려요.'}<br><label>판촉 파일 불러오기<input type="file" id="pf" accept=".json" style="display:none"></label>${P?'<button id="pdel">판촉 지우기</button>':''}<button id="pimg">판촉 이미지 붙여넣기 (준비 중)</button><button id="cust">고객 화면</button></div>`+(S.cust?'<div class="pm"><button id="cust2">매니저 화면으로</button></div>':'')}
+function bindPromo(){const pf=document.getElementById('pf');if(pf)pf.onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.rows)throw 0;P=d;try{localStorage.setItem(LS,t)}catch(x){}render(true)}catch(x){alert('판촉 파일 형식이 아니에요')}})};
+ const pd=document.getElementById('pdel');if(pd)pd.onclick=()=>{if(confirm('이 기기에 저장된 판촉 자료를 지울까요?')){localStorage.removeItem(LS);P=null;render(true)}};
+ const pi=document.getElementById('pimg');if(pi)pi.onclick=()=>alert('판촉 이미지 붙여넣기(글자 인식)는 다음 단계에서 만들어요.');
+ ['cust','cust2'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{S.cust=!S.cust;render(true)}});
+ document.querySelectorAll('select[data-g]').forEach(x=>x.onchange=()=>{S.addSel[x.dataset.g]=x.value;render(true)});
+ document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const c=window.__cands.find(z=>z.g===b.dataset.add);S.adds.push(c.sel);render(true)});
+ document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{S.adds.splice(+b.dataset.rm,1);render(true)});}
+function shopBox(m,dot6){const r=promoOf(m);if(!P)return '';if(!r)return `<div class="shop">매장 판촉표에 <b>${esc(m)}</b>가 없어요. 닷컴 요금 기준으로 보여 드려요.</div>`;
+ const s=r['최종구독월'];return `<div class="shop"><div style="font-weight:700;margin-bottom:4px">매장 판촉가 · ${esc(m)}</div>
+ ${r['체감가']?`일시불 체감가 <b>${won(r['체감가'])}원</b>${r['결제가']&&r['결제가']!==r['체감가']?` <span style="color:#888">(결제가 ${won(r['결제가'])})</span>`:''}<br>`:''}
+ ${s?`구독 6년 월 <b>${won(s)}원</b>${r['구독할인']?` <span style="color:#888">(정상 ${won(r['구독월'])} − ${won(r['구독할인'])})</span>`:''}`:''}
+ ${s&&dot6?`<br>같은 모델 닷컴 구독 월 ${won(dot6)}원 → ${dot6>s?'<b>매장이 월 '+won(dot6-s)+'원 · 6년 '+won((dot6-s)*72)+'원 유리</b>':dot6===s?'<b>요금은 같아요</b> · 매장 결합·묶음 혜택으로 차이를 만드세요':'매장이 월 '+won(s-dot6)+'원 높음'}`:''}
+ ${r['비고']?`<div style="color:#888;font-size:12px;margin-top:4px">${esc(note(r['비고']))}</div>`:''}</div>`}
+function brk(t,v){let a=0;for(const[m,p]of t||[])if(v>=m*1000)a=p*1000;return a}
+function bundle(list){const gs=new Set(list.map(x=>x.g)),bind=list.length>=2&&gs.size>=2,keys=new Set(list.map(x=>LSPKEY[x.g]||x.g));let lsp=null;
+ if(P&&P.rules&&P.rules['라스패'])for(const[n,rate,need]of P.rules['라스패']['패키지'])if(need.every(k=>keys.has(k))&&(!lsp||rate>lsp.rate||(rate===lsp.rate&&need.length>lsp.need.length)))lsp={n,rate,need};
+ let month=0;const det=list.map(x=>{let v=x.sub;const b=bind?v-f100(v*0.95):0,l=lsp&&lsp.need.includes(LSPKEY[x.g]||x.g)?f100(v*lsp.rate/100):0;v-=b+l;month+=v;return Object.assign({},x,{dc:b+l,month:v})});
+ const fit=list.some(x=>x.g==='냉장고'&&/^(D646|G646)/.test(x.m))&&list.some(x=>x.g==='김치냉장고'&&/^Z386/.test(x.m));
+ const base=list.reduce((a,x)=>a+(x.list||0),0),pts=P&&P.rules?brk(P.rules['금액대포인트_총구매_11월17~30'],base)+brk(P.rules['금액대포인트_구독추가_11월17~30'],base):0;
+ return {month,det,bind,lsp,fit,once:fit?300000:0,pts}}
+const it=r=>({m:r['모델'],g:r.g,sub:r['최종구독월'],list:r['결제가']||0,row:r});
+function lspHint(list){if(!P||!P.rules||!P.rules['라스패'])return [];const keys=new Set(list.map(x=>LSPKEY[x.g]||x.g)),o=[];
+ for(const[n,rate,need]of P.rules['라스패']['패키지']){const miss=need.filter(k=>!keys.has(k));if(miss.length===1&&need.length-1<=keys.size)o.push(n+' '+rate+'%까지 '+miss[0]+' 1개')}return o.slice(0,3)}
+function addBlock(c,m,dot6){if(!P)return '';const r=promoOf(m),g=r?r.g:(LSPKEY[c.name]?c.name:c.name);
+ const base={m,g,sub:(r&&r['최종구독월'])||dot6||0,list:(r&&r['결제가'])||0};if(!base.sub)return '';
+ const cur=[base].concat(S.adds.map(it)),now=bundle(cur),have=new Set(cur.map(x=>x.g)),by={};
+ prow().forEach(z=>{if(!z['최종구독월']||isOff(z)||have.has(z.g)||['소형','밥솥','틔운','아이어닝','제습기'].includes(z.g))return;(by[z.g]=by[z.g]||[]).push(z)});
+ const C=Object.entries(by).map(([gg,list])=>{list.sort((a,b)=>((b['구독할인']||0)-(a['구독할인']||0))||(a['최종구독월']-b['최종구독월']));
+  const sel=(S.addSel[gg]&&list.find(z=>z['모델']===S.addSel[gg]))||(gg==='김치냉장고'&&cur.some(x=>/^(D646|G646)/.test(x.m))&&list.find(z=>/^Z386/.test(z['모델'])))||list[0];
+  const nx=bundle(cur.concat([it(sel)]));return {g:gg,list,sel,real:nx.month-now.month,once:nx.once-now.once,lsp:nx.lsp&&(!now.lsp||nx.lsp.n!==now.lsp.n)?nx.lsp:null}})
+  .sort((a,b)=>(b.once-a.once)||((ORDER.indexOf(a.g)+1||99)-(ORDER.indexOf(b.g)+1||99))||(a.real-b.real));window.__cands=C;const hint=lspHint(cur);
+ let h=`<div class="sec"><div class="st2">하나 더 담으면 얼마? <span style="font-size:11px;font-weight:400;color:#888">같이 구독하면 결합 5% · 실제 더 내는 월 금액</span></div>`;
+ h+=S.adds.map((a,i)=>`<div class="add in"><b>${esc(a.g)} · ${esc(a['모델'])}</b> <button class="ab" style="float:right" data-rm="${i}">빼기</button></div>`).join('');
+ if(hint.length)h+=`<div class="note">라스패: ${esc(hint.join(' / '))}</div>`;
+ h+=C.map(x=>`<div class="add"><b>+ ${esc(x.g)}</b>${x.once?'<span class="pl">Fit&Max 30만</span>':''}${x.lsp?`<span class="pl">라스패 ${x.lsp.rate}%</span>`:''}${['식기세척기','스타일러','전기레인지'].includes(x.g)?'<span class="pl g">M&B</span>':''}
+  <select data-g="${esc(x.g)}">${x.list.map(z=>`<option value="${esc(z['모델'])}" ${z===x.sel?'selected':''}>${esc(z['모델'])} · 월 ${won(z['최종구독월'])}</option>`).join('')}</select>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:#888">월 ${won(x.sel['최종구독월'])}${x.real<x.sel['최종구독월']?' − 할인 '+won(x.sel['최종구독월']-x.real):''}${x.once?' · 동시 구독 30만':''}</span><b style="color:#A50034">실제 월 +${won(x.real)}원</b></div>
+  <div style="text-align:right;margin-top:6px"><button class="ab" data-add="${esc(x.g)}">담기</button></div></div>`).join('');
+ if(S.adds.length){h+=`<table><tr><th>제품</th><th>판촉 월</th><th>할인</th><th>월</th></tr>${now.det.map(d=>`<tr><td class="k">${esc(d.g)}<br><span style="font-size:11px;color:#888">${esc(d.m)}</span></td><td>${won(d.sub)}</td><td>${d.dc?'-'+won(d.dc):'-'}</td><td><b>${won(d.month)}</b></td></tr>`).join('')}</table>
+  <div class="foot" style="padding:6px 0 0">${now.bind?'결합 5% ':''}${now.lsp?'· 라스패 '+esc(now.lsp.n)+' '+now.lsp.rate+'% ':''}${now.fit?'· Fit&Max 동시 구독 30만 ':''}${now.pts?'· 금액대 포인트 '+won(now.pts)+'P(참고)':''} · 6년 총 ${won(now.month*72)}원 · 고객맞춤플래너 결과와 한 번 맞춰 보세요</div>`}
+ h+=`</div>`+(S.adds.length?`<div class="tot"><span>${cur.length}개 구독 · 월</span><b>${won(now.month)}원</b></div>`:'');return h}
 load();
 </script></body></html>
