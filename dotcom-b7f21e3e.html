@@ -79,6 +79,17 @@ body.cust .mgr{display:none!important}
  .cmp{padding:18px 28px 0}.cmp table{font-size:13px}.cmp td,.cmp th{padding:8px 10px}
  .fback{left:max(12px,calc(50% - 680px))}
 }
+
+.cnav{display:flex;gap:4px;overflow-x:auto;padding:12px 10px 6px;scrollbar-width:none;border-bottom:1px solid #eee}
+.cnav::-webkit-scrollbar{display:none}
+.ci{flex:none;width:76px;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;font:inherit}
+.cc{width:64px;height:64px;border-radius:50%;background:#f4f4f6;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid transparent}
+.cc img{width:46px;height:46px;object-fit:contain}
+.ci.on .cc{border-color:#1a1a1a;background:#fff}
+.cn{font-size:12px;color:#444;margin-top:5px;line-height:1.25;text-align:center;word-break:keep-all}
+.ci.on .cn{font-weight:700;color:#1a1a1a}
+.cb{font-size:9.5px;margin-top:2px;color:#A50034}.cb.z{color:#bbb}
+@media (min-width:900px){.cnav{flex-wrap:wrap;padding:16px 24px 10px;gap:6px 2px}.ci{width:92px}.cc{width:80px;height:80px}.cc img{width:58px;height:58px}.cn{font-size:13px}}
 </style></head><body><div class="ph">
 <div class="top"><h1>닷컴 비교 판매 <span style="font-size:11px;font-weight:400;color:#f7c6d3">관리자 시험판</span></h1><div class="s" id="upd">불러오는 중…</div></div>
 <div id="app"></div>
@@ -101,7 +112,7 @@ async function load(){
 }
 function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():S.view.type==='rec'?recView():oneView()):listView())+(S.view?'<button class="fback" onclick="back()" aria-label="뒤로가기">‹</button>':'');bindPromo();}
 let MD={},SP={};
-const CATG={'냉장고':'냉장고','에어컨':'에어컨','TV':'TV','세탁기':'세탁기','건조기':'건조기','워시타워':'워시타워'};
+const CATG={'냉장고':'냉장고','에어컨':'에어컨','TV':'TV','세탁기':'세탁기','건조기':'건조기','의류건조기':'건조기','워시타워':'워시타워','세탁 건조기':'워시타워','김치냉장고':'김치냉장고','컨버터블 패키지':'김치냉장고','청소기':'로봇청소기','공기청정기':'공기청정기','식기세척기':'식기세척기','전기레인지':'전기레인지','광파오븐 / 전자레인지':'광파오븐','광파오븐/전자레인지':'광파오븐','정수기':'정수기','스탠바이미':'스탠바이미','의류관리기':'스타일러','안마의자':'안마의자'};
 const capOf=m=>capOf0(m)||(MD[m]?null:capOf0((mdOf(m)||{}).m||''))||((/^(OLED|QNED|MRGB|\d)/.test(m)||/^(F|T|R|W|FX|FG|RD|RG|WA|FC)\d/.test(m))&&(m.match(/(\d{2,3})/)||[])[1]?+(m.match(/(\d{2,3})/)[1].slice(0,m.startsWith('OLED')||/^\d/.test(m)?3:2)):null);
 const capOf0=m=>{const q=SP[m]||{};for(const k of Object.keys(q))if(/전체 용량|화면 크기|냉방면적|세탁 용량/.test(k)){const v=parseFloat(String(q[k]).replace(/,/g,''));if(v)return v}return null};
 function subgrp(c,m){const it=(c.all||[]).find(i=>i.m===m);if(it&&it.g)return it.g;const s=(MD[m]||{}).s||'';
@@ -121,10 +132,14 @@ function storeFor(c,m){const rk=recKey(c,m),rl=(REC[rk]||[]).map(promoOf).filter
  const L=prow().filter(r=>r.g===g&&(r['최종구독월']||r['결제가'])&&!isOff(r)).map(r=>{const rm=r['모델'],rv=capOf(rm),pr=r['체감가']||r['결제가']||0;
   const sg2=subgrp(c,rm),near=(sg==='2in1'&&sg2==='스탠드')||(sg==='스탠드'&&sg2==='2in1');const sc=(sg&&sg2!==sg?(near?2:10):0)+(r['최종구독월']?0:5)+(v&&rv?Math.abs(rv-v)/v*3:1)+(me.max&&pr?Math.abs(pr-me.max)/me.max:0.5)-(r['구독할인']?0.05:0)-Math.min(pre(m,rm),7)*0.3;return {r,sc}}).sort((a,b)=>a.sc-b.sc);
  return {same:false,list:L.slice(0,4).map(z=>z.r)}}
+
+function catImg(c){const a=(c.all&&c.all[0])||c.groups.map(g=>(c.buy[g]||[])[0]).find(Boolean)||c.groups.map(g=>(c.sub[g]||[])[0]).find(Boolean)||{};return a.img||''}
+function catNav(){return `<div class="cnav">${D.cats.map((x,i)=>{const im=catImg(x),n=promoN(x);return `<button class="ci${i===S.cat?' on':''}" onclick="S.cat=${i};S.grp=0;render()"><span class="cc">${im?`<img src="${esc(im)}" alt="" loading="lazy" onerror="this.style.display='none'">`:''}</span><span class="cn">${esc(x.name)}</span>${P?`<span class="cb${n?'':' z'}">${n?'매장 '+n:'판촉 없음'}</span>`:''}</button>`}).join('')}</div>`}
+function promoN(c){const g=CATG[c.name];if(!g||!P)return 0;return prow().filter(r=>(r.g===g||(g==='TV'&&r.g==='스탠바이미'))&&!isOff(r)).length}
 function listView(){
   const c=D.cats[S.cat],g=c.groups[S.grp],L=(S.mode==='buy'?c.buy:c.sub)[g]||[];
   let h=`<div class="mode"><button class="${S.mode==='buy'?'on':''}" onclick="S.mode='buy';render()">일시불</button><button class="${S.mode==='sub'?'on':''}" onclick="S.mode='sub';render()">구독</button></div>`;
-  h+=`<div class="cts">${D.cats.map((x,i)=>`<button class="${i===S.cat?'on':''}" onclick="S.cat=${i};S.grp=0;render()">${esc(x.name)}</button>`).join('')}</div>`;
+  h+=catNav();
   h+=`<div class="gcs">${c.groups.map((x,i)=>`<button class="${i===S.grp?'on':''}" onclick="S.grp=${i};render()">${esc(x)} <small>${((S.mode==='buy'?c.buy:c.sub)[x]||[]).length}</small></button>`).join('')}</div>`;
   h+=`<div class="hd">${esc(c.name)} · ${esc(g)} ${S.mode==='buy'?'일시불':'구독'} TOP ${L.length}</div>`;
   h+=`<div class="lst">`+L.map((x,j)=>row(c,x,j)).join('')+`</div>`;
@@ -138,7 +153,7 @@ function row(c,x,j){
   else if(f.list.length){const r=f.list[0];mt=`<div class="mt"><span class="vsb">VS</span><span class="mm">매장 <b>${esc(r['모델'])}</b>${r['최종구독월']?' · 구독 '+won(r['최종구독월']):''}</span><span class="go">대결카드 ›</span></div>`;click=`go({type:'vs',m:'${x.m}',st:'${esc(r['모델'])}'},false)`;}
   else mt='<div class="mt na"><span class="mm">판촉안에 대응 모델 없음</span></div>';
   const price=S.mode==='buy'?`<span class="lb">최대혜택가</span> ${won(x.max)}`:`<span class="lb">월</span> ${won(x.price)}`;
-  return `<div class="it" ${click?`onclick="${click}"`:''}><div class="rk">${j+1}</div><img loading="lazy" src="${esc(x.img)}" alt=""><div class="tx"><div class="nm">${esc(x.n)}</div>
+  return `<div class="it" ${click?`onclick="${click}"`:''}><div class="rk">${j+1}</div><img loading="lazy" src="${esc(x.img||(MD[x.m]||{}).img||'')}" alt="" onerror="this.style.visibility='hidden'"><div class="tx"><div class="nm">${esc(x.n)}</div>
   <div class="md">${esc(x.m)} · ${esc(x.sz)}${x.gr?' · '+esc(x.gr):''} ${x.only?'<span class="bo">닷컴 ONLY</span>':''}</div>
   <div class="pr">${price}<span class="all">전체 ${x.r}위</span></div>${mt}</div></div>`;
 }
