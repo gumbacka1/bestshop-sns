@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -q playwright && python -m playwright install --with-deps chromium >/dev/null
-      - run: python scripts/care_videos.py
+      - run: python scripts/care_videos.py && python scripts/care_pick.py
       - run: |
           git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
           cp data/care_videos.json /tmp/cv.json

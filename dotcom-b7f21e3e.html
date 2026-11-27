@@ -68,7 +68,7 @@ body.cust .mgr{display:none!important}
 <div id="app"></div>
 </div>
 <script>
-const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:0,pre:'none',preAmt:0,pv:0};let D=null;
+const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:20000,pre:'none',preAmt:0,pv:0};let CV={};let D=null;
 function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');if(!S.view||!view||S.view.m!==view.m){S.adds=[];S.addSel={};}S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
 function back(){history.back();}
 window.addEventListener('popstate',e=>{const st=e.state||{};S.view=st.view||null;S.conv=!!st.conv;if(st.mode)S.mode=st.mode;if(st.cat!=null)S.cat=st.cat;if(st.grp!=null)S.grp=st.grp;render();});
@@ -79,7 +79,7 @@ const allBuy=c=>c.groups.flatMap(g=>c.buy[g]);
 function findItem(c,m,sub){if(!sub){const a=(c.all||[]).find(i=>i.m===m);if(a)return a;for(const g of c.groups){const x=c.buy[g].find(i=>i.m===m);if(x)return x}}for(const g of c.groups){const x=c.sub[g].find(i=>i.m===m);if(x)return x}return null}
 function care6(m){const c=D.care[m];return c&&c.terms&&c.terms['72']?c.terms['72'].p:null}
 async function load(){
-  try{[D,MD,SP]=await Promise.all([fetch('data/lge_dotcom.json?v='+Date.now()).then(r=>r.json()),fetch('calc/models.json').then(r=>r.json()).then(j=>{const o={};j.models.forEach(x=>o[x.m]=x);return o}),fetch('calc/specs.json').then(r=>r.json())])}catch(e){document.getElementById('app').innerHTML='<p class="note">아직 수집된 데이터가 없어요. 매일 오전 9시에 자동으로 받아와요.</p>';return}
+  try{[D,MD,SP]=await Promise.all([fetch('data/lge_dotcom.json?v='+Date.now()).then(r=>r.json()),fetch('calc/models.json').then(r=>r.json()).then(j=>{const o={};j.models.forEach(x=>o[x.m]=x);return o}),fetch('calc/specs.json').then(r=>r.json())]);try{CV=await fetch('data/care_videos.json?v='+Date.now()).then(r=>r.json())}catch(e){CV={}}}catch(e){document.getElementById('app').innerHTML='<p class="note">아직 수집된 데이터가 없어요. 매일 오전 9시에 자동으로 받아와요.</p>';return}
   document.getElementById('upd').innerHTML='엘지닷컴 오늘의 랭킹 · '+esc(D.updated)+' 기준 · <a href="admin-b7f21e3e.html">관리자 화면</a>';
   history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
 }
@@ -134,6 +134,24 @@ function compareTable(c,x,st,lab){const sp=specRows(x.m,st.m,x,st);
  sp.rows.map(r=>`<tr class="${r[1]!==r[2]?'df':''}"><td class="k">${esc(r[0])}</td><td>${esc(r[1]||'-')}</td><td>${esc(r[2]||'-')}</td></tr>`).join('')+
  `<tr><td class="k">판매가</td><td>${won(x.price)}</td><td>${won((st.row||{})['결제가']||st.price)}</td></tr><tr class="df"><td class="k">구매처</td><td>${x.only?'<b style="color:#A50034">닷컴 전용</b>':'닷컴·매장'}</td><td><b>매장</b></td></tr></table>`+
  (sp.same.length?`<div class="foot" style="padding:6px 0 0">같은 점: ${sp.same.map(s=>esc(s[0])+' '+esc(s[1])).join(' · ')}</div>`:'')+`</div>`}
+
+function careOf(m){const x=MD[m]||{};return CV[(x.c||'')+'|'+(x.s||'')]||Object.entries(CV).find(([k])=>k.startsWith((x.c||'')+'|'))?.[1]||null}
+function totalBlock(x,st){const r=st.row||{},sub=r['최종구독월'],pr=r['체감가']||r['결제가'],card=+S.card||0,pv=+S.pv||0;
+ if(!sub)return `<div class="shop">이 매장 모델은 구독이 없어요. 일시불 ${pr?won(pr)+'원':'-'} 기준으로 상담하세요.</div>`;
+ const tot=sub*72,cd=Math.min(card,sub)*72,feel=tot-cd-pv,gap=feel-(x.max||0),lumpFar=pr&&x.max&&pr>x.max*1.15,cv=careOf(st.m);
+ return `<div class="st2">6년 총액 비교</div><table>
+ <tr><td class="k">닷컴 ${esc(x.m)}</td><td>일시불 최대혜택가</td><td><b>${won(x.max)}</b></td></tr>
+ <tr><td class="k" rowspan="4" style="color:#A50034">매장 ${esc(st.m)}<br><small>구독 6년</small></td><td>구독료 ${won(sub)} × 72</td><td>${won(tot)}</td></tr>
+ <tr><td>카드 할인 <input id="pg_card" inputmode="numeric" value="${card||''}" style="width:70px;padding:3px;border:1px solid #ccc;border-radius:5px"> × 72</td><td>−${won(cd)}</td></tr>
+ <tr><td>지불가치 (케어·A/S) <button class="ab" id="carebtn" style="padding:0 8px;border-radius:50%">?</button><br><input id="pg_pv" inputmode="numeric" value="${pv||''}" placeholder="BEST AI 값" style="width:100px;padding:3px;border:1px solid #ccc;border-radius:5px;margin-top:3px"></td><td>${pv?'−'+won(pv):'입력'}</td></tr>
+ <tr class="on"><td><b>체감 총액</b></td><td><b style="color:#A50034">${won(feel)}</b></td></tr>
+ <tr class="df"><td class="k">차이</td><td colspan="2"><b>${gap<=0?'매장이 '+won(-gap)+'원 유리':'매장이 '+won(gap)+'원 더'}</b>${gap>0&&!pv?` <small>→ 지불가치가 ${won(gap)}원 이상이면 매장이 같거나 유리</small>`:''}</td></tr>
+ ${lumpFar?'':`<tr><td class="k">매장 일시불</td><td>체감가</td><td>${pr?won(pr):'-'}</td></tr>`}</table>
+ <div id="carebox" style="display:none;margin-top:8px" class="shop"><b>${esc(cv&&cv.title||'케어서비스')}</b>
+  ${cv&&cv.care?`<video controls playsinline preload="metadata" style="width:100%;margin-top:6px;border-radius:8px;background:#000" src="${esc(cv.care)}"></video>`:'<div style="color:#888;margin-top:4px">이 품목은 엘지닷컴에 케어 영상이 없어요</div>'}
+  ${cv&&cv.items&&cv.items.length?`<div style="margin-top:6px">${cv.items.map(esc).join(' · ')}</div>`:''}${cv&&cv.cycle?`<div style="color:#888;font-size:12px;margin-top:4px">${esc(cv.cycle)}</div>`:''}
+  ${cv&&cv.url?`<div style="font-size:12px;margin-top:4px"><a href="${esc(cv.url)}" target="_blank">엘지닷컴 케어 안내 보기</a></div>`:''}</div>
+ <div class="foot" style="padding:6px 0 0">${lumpFar?'매장 일시불이 닷컴보다 크게 높아 일시불 비교는 뺐어요. ':''}체감 총액 = 구독료×72 − 카드 할인×72 − 지불가치. 카드 할인 기본 20,000원(제휴카드 월 최대, 실적 조건).</div>`}
 function vsView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),f0=storeFor(c,S.view.m),f=f0.same?{list:[f0.bplus,f0.list[0]].filter(Boolean),why:f0.why,picked:true,up:true}:f0,stm=S.view.st||(f.list[0]&&f.list[0]['모델']),st=info(c,stm),r=st.row||{};
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
@@ -142,7 +160,7 @@ function vsView(){
   if(f.why)h+=`<div class="shop" style="margin:8px 12px 0"><b>왜 이 모델?</b> ${esc(f.why)}</div>`;
   if(f.list.length>1)h+=`<div class="sec" style="padding-top:6px"><select id="stsel" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px">${f.list.map((z,i)=>`<option value="${esc(z['모델'])}" ${z['모델']===stm?'selected':''}>${f.picked?(f.up?(i===0?'한 단계 위':'같은 모델'):(i===0?'매장 추천':i===1?'한 단계 위':'다른 추천')):'다른 추천'}: ${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${z['체감가']?' · 일시불 '+won(z['체감가']):''}</option>`).join('')}</select></div>`;
   const pr=r['체감가']||r['결제가'];
-  h+=`<div class="sec"><div class="gap"><div class="gb"><div class="t">일시불 차이 (매장 − 닷컴)</div><div class="v r">${pr&&x.max?signed(pr-x.max)+'원':'-'}</div><div class="t">닷컴 최대혜택가 vs 매장 체감가</div></div><div class="gb"><div class="t">매장 구독 6년</div><div class="v r">${r['최종구독월']?'월 '+won(r['최종구독월'])+'원':'-'}</div><div class="t">${r['최종구독월']?'6년 총 '+won(r['최종구독월']*72)+'원':''}</div></div></div>`;
+  h+=`<div class="sec">`+totalBlock(x,st);
   if(r['비고'])h+=`<div class="foot" style="padding:6px 0 0">${esc(note(r['비고']))}</div>`;
   if(!S.conv)h+=`<button class="cta" onclick="go(S.view,true)">구독으로 전환해서 보여 주기<small>매장 모델을 계약기간별 월 요금으로</small></button></div>`;
   else{h+=storeTerms(st);if(r['최종구독월']&&pr){const mm=Math.round(pr/72/100)*100;h+=`<div class="calc"><b>"일시불이 더 싸지 않아요?" 물으면</b><br>매장 일시불 ${won(pr)} ÷ 72개월 = 월 약 ${won(mm)}원 → 구독 ${won(r['최종구독월'])}원과 월 약 ${won(r['최종구독월']-mm)}원 차이가 6년간 방문 케어·무상 A/S 값이라고 설명</div>`}
@@ -155,7 +173,7 @@ function oneView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),r=x.row||{},pr=r['체감가']||r['결제가'];
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div>`;
   h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div><div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div><div class="vsm">=</div>${storeCard(c,x,'매장에서도 판매')}</div>`;
-  h+=`<div class="sec"><div class="gap"><div class="gb"><div class="t">일시불 차이 (매장 − 닷컴)</div><div class="v r">${pr&&x.max?signed(pr-x.max)+'원':'-'}</div></div><div class="gb"><div class="t">매장 구독 6년</div><div class="v r">${r['최종구독월']?'월 '+won(r['최종구독월'])+'원':'-'}</div><div class="t">${r['최종구독월']?'6년 총 '+won(r['최종구독월']*72)+'원':''}</div></div></div>`;
+  h+=`<div class="sec">`+totalBlock(x,x);
   if(r['비고'])h+=`<div class="foot" style="padding:6px 0 0">${esc(note(r['비고']))}</div>`;
   h+=storeTerms(x)+`</div>`;const f=storeFor(c,x.m);
   if(f.bplus){const b=f.bplus,d=(b['최종구독월']||0)-(r['최종구독월']||0);h+=`<div class="sec"><div class="st2">이 모델 대신 한 단계 위는?</div><div class="shop"><b>${esc(b['모델'])}</b> · ${esc(b['구분'])}<br>${b['최종구독월']?'구독 월 <b>'+won(b['최종구독월'])+'원</b>':''}${b['최종구독월']&&r['최종구독월']?' ('+(d<=0?'월 '+won(-d)+'원 더 저렴':'월 '+won(d)+'원 더')+')':''}${b['체감가']?' · 일시불 '+won(b['체감가']):''}<div style="margin-top:4px">${esc(f.why||'')}</div></div><button class="cta" style="margin-top:8px" onclick="go({type:'vs',m:'${x.m}',st:'${esc(b['모델'])}'},false)">대결카드로 비교하기<small>${esc(x.m)} vs ${esc(b['모델'])}</small></button></div>`}
@@ -176,7 +194,8 @@ function promoOf(m){for(const r of prow()){try{if(r['모델']===m||reOf(r['모�
 const isOff=r=>/단종|소진|운영 종료|보관재고/.test(r['비고']||'');
 const note=n=>S.cust?(n||'').split(' · ').filter(x=>!/컨테스트|추할가|할당|찐할세|활성화|역대|도전/.test(x)).join(' · '):(n||'');
 function promoBar(){return `<div class="pm mgr">${P?`매장 판촉: <b>${esc(P.rules&&P.rules['행사']||'불러옴')}</b> · ${P.rows.length}개 모델 <span style="color:#888">(이 기기에만 저장)</span>`:'<b style="color:#A50034">매장 판촉 자료가 없어요.</b> 불러오면 매장 판촉가와 "하나 더 담기"가 열려요.'}<br><label>판촉 파일 불러오기<input type="file" id="pf" accept=".json" style="display:none"></label>${P?'<button id="pdel">판촉 지우기</button>':''}<button id="pimg">판촉 이미지 붙여넣기 (준비 중)</button><button id="cust">고객 화면</button></div>`+(S.cust?'<div class="pm"><button id="cust2">매니저 화면으로</button></div>':'')}
-function bindPromo(){const ss=document.getElementById('stsel');if(ss)ss.onchange=()=>{S.view=Object.assign({},S.view,{st:ss.value});S.adds=[];render(true)};
+function bindPromo(){const cb=document.getElementById('carebtn');if(cb)cb.onclick=()=>{const b=document.getElementById('carebox');const on=b.style.display==='none';b.style.display=on?'block':'none';const v=b.querySelector('video');if(v){on?v.play().catch(()=>{}):v.pause()}};
+ const ss=document.getElementById('stsel');if(ss)ss.onchange=()=>{S.view=Object.assign({},S.view,{st:ss.value});S.adds=[];render(true)};
  const pf=document.getElementById('pf');if(pf)pf.onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.rows)throw 0;P=d;try{localStorage.setItem(LS,t)}catch(x){}render(true)}catch(x){alert('판촉 파일 형식이 아니에요')}})};
  const pd=document.getElementById('pdel');if(pd)pd.onclick=()=>{if(confirm('이 기기에 저장된 판촉 자료를 지울까요?')){localStorage.removeItem(LS);P=null;render(true)}};
  const pi=document.getElementById('pimg');if(pi)pi.onclick=()=>alert('판촉 이미지 붙여넣기(글자 인식)는 다음 단계에서 만들어요.');
@@ -186,7 +205,7 @@ function bindPromo(){const ss=document.getElementById('stsel');if(ss)ss.onchange
  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{S.adds.splice(+b.dataset.rm,1);render(true)});
  document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{S.pre=b.dataset.pre;render(true)});
  document.querySelectorAll('[data-cardp]').forEach(b=>b.onclick=()=>{S.card=+b.dataset.cardp;render(true)});
- [['pg_card','card'],['pg_pre','preAmt'],['pg_pv','pv']].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.onchange=()=>{S[k]=+e.value.replace(/\D/g,'')||0;render(true)}});}
+ [['pg_card','card'],['pg2_card','card'],['pg_pre','preAmt'],['pg_pv','pv'],['pg2_pv','pv']].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.onchange=()=>{S[k]=+e.value.replace(/\D/g,'')||0;render(true)}});}
 function shopBox(m,dot6){const r=promoOf(m);if(!P)return '';if(!r)return `<div class="shop">매장 판촉표에 <b>${esc(m)}</b>가 없어요. 닷컴 요금 기준으로 보여 드려요.</div>`;
  const s=r['최종구독월'];return `<div class="shop"><div style="font-weight:700;margin-bottom:4px">매장 판촉가 · ${esc(m)}</div>
  ${r['체감가']?`일시불 체감가 <b>${won(r['체감가'])}원</b>${r['결제가']&&r['결제가']!==r['체감가']?` <span style="color:#888">(결제가 ${won(r['결제가'])})</span>`:''}<br>`:''}
@@ -211,9 +230,9 @@ function pilgu(cur,now){
  const B=Math.max(0,sum-Math.ceil(P/72/100)*100-card),pv=+S.pv||0,lump=cur.reduce((a,x)=>a+((x.row&&(x.row['체감가']||x.row['결제가']))||0),0);
  const fin=P+B*72-pv,step=cur.length>=3?'천다필구·다필구':'두필구';
  let h=`<div class="sec"><div class="st2">${esc(step)} 계산 <span style="font-size:11px;font-weight:400;color:#888">최종가 = 선납금 + 할인 구독료 × 72 − 지불가치</span></div>
- <div class="pm" style="margin:0"><div>카드 할인(월) <input id="pg_card" inputmode="numeric" value="${card||''}" placeholder="0" style="width:90px;padding:5px;border:1px solid #ccc;border-radius:6px"> <button data-cardp="17000">17,000</button><button data-cardp="0">없음</button></div>
+ <div class="pm" style="margin:0"><div>카드 할인(월) <input id="pg2_card" inputmode="numeric" value="${card||''}" placeholder="0" style="width:90px;padding:5px;border:1px solid #ccc;border-radius:6px"> <button data-cardp="17000">17,000</button><button data-cardp="0">없음</button></div>
  <div style="margin-top:6px">선납 ${[['none','없음'],['two','두필구(1품목 요금 맞추기)'],['chun','천필구 1,000만'],['custom','직접']].map(([k,t])=>`<button data-pre="${k}" style="${S.pre===k?'background:#A50034;color:#fff;border-color:#A50034':''}">${t}</button>`).join('')}${S.pre==='custom'?` <input id="pg_pre" inputmode="numeric" value="${S.preAmt||''}" placeholder="선납금" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px">`:''}</div>
- <div style="margin-top:6px">지불가치(6년 합계, BEST AI) <input id="pg_pv" inputmode="numeric" value="${pv||''}" placeholder="0" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px"></div></div>
+ <div style="margin-top:6px">지불가치(6년 합계, BEST AI) <input id="pg2_pv" inputmode="numeric" value="${pv||''}" placeholder="0" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px"></div></div>
  <table style="margin-top:8px"><tr><th>구분</th><th>${esc(one.m)} 1품목</th><th>담은 ${cur.length}품목</th></tr>
  <tr><td class="k">선납금</td><td>-</td><td>${won(P)}</td></tr>
  <tr><td class="k">월 구독료(카드 후)</td><td>${won(oneM)}</td><td><b style="color:#A50034">${won(B)}</b></td></tr>
