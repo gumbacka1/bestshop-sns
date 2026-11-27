@@ -65,3 +65,14 @@ rk = {c: {k: [{'m': q.get('modelName'), 'n': q.get('modelDisplayName'), 'r': q.g
                'mx': q.get('maxBenefitPrice'), 'o': 1 if q.get('lgecomOnlyFlag') == 'Y' else 0, 'cap': q.get('keywdNmA')} for q in l] for k, l in v.items()} for c, v in RK.items()}
 json.dump(rk, open(os.path.join(B, 'calc/ranking.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 print('ranking', {c: len(v.get('일시불', [])) for c, v in rk.items()})
+
+# 대결카드용 사양 (냉장고·김치냉장고·TV·세탁·건조·에어컨 등, 닷컴 공개 사양)
+SPC = {'냉장고', '김치냉장고', 'TV', '세탁기', '세탁 건조기', '의류건조기', '에어컨', '컨버터블 패키지', '스탠바이미', '의류관리기', '식기세척기', '전기레인지', '정수기'}
+sp = {}
+for i in P:
+    m = i.get('modelName'); c = i.get('categoryName')
+    if not m or c not in SPC: continue
+    s = {k: v for k, v in (i.get('specs') or {}).items() if v and len(str(v)) <= 60}
+    sp[m] = dict(list(s.items())[:40])
+json.dump(sp, open(os.path.join(B, 'calc/specs.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+print('specs', len(sp), os.path.getsize(os.path.join(B, 'calc/specs.json')))
