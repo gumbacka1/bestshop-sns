@@ -1,0 +1,17 @@
+name: 케어서비스 영상 수집
+on: { workflow_dispatch: {} }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q playwright && python -m playwright install --with-deps chromium >/dev/null
+      - run: python scripts/care_videos.py
+      - run: |
+          git config user.name "lge-bot"; git config user.email "lge-bot@users.noreply.github.com"
+          cp data/care_videos.json /tmp/cv.json
+          for i in 1 2 3 4 5; do git fetch -q origin main && git reset -q --hard origin/main; cp /tmp/cv.json data/care_videos.json; git add data/care_videos.json; git diff --cached --quiet && exit 0; git commit -q -m "케어 영상 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"; git push -q origin HEAD:main && exit 0; sleep 7; done; exit 1
