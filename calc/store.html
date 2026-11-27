@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>닷컴 비교 · 하나 더 담기</title><link rel="stylesheet" href="common.css"><script src="engine.js"></script>
+<style>
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 12px 0}.tabs button{flex:none;border:1px solid #bbb;background:#fff;border-radius:20px;padding:7px 13px;font-size:14px}.tabs button.on{background:#111;color:#fff;border-color:#111}
+.rk{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #eee;cursor:pointer}.rk.on{background:#fff3f3}.rk .no{width:26px;font-weight:700;text-align:center;color:#e4002b}.rk .t{flex:1;min-width:0}.rk .md{font-size:12px;color:#888}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vs .col{padding:10px}.lab{font-size:12px;color:#777}.num{font-size:20px;font-weight:700}.small{font-size:12px;color:#777}
+.add{border:1px solid #ddd;border-radius:10px;padding:10px;margin:8px 0}.add.in{border:2px solid #e4002b;background:#fffafa}.add select{width:100%;padding:7px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin:6px 0}
+.pill{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;background:#fde8ec;color:#b0001f;margin-right:4px}.pill.g{background:#eee;color:#555}
+.sum{position:sticky;bottom:0;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}.sum b{font-size:20px}
+.hide-in-cust{} body.cust .hide-in-cust{display:none!important}.bar{display:flex;gap:6px;flex-wrap:wrap}.bar button,.bar label{border:1px solid #bbb;background:#fff;border-radius:8px;padding:7px 10px;font-size:13px}
+</style></head><body><div class="wrap" style="padding-bottom:0" id="app"></div>
+<script>
+/* 닷컴 TOP10 → 매장 비교 → 하나 더 담으면. 판촉 자료는 이 PC 브라우저에만 저장(서버로 안 보냄) */
+const LS='kgf_promo_v1'; let RK={}, P=null, cat='냉장고', kind='일시불', pick=null, store=null, adds=[], cust=false;
+const GROUPS=[['김치냉장고',/김치/],['냉장고',/냉장고/],['에어컨',/스탠드|사계절|벽걸이|에어컨/],['스타일러',/스타일러/],['식기세척기',/식기세척기/],['전기레인지',/전기레인지/],
+ ['광파오븐',/광파오븐/],['정수기',/정수기/],['안마의자',/안마의자/],['바스에어',/바스에어/],['공기청정기',/공기청정기/],['제습기',/제습기/],['틔운',/틔운/],['밥솥',/밥솥/],['소형',/OS Living/],['아이어닝',/아이어닝/]];
+const LSPKEY={'냉장고':'DIOS','김치냉장고':'김치냉장고','에어컨':'에어컨','스타일러':'스타일러','식기세척기':'식기세척기','전기레인지':'전기레인지','공기청정기':'공기청정기','TV':'TV','세탁기':'TROMM','건조기':'TROMM','워시타워':'TROMM'};
+const grp=r=>{for(const[g,re]of GROUPS) if(re.test(r['구분']))return g; return r['구분'];};
+const reOf=k=>new RegExp('^'+k.replace(/\*/g,'.*').replace(/\(([^)]*)\)/g,(a,b)=>'('+b.split(/[,\/]/).join('|')+')')+'$');
+function rows(){ if(!P)return []; return P.rows.map(r=>Object.assign({g:grp(r)},r)); }
+function promoOf(m){ for(const r of rows()){ try{ if(r['모델']===m||reOf(r['모델']).test(m)) return r; }catch(e){} } return null; }
+function subOf(r){ return r['최종구독월']||0; }
+function isOff(r){ return /단종|소진|운영 종료|보관재고/.test(r['비고']||''); }
+function cleanNote(n){ return cust? (n||'').split(' · ').filter(x=>!/컨테스트|추할가|할당|찐할세|활성화|역대|도전/.test(x)).join(' · ') : (n||''); }
+
+/* 구독 묶음 계산: 결합 5%(다른 품목군 2개↑, 100원 미만 버림), 라스패, Fit&Max 30만, 매장 금액대 포인트 */
+function bundle(list){
+  const gs=new Set(list.map(x=>x.g)); const bind=list.length>=2&&gs.size>=2;
+  const keys=new Set(list.map(x=>LSPKEY[x.g]||x.g)); let lsp=null;
+  if(P&&P.rules&&P.rules['라스패']) for(const[n,rate,need]of P.rules['라스패']['패키지']) if(need.every(k=>keys.has(k))&&(!lsp||rate>lsp.rate||(rate===lsp.rate&&need.length>lsp.need.length))) lsp={n,rate,need};
+  let month=0; const det=list.map(x=>{ let m=x.sub; const b=bind?m-floor100(m*0.95):0; const l=lsp&&lsp.need.includes(LSPKEY[x.g]||x.g)?floor100(m*lsp.rate/100):0; m=m-b-l; month+=m; return Object.assign({},x,{bindDc:b,lspDc:l,month:m}); });
+  const fit=list.some(x=>x.g==='냉장고'&&/^(D646|G646)/.test(x.m))&&list.some(x=>x.g==='김치냉장고'&&/^Z386/.test(x.m));
+  const base=list.reduce((a,x)=>a+(x.list||0),0);
+  const pts=P&&P.rules? brk(P.rules['금액대포인트_총구매_11월17~30'],base)+brk(P.rules['금액대포인트_구독추가_11월17~30'],base):0;
+  return {month,det,bind,lsp,fit,once:(fit?300000:0),pts,base};
+}
+function brk(t,v){ let a=0; for(const[m,p]of t) if(v>=m*1000) a=p*1000; return a; }
+function lspHint(list){ if(!P||!P.rules||!P.rules['라스패'])return []; const keys=new Set(list.map(x=>LSPKEY[x.g]||x.g)); const out=[];
+  for(const[n,rate,need]of P.rules['라스패']['패키지']){ const miss=need.filter(k=>!keys.has(k)); if(miss.length===1&&need.length-1<=keys.size) out.push(n+' '+rate+'%까지 '+miss[0]+' 1개'); } return out.slice(0,3); }
+function item(r,src){ const x=MAP[r['모델']]||{}; return {m:r['모델'],g:r.g,name:x.n||r['구분'],sub:subOf(r),list:x.p||r['결제가']||0,row:r}; }
+
+function addCandidates(){
+  const have=new Set([store&&store.g].concat(adds.map(a=>a.g)));
+  const by={}; rows().forEach(r=>{ if(!subOf(r)||isOff(r)||have.has(r.g)||['소형','밥솥','틔운','아이어닝','제습기'].includes(r.g)) return; (by[r.g]=by[r.g]||[]).push(r); });
+  const cur=cartItems(), now=bundle(cur);
+  return Object.entries(by).map(([g,list])=>{
+    list.sort((a,b)=>((b['구독할인']||0)-(a['구독할인']||0))||(subOf(a)-subOf(b)));
+    const sel=(addSel[g]&&list.find(r=>r['모델']===addSel[g]))||(g==='김치냉장고'&&store&&/^(D646|G646)/.test(store.m)&&list.find(r=>/^Z386/.test(r['모델'])))||list[0];
+    const next=bundle(cur.concat([item(sel)])); return {g,list,sel,real:next.month-now.month,once:next.once-now.once,pts:next.pts-now.pts,lsp:next.lsp&&(!now.lsp||next.lsp.n!==now.lsp.n)?next.lsp:null};
+  }).sort((a,b)=>(b.once-a.once)||(ORDER.indexOf(a.g)+1||99)-(ORDER.indexOf(b.g)+1||99)||(a.real-b.real));
+}
+let addSel={}; const ORDER=['김치냉장고','식기세척기','스타일러','전기레인지','정수기','에어컨','공기청정기','안마의자','바스에어','광파오븐'];
+function cartItems(){ return (store?[store]:[]).concat(adds); }
+
+function draw(){
+  document.body.classList.toggle('cust',cust);
+  const list=(RK[cat]&&RK[cat][kind]||[]).slice(0,10);
+  let h=`<div class="top"><div><a href="index.html">← 목록</a><br><b>닷컴 비교 · 하나 더 담기</b></div><div class="bar">
+   <button id="cust">${cust?'매니저 화면':'고객 화면'}</button></div></div>
+   <div class="box hide-in-cust" style="font-size:13px">${P?`판촉: <b>${P.rules&&P.rules['행사']||'불러옴'}</b> · ${P.rows.length}개 모델 <span class="muted">(이 PC에만 저장)</span>`:'<b class="red">판촉 자료가 없어요.</b> 매장가 없이 닷컴만 보여요.'}
+   <div class="bar" style="margin-top:6px"><label>판촉 파일 불러오기<input type="file" id="pf" accept=".json" style="display:none"></label><button id="pimg" title="다음 단계에서 만들어요">판촉 이미지 붙여넣기 (준비 중)</button>${P?'<button id="pdel">판촉 지우기</button>':''}</div></div>
+   <div class="tabs">${Object.keys(RK).map(c=>`<button data-c="${c}" class="${c===cat?'on':''}">${c}</button>`).join('')}</div>
+   <div class="box"><div class="row"><h2>1 · 닷컴 ${cat} TOP10</h2><div class="seg" style="margin:0">${['일시불','구독'].map(k=>`<button data-k="${k}" class="${k===kind?'on':''}">${k}</button>`).join('')}</div></div>
+   ${list.map(q=>{const x=MAP[q.m]||{};const s72=x.sub&&x.sub['72']?x.sub['72'][0]:0;return `<div class="rk ${pick===q.m?'on':''}" data-m="${q.m}"><div class="no">${q.r}</div><div class="t"><div style="font-size:14px">${q.n||x.n||q.m}</div><div class="md">${q.m}${q.cap?' · '+q.cap:''}${q.o?' · 닷컴전용':''}</div></div><div style="text-align:right;font-size:13px">${won(q.p)}<br><span class="small">${s72?'구독 '+won(s72):''}</span></div></div>`;}).join('')}</div>`;
+  if(pick){ const x=MAP[pick]||{}; const q=list.find(z=>z.m===pick)||{};
+    const dBuy=x.mx||q.mx||(x.p-x.d), dSub=x.sub&&x.sub['72']?x.sub['72'][0]:0;
+    const g=cat==='세탁기'||cat==='건조기'||cat==='워시타워'?cat:cat;
+    const same=promoOf(pick); const cands=rows().filter(r=>r.g===g&&subOf(r)&&!isOff(r)).sort((a,b)=>Math.abs((a['결제가']||0)-(x.p-x.d))-Math.abs((b['결제가']||0)-(x.p-x.d)));
+    const opts=(same?[same]:[]).concat(cands.filter(r=>r!==same)).slice(0,6);
+    if(!store||store.base!==pick){ const r=opts[0]; store=r?Object.assign(item(r),{base:pick}):null; adds=[]; }
+    h+=`<div class="box"><h2>2 · 같은 급, 어디서 사면?</h2>
+     ${opts.length?`<select id="sm" class="n">${opts.map(r=>`<option value="${r['모델']}" ${store&&store.m===r['모델']?'selected':''}>${r['모델']===pick||r===same?'같은 모델 · ':''}${r['모델']} · 구독 ${won(subOf(r))}${r['결제가']?' · 일시불 '+won(r['체감가']||r['결제가']):''}</option>`).join('')}</select>`:`<div class="note">이 품목은 매장 판촉표가 없어요${P?'':' (판촉 파일을 불러와 주세요)'}.</div>`}
+     <div class="vs" style="margin-top:8px"><div class="col"><div class="lab">닷컴 · ${pick}</div><div class="small">일시불 최대혜택</div><div class="num">${won(dBuy)}</div><div class="small" style="margin-top:4px">구독 6년</div><div class="num">${dSub?'월 '+won(dSub):'-'}</div></div>
+     <div class="col win"><div class="lab">매장 · ${store?store.m:'-'}</div><div class="small">일시불 체감가</div><div class="num">${store&&store.row['체감가']?won(store.row['체감가']):'-'}</div><div class="small" style="margin-top:4px">구독 6년</div><div class="num red">${store?'월 '+won(store.sub):'-'}</div></div></div>
+     ${store&&dSub?`<div class="row" style="margin-top:6px"><span>구독은 매장이 월</span><b class="red">${store.sub<dSub?won(dSub-store.sub)+' · 6년 '+won((dSub-store.sub)*72)+' 유리':won(store.sub-dSub)+' 더 (모델 차이 확인)'}</b></div>`:''}
+     ${store&&store.row['비고']?`<div class="small">${cleanNote(store.row['비고'])}</div>`:''}
+     <div class="small">닷컴 최대혜택가는 엘지닷컴 표시 기준(카드 결제일 할인 등 포함) · 매장 구독은 판촉 최종 구독료</div></div>`;
+    if(store){ const C=addCandidates(), B=bundle(cartItems()), hint=lspHint(cartItems());
+      h+=`<div class="box"><h2>3 · 하나 더 담으면 얼마?</h2><div class="small">같이 구독하면 결합 5%가 붙어 이미 담은 제품도 내려가요 · 실제 더 내는 월 금액 기준</div>
+       ${adds.map((a,i)=>`<div class="add in"><div class="row"><b>${a.g} · ${a.m}</b><button class="chip" data-rm="${i}">빼기</button></div></div>`).join('')}
+       ${hint.length?`<div class="note">라스패: ${hint.join(' / ')}</div>`:''}
+       ${C.map(c=>`<div class="add"><div class="row"><b>+ ${c.g}</b><span>${c.once?'<span class="pill">Fit&Max 30만</span>':''}${c.lsp?`<span class="pill">라스패 ${c.lsp.rate}%</span>`:''}${['식기세척기','스타일러','전기레인지'].includes(c.g)?'<span class="pill g">M&B</span>':''}</span></div>
+         <select data-g="${c.g}">${c.list.map(r=>`<option value="${r['모델']}" ${r===c.sel?'selected':''}>${r['모델']} · 월 ${won(subOf(r))}</option>`).join('')}</select>
+         <div class="row"><span class="small">월 ${won(subOf(c.sel))}${c.real<subOf(c.sel)?' − 결합·패키지 할인 '+won(subOf(c.sel)-c.real):''}</span><b class="red">실제 월 +${won(c.real)}</b></div>
+         ${c.once||c.pts>0?`<div class="small">${c.once?'동시 구독 혜택 '+won(c.once)+' ':''}${c.pts>0?'· 금액대 포인트 +'+won(c.pts)+'P(참고)':''}</div>`:''}
+         <button class="chip" data-add="${c.g}">담기</button></div>`).join('')}</div>
+       <div class="box"><h2>담은 구성</h2><table><tr><th>제품</th><th>판촉 구독</th><th>할인</th><th>월</th></tr>${B.det.map(d=>`<tr><td>${d.g}<br><span class="small">${d.m}</span></td><td>${won(d.sub)}</td><td>${d.bindDc+d.lspDc?'-'+won(d.bindDc+d.lspDc):'-'}</td><td><b>${won(d.month)}</b></td></tr>`).join('')}</table>
+       <div class="small" style="margin-top:6px">${B.bind?'결합 5% ':''}${B.lsp?'· 라스패 '+B.lsp.n+' '+B.lsp.rate+'% ':''}${B.fit?'· Fit&Max 동시 구독 30만 ':''}${B.pts?'· 금액대 포인트 '+won(B.pts)+'P(참고, 정상가 합산 기준)':''}</div>
+       <div class="small">6년 총 ${won(B.month*72)} · 결합 5%를 판촉가에 겹쳐 적용한 계산이라 고객맞춤플래너 결과와 한 번 맞춰 보세요</div></div>
+       <div class="sum"><span>${cartItems().length}개 구독 · 월</span><b>${won(B.month)}</b></div>`; }
+  }
+  app.innerHTML=h; bind();
+}
+function bind(){
+  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{cat=b.dataset.c;pick=null;store=null;adds=[];draw();});
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;draw();});
+  document.querySelectorAll('.rk').forEach(b=>b.onclick=()=>{pick=b.dataset.m;draw();setTimeout(()=>document.getElementById('sm')&&document.getElementById('sm').scrollIntoView({behavior:'smooth',block:'center'}),50);});
+  const sm=document.getElementById('sm'); if(sm) sm.onchange=()=>{const r=rows().find(z=>z['모델']===sm.value); store=Object.assign(item(r),{base:pick}); adds=[]; draw();};
+  document.querySelectorAll('select[data-g]').forEach(s=>s.onchange=()=>{addSel[s.dataset.g]=s.value;draw();});
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const g=b.dataset.add;const c=addCandidates().find(z=>z.g===g);adds.push(item(c.sel));draw();});
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{adds.splice(+b.dataset.rm,1);draw();});
+  cust_btn: { const c=document.getElementById('cust'); c.onclick=()=>{cust=!cust;draw();}; }
+  const pf=document.getElementById('pf'); if(pf) pf.onchange=e=>{const f=e.target.files[0]; if(!f)return; f.text().then(t=>{try{const d=JSON.parse(t); if(!d.rows)throw 0; P=d; try{localStorage.setItem(LS,t);}catch(x){} store=null; draw();}catch(x){alert('판촉 파일 형식이 아니에요');}});};
+  const pd=document.getElementById('pdel'); if(pd) pd.onclick=()=>{if(confirm('이 PC에 저장된 판촉 자료를 지울까요?')){localStorage.removeItem(LS);P=null;store=null;draw();}};
+  const pi=document.getElementById('pimg'); if(pi) pi.onclick=()=>alert('이미지 붙여넣기(글자 인식)는 다음 단계에서 만들어요. 지금은 판촉 파일을 불러와 주세요.');
+}
+try{ P=JSON.parse(localStorage.getItem(LS)||'null'); }catch(e){}
+Promise.all([loadModels(), fetch('ranking.json').then(r=>r.json())]).then(([m,r])=>{RK=r; draw();});
+</script></body></html>

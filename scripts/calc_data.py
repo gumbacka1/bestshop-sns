@@ -28,7 +28,7 @@ for i in P:
         'mb': 1 if i.get('다품목') == 'Y' else 0, 'jb': 1 if i.get('결합') == 'Y' else 0,
         'sm': 1 if c in SMALL else 0, 'o': 1 if i.get('lgecomOnlyFlag') == 'Y' else 0,
         'r': (i.get('modelReleaseDate') or '')[:7], 'rv': int(re.sub(r'\D','',str(i.get('reviewCount') or 0)) or 0),
-        'img': img, 'sub': sub, 'care': (care.get('careServiceCycles') or [''])[0],
+        'img': img, 'mx': i.get('maxBenefitPrice') or 0, 'sub': sub, 'care': (care.get('careServiceCycles') or [''])[0],
     })
 # 다품목 혜택관 모델마스터(다른 대화 261126 수집)로 다품목·소형·그룹·쿠폰·제품별 캐시백 보정, 빠진 모델 추가
 import csv
@@ -58,3 +58,10 @@ out.sort(key=lambda x: (-x['rv'], x['m']))
 json.dump({'updated': json.load(open(os.path.join(B, 'data/lge_full/meta.json'), encoding='utf-8')).get('updated'), 'models': out},
           open(os.path.join(B, 'calc/models.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 print(len(out), os.path.getsize(os.path.join(B, 'calc/models.json')))
+
+# 닷컴 랭킹 (품목별 일시불·구독 TOP)
+RK = json.load(open(os.path.join(B, 'data/lge_full/ranking.json'), encoding='utf-8'))
+rk = {c: {k: [{'m': q.get('modelName'), 'n': q.get('modelDisplayName'), 'r': q.get('순위'), 's': q.get('subCategoryName'), 'p': q.get('obsSellingPrice'),
+               'mx': q.get('maxBenefitPrice'), 'o': 1 if q.get('lgecomOnlyFlag') == 'Y' else 0, 'cap': q.get('keywdNmA')} for q in l] for k, l in v.items()} for c, v in RK.items()}
+json.dump(rk, open(os.path.join(B, 'calc/ranking.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+print('ranking', {c: len(v.get('일시불', [])) for c, v in rk.items()})

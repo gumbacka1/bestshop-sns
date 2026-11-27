@@ -40,13 +40,18 @@ function subPrice(x, term) { const s = x.sub && x.sub[String(term)]; return s ? 
    opt: {card, shop:false(베스트샵 기준), pointOverride:null, extra:0(추가 할인)} */
 function calc(cart, opt = {}) {
   const card = R.cards[opt.card || '신한카드'] || R.cards['기타 결제'];
-  const items = cart.filter(c => c.on !== false && MAP[c.m]).map(c => Object.assign({x: MAP[c.m]}, c));
+  const items = cart.filter(c => c.on !== false && MAP[c.m]).map(c => {
+    let x = MAP[c.m];
+    const sm = opt.shop && SHOP && SHOP.models && shopModel(c.m);
+    if (sm) { x = Object.assign({}, x, {p: sm['결제가'] || x.p, d: 0, shop: sm});
+      if (sm['최종구독월']) x.sub = Object.assign({}, x.sub, {'72': [sm['최종구독월'], sm['구독월'] || sm['최종구독월']]}); }
+    return Object.assign({x}, c, opt.shop && sm ? {coupon: 0} : {}); });
   const buy = items.filter(c => c.mode !== 'sub'), sub = items.filter(c => c.mode === 'sub');
   const r = {count: items.length, buyCount: buy.length, subCount: sub.length, notes: []};
   r.list = buy.reduce((a, c) => a + c.x.p, 0);
   r.member = buy.reduce((a, c) => a + (c.x.d || 0), 0);
   r.coupon = buy.reduce((a, c) => a + (+c.coupon || 0), 0);
-  r.extra = +opt.extra || 0;
+  r.extra = (+opt.extra || 0) + (opt.shop ? buy.reduce((a, c) => a + ((c.x.shop && ((c.x.shop['활성화'] || 0) + (c.x.shop['캐시백'] || 0))) || 0), 0) : 0);
   r.pay = Math.max(0, r.list - r.member - r.coupon - r.extra);           // 할인 결제가
 
   // 다품목 캐시백: 다품목 뱃지 모델, 제품군 중복 X, 일시불 1건 이상 필요, 카드 조건
@@ -69,7 +74,10 @@ function calc(cart, opt = {}) {
   r.payDc = card.pay && r.pay >= R.payMin ? Math.min(floor100(r.pay * R.payRate), R.payCap) : 0;
   // 멤버십 포인트 (닷컴: 일시불만, 베스트샵: 구독도 일시불 정상가로 합산)
   r.pointBase = opt.shop ? r.list + sub.reduce((a, c) => a + c.x.p, 0) : r.pay;
-  r.point = opt.pointOverride != null && opt.pointOverride !== '' ? +opt.pointOverride : bracket(R.points, r.pointBase);
+  const subBase = sub.reduce((a, c) => a + c.x.p, 0);
+  r.shopModelPoint = opt.shop ? buy.reduce((a, c) => a + ((c.x.shop && c.x.shop['포인트']) || 0), 0) : 0;
+  r.point = opt.pointOverride != null && opt.pointOverride !== '' ? +opt.pointOverride :
+    (opt.shop && SHOP && SHOP.points ? bracket(SHOP.points, r.pointBase) + bracket(SHOP.subPoints || [], subBase) + r.shopModelPoint : bracket(R.points, r.pointBase));
   r.gift = bracket(R.gifts, r.pointBase);
   r.nextPoint = nextBracket(R.points, r.pointBase); r.nextGift = nextBracket(R.gifts, r.pointBase);
   r.nextCash = large >= 1 && large < 25 ? {n: large + 1, add: (table[large + 1] || 0) - multi} : null;
@@ -84,6 +92,12 @@ function calc(cart, opt = {}) {
     const month = rate ? floor100(base * (1 - rate)) : base;
     return {m: c.m, name: c.x.n, term, base, month, rate, total: month * term};
   });
+  r.lsp = null;
+  if (opt.shop && SHOP && SHOP.lsp && sub.length >= 3) {
+    const has = new Set(sub.map(c => lspKey(c.x)));
+    for (const [name, rate, list] of SHOP.lsp) if (list.every(k => has.has(k)) && (!r.lsp || rate > r.lsp.rate || (rate === r.lsp.rate && list.length > r.lsp.n))) r.lsp = {name, rate, n: list.length, list};
+    if (r.lsp) r.subs.forEach(s => { const x = MAP[s.m]; if (r.lsp.list.includes(lspKey(x))) { const dc = floor100(s.base * r.lsp.rate / 100); s.lspDc = dc; s.month -= dc; s.total = s.month * s.term; } });
+  }
   r.subMonth = r.subs.reduce((a, s) => a + s.month, 0);
   r.subBase = r.subs.reduce((a, s) => a + s.base, 0);
   r.subTotal = r.subs.reduce((a, s) => a + s.total, 0);
@@ -93,6 +107,13 @@ function calc(cart, opt = {}) {
   r.extraShop = opt.shop && SHOP ? (+SHOP.extraDiscount || 0) : 0;
   return r;
 }
+function shopModel(m) { if (!SHOP || !SHOP.models) return null; if (SHOP.models[m]) return SHOP.models[m];
+  for (const k in SHOP.models) { const re = new RegExp('^' + k.replace(/\*/g, '.*').replace(/\(([^)]*)\)/g, (a, b) => '(' + b.split(/[,\/]/).join('|') + ')') + '$'); try { if (re.test(m)) return SHOP.models[k]; } catch (e) {} }
+  return null; }
+function lspKey(x) { const c = (x.c || '') + ' ' + (x.g || '');
+  if (/TV|스탠바이미/.test(c)) return 'TV'; if (/김치/.test(c)) return '김치냉장고'; if (/냉장고/.test(c)) return 'DIOS'; if (/세탁|건조/.test(c)) return 'TROMM';
+  if (/로봇|청소기/.test(c)) return '로보킹'; if (/식기/.test(c)) return '식기세척기'; if (/의류관리|스타일러/.test(c)) return '스타일러';
+  if (/전기레인지/.test(c)) return '전기레인지'; if (/에어컨/.test(c)) return '에어컨'; if (/공기청정/.test(c)) return '공기청정기'; return c; }
 // 화면 공용: 모델 검색 상자
 function pickerHTML(id) { return `<div class="pick"><input id="${id}" placeholder="모델명·제품명 검색 (예: M876, 올레드 83, 정수기)" autocomplete="off"><div class="res" id="${id}_r"></div></div>`; }
 function bindPicker(id, onPick) {

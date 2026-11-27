@@ -1,3 +1,6 @@
 out/
 data/lge_full/split/
 scripts/__pycache__/
+data/bestshop/
+scripts/bestshop_kgf_data.py
+scripts/bestshop_kgf_build.py
