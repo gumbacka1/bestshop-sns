@@ -108,7 +108,7 @@ function care6(m){const c=D.care[m];return c&&c.terms&&c.terms['72']?c.terms['72
 async function load(){
   try{[D,MD,SP]=await Promise.all([fetch('data/lge_dotcom.json?v='+Date.now()).then(r=>r.json()),fetch('calc/models.json').then(r=>r.json()).then(j=>{const o={};j.models.forEach(x=>o[x.m]=x);return o}),fetch('calc/specs.json').then(r=>r.json())]);try{CV=await fetch('data/care_videos.json?v='+Date.now()).then(r=>r.json())}catch(e){CV={}}fetch('data/care_urls.json').then(r=>r.json()).then(j=>CU=j).catch(()=>{});}catch(e){document.getElementById('app').innerHTML='<p class="note">아직 수집된 데이터가 없어요. 매일 오전 9시에 자동으로 받아와요.</p>';return}
   document.getElementById('upd').innerHTML='엘지닷컴 오늘의 랭킹 · '+esc(D.updated)+' 기준 · <a href="admin-b7f21e3e.html">관리자 화면</a>';
-  history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
+  await loadEnc();history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
 }
 function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():S.view.type==='rec'?recView():oneView()):listView())+(S.view?'<button class="fback" onclick="back()" aria-label="뒤로가기">‹</button>':'');bindPromo();if(window.__TH)document.querySelectorAll('img').forEach(im=>{const t=__TH[im.getAttribute('src')];if(t)im.src=t});}
 let MD={},SP={};
@@ -228,11 +228,22 @@ const prow=()=>P?P.rows.map(r=>Object.assign({g:grpOf(r)},r)):[];
 function promoOf(m){for(const r of prow()){try{if(r['모델']===m||reOf(r['모델']).test(m))return r}catch(e){}}return null}
 const isOff=r=>/단종|소진|운영 종료|보관재고/.test(r['비고']||'');
 const note=n=>S.cust?(n||'').split(' · ').filter(x=>!/컨테스트|추할가|할당|찐할세|활성화|역대|도전/.test(x)).join(' · '):(n||'');
-function promoBar(){return `<div class="pm mgr">${P?`매장 판촉: <b>${esc(P.rules&&P.rules['행사']||'불러옴')}</b> · ${P.rows.length}개 모델 <span style="color:#888">(이 기기에만 저장)</span>`:'<b style="color:#A50034">매장 판촉 자료가 없어요.</b> 불러오면 매장 판촉가와 "하나 더 담기"가 열려요.'}<br><label>판촉 파일 불러오기<input type="file" id="pf" accept=".json,.txt,application/json,text/plain" style="display:none"></label>${P?'<button id="pdel">판촉 지우기</button>':''}${P?'<button id="recset">이번 주 추천 설정</button><button id="pexp">판촉+추천 내보내기</button>':''}<button id="pimg">판촉 이미지 붙여넣기 (준비 중)</button><button id="cust">고객 화면</button></div>`+(S.cust?'<div class="pm"><button id="cust2">매니저 화면으로</button></div>':'')}
+
+/* ── 깃허브의 잠긴 판촉 파일(data/promo_enc.json)을 비밀번호로 열기 · 비밀번호는 이 기기에만 저장 ── */
+let ENC=null;const LSW='kgf_pw_v1';
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function unlock(pw,save){if(!ENC)return false;try{const k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+ const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(ENC.salt),iterations:ENC.it,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);
+ const t=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(ENC.iv)},k,b64(ENC.ct)));const d=JSON.parse(t);if(!d.rows)return false;
+ P=d;P._enc=ENC.updated;try{localStorage.setItem(LS,JSON.stringify(P));if(save)localStorage.setItem(LSW,pw)}catch(e){}if(d.rec&&!Object.keys(REC).length){REC=d.rec;saveRec()}return true}catch(e){return false}}
+async function loadEnc(){try{ENC=await fetch('data/promo_enc.json?v='+Date.now()).then(r=>r.ok?r.json():null)}catch(e){ENC=null}
+ if(!ENC)return;const pw=localStorage.getItem(LSW);if(pw&&(!P||P._enc!==ENC.updated))await unlock(pw,false)}
+function promoBar(){const need=ENC&&(!P||P._enc!==ENC.updated);return `<div class="pm mgr">${need?`<div style="margin-bottom:6px"><b style="color:#A50034">${P?'새 판촉이 올라왔어요':'판촉 자료가 잠겨 있어요'}</b> (${esc(ENC.updated)}) · 비밀번호를 넣으면 열려요<br><input id="encpw" type="password" placeholder="판촉 비밀번호" style="padding:6px;border:1px solid #bbb;border-radius:6px;width:180px;margin-top:6px"> <button id="encgo">열기</button></div>`:''}${P?`매장 판촉: <b>${esc(P.rules&&P.rules['행사']||'불러옴')}</b> · ${P.rows.length}개 모델 <span style="color:#888">(${P._enc?'깃허브 잠금 파일 '+esc(P._enc)+' · 비밀번호로 열림':'이 기기에만 저장'})</span>`:'<b style="color:#A50034">매장 판촉 자료가 없어요.</b> 불러오면 매장 판촉가와 "하나 더 담기"가 열려요.'}<br><label>판촉 파일 불러오기<input type="file" id="pf" accept=".json,.txt,application/json,text/plain" style="display:none"></label>${P?'<button id="pdel">판촉 지우기</button>':''}${P?'<button id="recset">이번 주 추천 설정</button><button id="pexp">판촉+추천 내보내기</button>':''}<button id="pimg">판촉 이미지 붙여넣기 (준비 중)</button><button id="cust">고객 화면</button></div>`+(S.cust?'<div class="pm"><button id="cust2">매니저 화면으로</button></div>':'')}
 function bindPromo(){const cb=document.getElementById('carebtn');if(cb)cb.onclick=()=>{const b=document.getElementById('carebox');const on=b.style.display==='none';b.style.display=on?'block':'none';const v=b.querySelector('video');if(v){on?v.play().catch(()=>{}):v.pause()}};
  const ss=document.getElementById('stsel');if(ss)ss.onchange=()=>{const same=(promoOf(S.view.m)||{})['모델'];S.view=Object.assign({},S.view,{st:ss.value,type:same&&ss.value===same?'one':'vs'});S.adds=[];render(true)};
  const pf=document.getElementById('pf');if(pf)pf.onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.rows)throw 0;P=d;try{localStorage.setItem(LS,t)}catch(x){}if(d.rec){REC=d.rec;saveRec()}render(true)}catch(x){alert('판촉 파일 형식이 아니에요')}})};
- const pd=document.getElementById('pdel');if(pd)pd.onclick=()=>{if(confirm('이 기기에 저장된 판촉 자료를 지울까요?')){localStorage.removeItem(LS);P=null;render(true)}};
+ const eg=document.getElementById('encgo'),ep=document.getElementById('encpw');if(eg)eg.onclick=async()=>{if(await unlock(ep.value,true))render(true);else alert('비밀번호가 맞지 않아요')};if(ep)ep.onkeydown=e=>{if(e.key==='Enter')eg.click()};
+ const pd=document.getElementById('pdel');if(pd)pd.onclick=()=>{if(confirm('이 기기에 저장된 판촉 자료와 비밀번호를 지울까요?')){localStorage.removeItem(LS);localStorage.removeItem(LSW);P=null;render(true)}};
  const pi=document.getElementById('pimg');if(pi)pi.onclick=()=>alert('판촉 이미지 붙여넣기(글자 인식)는 다음 단계에서 만들어요.');
  ['cust','cust2'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{S.cust=!S.cust;render(true)}});
  document.querySelectorAll('select[data-g]').forEach(x=>x.onchange=()=>{S.addSel[x.dataset.g]=x.value;render(true)});
