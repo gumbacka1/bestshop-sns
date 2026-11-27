@@ -316,12 +316,12 @@ function calc2(lines,mode,cardName){const card=CR.cards[cardName]||CR.cards['기
  if(mode==='shop'){o.point=brk((P&&P.rules&&P.rules['금액대포인트_총구매_11월17~30'])||[],o.list)+lines.reduce((a,l)=>a+(l.pt||0),0);o.gift=0;o.notes.push('매장 카드 청구할인은 판촉 조건 확인 후 따로 더해 주세요')}
  else{o.point=brk2(CR.points,o.pay);o.gift=brk2(CR.gifts,o.pay)}
  lines.filter(l=>l.noLump).forEach(l=>o.notes.push(l.m+'는 매장 판촉에 일시불가가 없어서(구독 위주) 닷컴 판매가로 넣었어요'));if(mode!=='shop'){o.ptAdd=+S.dptAdd||0;o.point+=o.ptAdd}o.benefit=o.cash+o.payDc+o.point;o.final=o.pay-o.benefit;return o}
-function cartLines(dm,sm){const mode=S.cmode,main=mode==='shop'?sm:dm;return [lineOf(main,mode)].concat(S.adds.map(a=>lineOf(a['모델']||a.m,mode)))}
-function calcBlock(dm,sm){if(!P&&S.cmode==='shop')S.cmode='dot';const L=cartLines(dm,sm),r=calc2(L,S.cmode,S.pcard),R0=(x,y,c)=>`<div class="crow${c?' '+c:''}"><span>${x}</span><span>${y}</span></div>`;
+function cartLines(dm,sm){const mode=S.cmode==='pre'?'shop':S.cmode,main=mode==='shop'?sm:dm;return [lineOf(main,mode)].concat(S.adds.map(a=>lineOf(a['모델']||a.m,mode)))}
+function calcBlock(dm,sm){if(!P&&S.cmode!=='dot')S.cmode='dot';const L=cartLines(dm,sm),r=calc2(L,S.cmode==='pre'?'shop':S.cmode,S.pcard),R0=(x,y,c)=>`<div class="crow${c?' '+c:''}"><span>${x}</span><span>${y}</span></div>`;
  window.__cl=[dm,sm];
  return `<div class="sec"><div class="st2">닷컴 계산기 그대로 <span style="font-size:11px;font-weight:400;color:#888">닷컴은 일시불 · 매장은 구독(판촉안 기준)</span></div>
- <div class="mode" style="margin:0 0 8px"><button class="${S.cmode==='dot'?'on':''}" data-cm="dot">닷컴 · 일시불 (${esc(dm)})</button>${P?`<button class="${S.cmode==='shop'?'on':''}" data-cm="shop">매장 · 구독 (${esc(sm)})</button>`:''}</div>
- ${S.cmode==='shop'?shopCalcHTML(sm)+'</div>':`<div class="cbox">${L.map(l=>`<div class="crow"><span><b>${esc(l.m)}</b>${l.mb?' <span class="pl">다품목</span>':''}<br><small style="color:#888">${esc(l.n)}</small></span><span>${won(l.p-l.d-l.cp)}원</span></div>`).join('')}</div>
+ <div class="mode" style="margin:0 0 8px"><button class="${S.cmode==='dot'?'on':''}" data-cm="dot">닷컴 · 일시불 (${esc(dm)})</button>${P?`<button class="${S.cmode==='shop'?'on':''}" data-cm="shop">매장 · 구독</button><button class="${S.cmode==='pre'?'on':''}" data-cm="pre">매장 · 선납구독</button>`:''}</div>
+ ${S.cmode==='shop'?shopCalcHTML(sm)+'</div>':S.cmode==='pre'?preCalcHTML(sm)+'</div>':`<div class="cbox">${L.map(l=>`<div class="crow"><span><b>${esc(l.m)}</b>${l.mb?' <span class="pl">다품목</span>':''}<br><small style="color:#888">${esc(l.n)}</small></span><span>${won(l.p-l.d-l.cp)}원</span></div>`).join('')}</div>
  <div class="cbox"><div class="crow big"><b>할인 결제가</b><b style="color:#A50034">${won(r.pay)}원</b></div>${R0('판매가',won(r.list)+'원')}${R0('ㄴ 회원 할인','-'+won(r.member)+'원','sub')}${R0(S.cmode==='shop'?'ㄴ 매장 할인 (활성화·캐시백)':'ㄴ 쿠폰 할인','-'+won(r.coupon)+'원','sub')}</div>
  <div class="cbox"><div class="crow big"><b>구매 후 예상 혜택</b><b>${won(r.benefit)}원</b></div>
   <select id="pcard" style="width:100%;padding:7px;border:1px solid #ccc;border-radius:7px;margin:4px 0">${Object.keys(CR.cards).map(k=>`<option ${k===S.pcard?'selected':''}>${k}</option>`).join('')}</select>
@@ -367,9 +367,36 @@ function shopCalcHTML(sm){const rows=[promoOf(sm)].concat(S.adds),o=shopCalc(row
   ${o.next?`<div class="note" style="margin-top:6px">${won(o.next.need)}원 더 담으면 금액대 포인트 <b>+${won(o.next.p1+o.next.p2)}P</b></div>`:''}
   ${o.notes.length?`<div class="note" style="margin-top:6px">${o.notes.map(esc).join('<br>')}</div>`:''}</div>
  <div class="cbox"><div class="crow big"><b>6년 실제 부담</b><b style="color:#A50034">${won(o.final)}원</b></div><div style="font-size:12px;color:#888">6년 총액 − 혜택 · 월 환산 약 ${won(Math.round(o.final/72/100)*100)}원 · 금액대 포인트 기준금액은 일시불 판매가 합계(구독 포함)</div></div>`}
+
+/* ── 매장 선납구독 (교육자료: 최종가 = 선납금 + 할인 구독료×72 − 지불가치 · 두필구 = 1품목 요금에 맞추는 선납 · 천필구 = 선납 1,000만, 6년 총액까지) ── */
+function preCalcHTML(sm){const rows=[promoOf(sm)].concat(S.adds),o=shopCalc(rows),R0=(x,y,c)=>`<div class="crow${c?' '+c:''}"><span>${x}</span><span>${y}</span></div>`;
+ if(!o.items.length)return `<div class="cbox">${esc(sm)}는 판촉안에 구독이 없어요.</div>`;
+ const card=o.card,M=o.month+card,oneD=o.b.det[0],CS=CK()['케어십'],oneSub=oneD?oneD.sub-(S.careship&&CS&&!(CS['제외']||[]).includes(oneD.g)?f100(oneD.sub*CS['율']):0):0,oneM=Math.max(0,oneSub-Math.min(+S.card||0,oneSub));
+ const cap=Math.max(0,Math.floor((M-card)*72/100)*100),need=Math.max(0,Math.ceil((M-card-oneM)*72/100)*100);
+ const P0=S.pre==='two'?need:S.pre==='chun'?10000000:S.pre==='custom'?(+S.preAmt||0):0,PP=Math.min(P0,cap),over=P0>cap;
+ const B=Math.max(0,M-Math.ceil(PP/72/100)*100-card),tot=PP+B*72-o.half,fin=tot-o.benefit,wasted=card&&(M-Math.ceil(PP/72/100)*100)<card;
+ const btn=(k,t)=>`<button data-pre="${k}" class="ab" style="margin:3px 4px 0 0;${S.pre===k?'background:#A50034;color:#fff':''}">${t}</button>`;
+ return `<div class="cbox">${o.b.det.map(d=>`<div class="crow"><span><b>${esc(d.m)}</b><br><small style="color:#888">${esc(d.g)}</small></span><span>월 ${won(d.month)}원</span></div>`).join('')}
+  <div class="crow sub"><span>담은 ${o.items.length}품목 월 (결합·할인·카드 후)</span><span>${won(o.month)}원</span></div></div>
+ <div class="cbox"><b>선납 방식</b><div>${btn('none','선납 없음')}${btn('two','두필구')}${btn('chun','천필구 1,000만')}${btn('custom','직접 입력')}</div>
+  ${S.pre==='custom'?`<div style="margin-top:6px">선납금 <input id="pg_pre" inputmode="numeric" value="${S.preAmt||''}" placeholder="0" style="width:120px;padding:4px;border:1px solid #ccc;border-radius:6px;text-align:right">원</div>`:''}
+  <div style="font-size:12px;color:#888;margin-top:6px">${S.pre==='two'?`두필구: ${esc(oneD.g)} 1품목 요금(월 ${won(oneM)}원)에 맞추는 선납금을 자동 계산`:S.pre==='chun'?'천필구: 선납 1,000만 원 (6년 총액까지만)':'선납금을 넣으면 그만큼 72개월로 나눠 월 요금에서 빠져요'}</div></div>
+ <div class="cbox"><div class="crow big"><b>선납 후 월 구독료</b><b style="color:#A50034">${won(B)}원</b></div>
+  ${R0('선납금',won(PP)+'원')}${R0('ㄴ 월 차감 (선납금÷72, 100원 올림)','-'+won(Math.ceil(PP/72/100)*100)+'원','sub')}${R0('ㄴ 제휴카드 (1계약)','-'+won(card)+'원','sub')}
+  ${R0('6년 총액 (선납금 + 월×72'+(o.half?' − 정수기 반값':'')+')',won(tot)+'원')}
+  ${over?`<div class="note" style="margin-top:6px"><b>천필구까지 ${won(P0-cap)}원 남았어요</b> · 지금 구성 6년 총액이 ${won(cap)}원이라 1,000만 원을 다 못 넣어요. 품목을 더 담으면 천필구가 완성돼요.</div>`:''}
+  ${wasted?`<div class="note" style="margin-top:6px">선납 후 월 요금이 제휴카드 할인보다 작아져서 카드 할인 일부가 버려져요. 선납금을 줄이는 게 유리해요.</div>`:''}</div>
+ <div class="cbox"><div class="crow big"><b>구독 후 예상 혜택</b><b>${won(o.benefit)}원</b></div>${R0('다품목 캐시백 : '+o.mbN+'품목',won(o.mbCash)+'원')}${o.once?R0(esc(CK().fitmax['이름']),won(o.once)+'원'):''}${R0('금액대 포인트 (총구매 + 구독)',won(o.pt1+o.pt2)+'P')}${o.ptMB?R0(esc(CK()['다품목구독포인트이름']||'다품목 구독 포인트'),won(o.ptMB)+'P'):''}${o.ptW?R0(esc(CK()['구독포인트']['이름']),won(o.ptW)+'P'):''}${o.ptAdd?R0('직접 입력 포인트',won(o.ptAdd)+'P'):''}</div>
+ <div class="cbox"><div class="crow big"><b>6년 실제 부담</b><b style="color:#A50034">${won(fin)}원</b></div>
+  <table style="margin-top:6px"><tr><th>구분</th><th>${esc(oneD.g)} 1품목</th><th>담은 ${o.items.length}품목${PP?' (선납)':''}</th></tr>
+  <tr><td class="k">선납금</td><td>-</td><td>${won(PP)}</td></tr><tr><td class="k">월 요금</td><td>${won(oneM)}</td><td><b style="color:#A50034">${won(B)}</b></td></tr><tr><td class="k">6년 총액</td><td>${won(oneM*72)}</td><td>${won(tot)}</td></tr></table>
+  ${S.pre==='two'&&o.items.length>1?`<div class="calc"><b>두필구 멘트</b><br>"선납 ${won(PP)}원만 넣으시면 ${o.b.det.map(d=>esc(d.g)).join('+')} ${o.items.length}개를 지금 ${esc(oneD.g)} 하나 값(월 ${won(oneM)}원)으로 쓰실 수 있어요."</div>`:''}
+  ${S.pre==='chun'&&!over?`<div class="calc"><b>천필구 멘트</b><br>"선납 1,000만 원이면 ${o.items.length}품목이 월 ${won(B)}원이에요."</div>`:''}
+  ${o.items.length<2&&S.pre==='two'?`<div class="note" style="margin-top:6px">두필구는 2품목 이상일 때 써요. 아래 "하나 더 담으면"에서 하나 더 담아 보세요.</div>`:''}
+  <div style="font-size:12px;color:#888;margin-top:6px">6년 실제 부담 = 6년 총액 − 혜택 · 선납 할인율은 판촉 조건에 따라 달라 넣지 않았어요(선납은 월 요금을 미리 내는 것으로 계산)</div></div>`}
 /* ── 하나 더 담으면 (일시불 · 바스에어·M&B 위주 · 실제 더 내는 돈 적은 순) ── */
 const FOC=()=>CK()['중점']||{};
-function addBlock2(){if(!P)return '';const [dm,sm]=window.__cl,mode=S.cmode,base=calc2(cartLines(dm,sm),mode,S.pcard);
+function addBlock2(){if(!P)return '';const [dm,sm]=window.__cl,mode=S.cmode==='pre'?'shop':S.cmode,base=calc2(cartLines(dm,sm),mode,S.pcard);
  const have=new Set(cartLines(dm,sm).map(l=>l.g).concat(cartLines(dm,sm).map(l=>(promoOf(l.m)||{}).g)));const by={};
  prow().forEach(z=>{if(isOff(z)||!(mode==='shop'?z['최종구독월']:(z['결제가']||z['체감가']))||have.has(z.g)||['소형','밥솥','틔운','아이어닝','OS Living·계절','제습기'].includes(z.g))return;const x=mdOf(z['모델']);if(x&&have.has(x.g))return;(by[z.g]=by[z.g]||[]).push(z)});
  const C=Object.entries(by).map(([g,list])=>{list.sort((a,b)=>((mdOf(b['모델'])||{}).mb||0)-((mdOf(a['모델'])||{}).mb||0)||((mdOf(b['모델'])||{}).rv||0)-((mdOf(a['모델'])||{}).rv||0));
@@ -381,7 +408,7 @@ function addBlock2(){if(!P)return '';const [dm,sm]=window.__cl,mode=S.cmode,base
   <select data-g="${esc(x.g)}">${x.list.map(z=>{const q=lineOf(z['모델'],mode);return `<option value="${esc(z['모델'])}" ${z===x.sel?'selected':''}>${esc(z['모델'])} · ${mode==='shop'?'월 '+won(z['최종구독월'])+'원':won(q.p-q.d-q.cp)+'원'}</option>`}).join('')}</select>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:4px"><span style="color:#888">${mode==='shop'?`${esc(x.g)} 월 ${won(x.selMon)}원${x.selMon<x.selSub?' (판촉 '+won(x.selSub)+' − 결합 등)':''}${x.other>0?' · 기존 제품 결합 할인 −'+won(x.other)+'원':''} → <b>실제 월 +${won(x.mon)}원</b><br>일시불가 ${won(x.pay)}원`:'일시불 '+won(x.pay)+'원'} · 혜택 <b style="color:#A50034">+${won(x.add)}원</b></span><b>${mode==='shop'?'6년 ':''}실제 더 내는 돈 ${won(x.cost)}원</b></div>
   <div style="text-align:right;margin-top:6px"><button class="ab" data-add="${esc(x.g)}">담기</button></div></div>`;
- let h=`<div class="sec"><div class="st2">하나 더 담으면 얼마? <span style="font-size:11px;font-weight:400;color:#888">같이 담기 좋은 제품 (실제 더 내는 돈 적은 순)</span></div><div class="foot" style="padding:0 0 6px">제품군마다 리뷰 많은 다품목 모델 1개 · 혜택 늘어난 만큼 뺀 금액 · 위 계산기(${S.cmode==='shop'?'매장 판촉':'닷컴'} 기준)와 같은 조건</div>`;
+ let h=`<div class="sec"><div class="st2">하나 더 담으면 얼마? <span style="font-size:11px;font-weight:400;color:#888">같이 담기 좋은 제품 (실제 더 내는 돈 적은 순)</span></div><div class="foot" style="padding:0 0 6px">제품군마다 리뷰 많은 다품목 모델 1개 · 혜택 늘어난 만큼 뺀 금액 · 위 계산기(${S.cmode==='dot'?'닷컴':'매장 판촉'} 기준)와 같은 조건</div>`;
  h+=S.adds.map((a,i)=>`<div class="add in"><b>${esc(a.g)} · ${esc(a['모델'])}</b> <button class="ab" style="float:right" data-rm="${i}">빼기</button></div>`).join('');
  h+=F.map(card).join('');
  if(O.length)h+=S.more?O.map(card).join('')+`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목 접기</button>`:`<button class="ab" id="more" style="width:100%;margin-top:6px">다른 품목도 보기 (${O.length})</button>`;
