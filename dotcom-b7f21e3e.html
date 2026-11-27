@@ -63,14 +63,14 @@ tr.df td{background:#fffbe0}tr.on td{background:#fdf1f4;font-weight:700}
 .pl{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;background:#fde8ec;color:#A50034;margin-left:4px}.pl.g{background:#eee;color:#555}.ab{border:1px solid #A50034;color:#A50034;background:#fff;border-radius:8px;padding:5px 12px;font-size:13px}
 .tot{position:sticky;bottom:0;background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}.tot b{font-size:19px}
 body.cust .mgr{display:none!important}
-</style></head><body><div class="ph">
+.fback{position:fixed;left:8px;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:0;background:rgba(165,0,52,.92);color:#fff;font-size:22px;line-height:44px;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer}</style></head><body><div class="ph">
 <div class="top"><h1>닷컴 비교 판매 <span style="font-size:11px;font-weight:400;color:#f7c6d3">관리자 시험판</span></h1><div class="s" id="upd">불러오는 중…</div></div>
 <div id="app"></div>
 </div>
 <script>
 const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:20000,pre:'none',preAmt:0,pv:0};let CV={};let D=null;
 function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');if(!S.view||!view||S.view.m!==view.m){S.adds=[];S.addSel={};}S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
-function back(){history.back();}
+function back(){const v=S.view;try{history.back()}catch(e){}setTimeout(()=>{if(S.view===v){S.view=null;S.conv=false;render()}},200);}
 window.addEventListener('popstate',e=>{const st=e.state||{};S.view=st.view||null;S.conv=!!st.conv;if(st.mode)S.mode=st.mode;if(st.cat!=null)S.cat=st.cat;if(st.grp!=null)S.grp=st.grp;render();});
 const won=x=>x||x===0?Number(x).toLocaleString('ko-KR'):'-';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -83,7 +83,7 @@ async function load(){
   document.getElementById('upd').innerHTML='엘지닷컴 오늘의 랭킹 · '+esc(D.updated)+' 기준 · <a href="admin-b7f21e3e.html">관리자 화면</a>';
   history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
 }
-function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():oneView()):listView());bindPromo();}
+function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():oneView()):listView())+(S.view?'<button class="fback" onclick="back()" aria-label="뒤로가기">‹</button>':'');bindPromo();}
 let MD={},SP={};
 const CATG={'냉장고':'냉장고','에어컨':'에어컨'};
 const capOf=m=>{const q=SP[m]||{};for(const k of Object.keys(q))if(/전체 용량|화면 크기|냉방면적|세탁 용량/.test(k)){const v=parseFloat(String(q[k]).replace(/,/g,''));if(v)return v}return null};
