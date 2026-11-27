@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="ko"><head><meta name="referrer" content="no-referrer"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>닷컴 비교 판매 · 관리자 시험판</title>
 <style>
 *{box-sizing:border-box}
@@ -110,7 +110,7 @@ async function load(){
   document.getElementById('upd').innerHTML='엘지닷컴 오늘의 랭킹 · '+esc(D.updated)+' 기준 · <a href="admin-b7f21e3e.html">관리자 화면</a>';
   history.replaceState({view:null,conv:false,mode:S.mode,cat:S.cat,grp:S.grp},'');render();
 }
-function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():S.view.type==='rec'?recView():oneView()):listView())+(S.view?'<button class="fback" onclick="back()" aria-label="뒤로가기">‹</button>':'');bindPromo();}
+function render(keep){if(!keep)window.scrollTo(0,0);document.body.classList.toggle('cust',S.cust);document.getElementById('app').innerHTML=promoBar()+(S.view?(S.view.type==='vs'?vsView():S.view.type==='rec'?recView():oneView()):listView())+(S.view?'<button class="fback" onclick="back()" aria-label="뒤로가기">‹</button>':'');bindPromo();if(window.__TH)document.querySelectorAll('img').forEach(im=>{const t=__TH[im.getAttribute('src')];if(t)im.src=t});}
 let MD={},SP={};
 const CATG={'냉장고':'냉장고','에어컨':'에어컨','TV':'TV','세탁기':'세탁기','건조기':'건조기','의류건조기':'건조기','워시타워':'워시타워','세탁 건조기':'워시타워','김치냉장고':'김치냉장고','컨버터블 패키지':'김치냉장고','청소기':'로봇청소기','공기청정기':'공기청정기','식기세척기':'식기세척기','전기레인지':'전기레인지','광파오븐 / 전자레인지':'광파오븐','광파오븐/전자레인지':'광파오븐','정수기':'정수기','스탠바이미':'스탠바이미','의류관리기':'스타일러','안마의자':'안마의자'};
 const capOf=m=>capOf0(m)||(MD[m]?null:capOf0((mdOf(m)||{}).m||''))||((/^(OLED|QNED|MRGB|\d)/.test(m)||/^(F|T|R|W|FX|FG|RD|RG|WA|FC)\d/.test(m))&&(m.match(/(\d{2,3})/)||[])[1]?+(m.match(/(\d{2,3})/)[1].slice(0,m.startsWith('OLED')||/^\d/.test(m)?3:2)):null);
@@ -118,7 +118,7 @@ const capOf0=m=>{const q=SP[m]||{};for(const k of Object.keys(q))if(/전체 용�
 function subgrp(c,m){const it=(c.all||[]).find(i=>i.m===m);if(it&&it.g)return it.g;const s=(MD[m]||{}).s||'';
  if(c.name==='냉장고'){if(/양문/.test(s))return '양문형';const v=capOf(m);return v&&v>=750?'800L급':'600L급'}
  if(c.name==='에어컨')return /벽걸이/.test(s)?'벽걸이':/스탠드/.test(s)?'스탠드':'2in1';return null}
-function info(c,m){const it=(c.all||[]).find(i=>i.m===m)||c.groups.map(g=>(c.buy[g]||[]).find(i=>i.m===m)).find(Boolean)||{},x=MD[m]||{},v=capOf(m),r=promoOf(m);
+function info(c,m){const it=(c.all||[]).find(i=>i.m===m)||c.groups.map(g=>(c.buy[g]||[]).find(i=>i.m===m)).find(Boolean)||{},x=MD[m]||mdOf(m)||{},v=capOf(m),r=promoOf(m);
  return {m,n:it.n||x.n||m,img:it.img||x.img||'',sz:it.sz||(v?(c.name==='냉장고'?v+'L':v+''):''),gr:it.gr||((SP[m]||{})['에너지 소비효율등급']||''),rel:it.rel||'',
   max:it.max||x.mx||(x.p?x.p-x.d:0),price:it.price||(x.p?x.p-x.d:0),only:it.only,row:r}}
 const pre=(a,b)=>{let i=0;while(i<a.length&&a[i]===b[i])i++;return i};
@@ -190,7 +190,7 @@ function totalBlock(x,st){const r=st.row||{},sub=r['최종구독월'],pr=r['체�
 function vsView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),f0=storeFor(c,S.view.m),f=f0.same?{list:[f0.bplus,f0.list[0]].filter(Boolean),why:f0.why,picked:true,up:true}:f0,stm=S.view.st||(f.list[0]&&f.list[0]['모델']),st=info(c,stm),r=st.row||{};
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div><div class="dv"><div class="dl">`;
-  h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div>${x.only?'<div class="u" style="color:#A50034;font-weight:700">닷컴 전용</div>':''}<div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div>
+  h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${esc((MD[x.m]||{}).img||'')}'}else this.style.visibility='hidden'"><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div>${x.only?'<div class="u" style="color:#A50034;font-weight:700">닷컴 전용</div>':''}<div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div>
   <div class="vsm">VS</div>${storeCard(c,st,!f.list.some(z=>z['모델']===stm)?'직접 선택':f.up&&st.m!==x.m?'한 단계 위':'매장 추천')}</div>`;
   if(f.why&&f.list.some(z=>z['모델']===stm))h+=`<div class="shop" style="margin:8px 12px 0"><b>왜 이 모델?</b> ${esc(f.why)}</div>`;
   {const rest=recCands(c).filter(z=>!f.list.includes(z)),lab=(z,i)=>`${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${(z['체감가']||z['결제가'])?' · 일시불 '+won(z['체감가']||z['결제가']):''}`;
@@ -205,7 +205,7 @@ function vsView(){
 function oneView(){
   const c=D.cats[S.cat],x=info(c,S.view.m),r=x.row||{},pr=r['체감가']||r['결제가'];
   let h=`<div class="back" onclick="back()">‹ ${esc(c.name)} 목록으로</div><div class="dv"><div class="dl">`;
-  h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt=""><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div><div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div><div class="vsm">=</div>${storeCard(c,x,'매장에서도 판매')}</div>`;
+  h+=`<div class="vs"><div class="cd"><span class="lab">닷컴</span><img src="${esc(x.img)}" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${esc((MD[x.m]||{}).img||'')}'}else this.style.visibility='hidden'"><div class="m">${esc(x.m)}</div><div class="u">${esc(x.sz)}</div><div class="pz"><small>최대혜택가</small>${won(x.max)}</div></div><div class="vsm">=</div>${storeCard(c,x,'매장에서도 판매')}</div>`;
   const f=storeFor(c,x.m),same=r['모델'],recs=(f.rec||[]).filter(z=>z!==r),bp=f.bplus&&!recs.includes(f.bplus)?[f.bplus]:[],rest=recCands(c).filter(z=>z!==r&&!recs.includes(z)&&!bp.includes(z)),lab=z=>`${esc(z['모델'])}${z['최종구독월']?' · 구독 '+won(z['최종구독월']):''}${(z['체감가']||z['결제가'])?' · 일시불 '+won(z['체감가']||z['결제가']):''}`;
   h+=`<div class="sec" style="padding-top:6px"><div style="font-size:12px;color:#888;margin-bottom:4px">매장 모델 바꾸기 (추천 · 판촉안 ${esc(c.name)} 전체)</div><select id="stsel" data-one="1" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:8px"><option value="${esc(same)}" selected>같은 모델: ${lab(r)}</option>${recs.length?`<optgroup label="이번 주 추천">${recs.map((z,i)=>`<option value="${esc(z['모델'])}">추천 ${i+1}: ${lab(z)}</option>`).join('')}</optgroup>`:''}${bp.length?`<optgroup label="한 단계 위">${bp.map(z=>`<option value="${esc(z['모델'])}">${lab(z)}</option>`).join('')}</optgroup>`:''}${rest.length?`<optgroup label="판촉안 다른 모델">${rest.map(z=>`<option value="${esc(z['모델'])}">${esc(z['구분'])} · ${lab(z)}</option>`).join('')}</optgroup>`:''}</select></div>`;
   h+=`<div class="sec">`+totalBlock(x,x);

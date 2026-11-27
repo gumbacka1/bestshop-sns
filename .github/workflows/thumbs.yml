@@ -1,4 +1,4 @@
-name: probe
+name: 미리보기용 사진 묶음
 on: { workflow_dispatch: {} }
 jobs:
   run:
