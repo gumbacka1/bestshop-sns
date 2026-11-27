@@ -68,7 +68,7 @@ body.cust .mgr{display:none!important}
 <div id="app"></div>
 </div>
 <script>
-const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false};let D=null;
+const S={mode:'buy',cat:0,grp:0,view:null,conv:false,adds:[],addSel:{},cust:false,card:0,pre:'none',preAmt:0,pv:0};let D=null;
 function go(view,conv){history.replaceState({view:S.view,conv:S.conv,mode:S.mode,cat:S.cat,grp:S.grp},'');if(!S.view||!view||S.view.m!==view.m){S.adds=[];S.addSel={};}S.view=view;S.conv=!!conv;history.pushState({view,conv:!!conv,mode:S.mode,cat:S.cat,grp:S.grp},'');render();}
 function back(){history.back();}
 window.addEventListener('popstate',e=>{const st=e.state||{};S.view=st.view||null;S.conv=!!st.conv;if(st.mode)S.mode=st.mode;if(st.cat!=null)S.cat=st.cat;if(st.grp!=null)S.grp=st.grp;render();});
@@ -183,7 +183,10 @@ function bindPromo(){const ss=document.getElementById('stsel');if(ss)ss.onchange
  ['cust','cust2'].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=()=>{S.cust=!S.cust;render(true)}});
  document.querySelectorAll('select[data-g]').forEach(x=>x.onchange=()=>{S.addSel[x.dataset.g]=x.value;render(true)});
  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const c=window.__cands.find(z=>z.g===b.dataset.add);S.adds.push(c.sel);render(true)});
- document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{S.adds.splice(+b.dataset.rm,1);render(true)});}
+ document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{S.adds.splice(+b.dataset.rm,1);render(true)});
+ document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{S.pre=b.dataset.pre;render(true)});
+ document.querySelectorAll('[data-cardp]').forEach(b=>b.onclick=()=>{S.card=+b.dataset.cardp;render(true)});
+ [['pg_card','card'],['pg_pre','preAmt'],['pg_pv','pv']].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.onchange=()=>{S[k]=+e.value.replace(/\D/g,'')||0;render(true)}});}
 function shopBox(m,dot6){const r=promoOf(m);if(!P)return '';if(!r)return `<div class="shop">매장 판촉표에 <b>${esc(m)}</b>가 없어요. 닷컴 요금 기준으로 보여 드려요.</div>`;
  const s=r['최종구독월'];return `<div class="shop"><div style="font-weight:700;margin-bottom:4px">매장 판촉가 · ${esc(m)}</div>
  ${r['체감가']?`일시불 체감가 <b>${won(r['체감가'])}원</b>${r['결제가']&&r['결제가']!==r['체감가']?` <span style="color:#888">(결제가 ${won(r['결제가'])})</span>`:''}<br>`:''}
@@ -200,8 +203,28 @@ function bundle(list){const gs=new Set(list.map(x=>x.g)),bind=list.length>=2&&gs
 const it=r=>({m:r['모델'],g:r.g,sub:r['최종구독월'],list:r['결제가']||0,row:r});
 function lspHint(list){if(!P||!P.rules||!P.rules['라스패'])return [];const keys=new Set(list.map(x=>LSPKEY[x.g]||x.g)),o=[];
  for(const[n,rate,need]of P.rules['라스패']['패키지']){const miss=need.filter(k=>!keys.has(k));if(miss.length===1&&need.length-1<=keys.size)o.push(n+' '+rate+'%까지 '+miss[0]+' 1개')}return o.slice(0,3)}
+
+function pilgu(cur,now){
+ const card=+S.card||0,one=cur[0],oneM=Math.max(0,one.sub-card),sum=now.month;
+ const need=Math.max(0,Math.ceil((sum-card-oneM)*72/100)*100);
+ const P0=S.pre==='two'?need:S.pre==='chun'?10000000:S.pre==='custom'?(+S.preAmt||0):0,cap=Math.floor((sum-card)*72/100)*100,P=Math.min(P0,cap),over=P0>cap;
+ const B=Math.max(0,sum-Math.ceil(P/72/100)*100-card),pv=+S.pv||0,lump=cur.reduce((a,x)=>a+((x.row&&(x.row['체감가']||x.row['결제가']))||0),0);
+ const fin=P+B*72-pv,step=cur.length>=3?'천다필구·다필구':'두필구';
+ let h=`<div class="sec"><div class="st2">${esc(step)} 계산 <span style="font-size:11px;font-weight:400;color:#888">최종가 = 선납금 + 할인 구독료 × 72 − 지불가치</span></div>
+ <div class="pm" style="margin:0"><div>카드 할인(월) <input id="pg_card" inputmode="numeric" value="${card||''}" placeholder="0" style="width:90px;padding:5px;border:1px solid #ccc;border-radius:6px"> <button data-cardp="17000">17,000</button><button data-cardp="0">없음</button></div>
+ <div style="margin-top:6px">선납 ${[['none','없음'],['two','두필구(1품목 요금 맞추기)'],['chun','천필구 1,000만'],['custom','직접']].map(([k,t])=>`<button data-pre="${k}" style="${S.pre===k?'background:#A50034;color:#fff;border-color:#A50034':''}">${t}</button>`).join('')}${S.pre==='custom'?` <input id="pg_pre" inputmode="numeric" value="${S.preAmt||''}" placeholder="선납금" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px">`:''}</div>
+ <div style="margin-top:6px">지불가치(6년 합계, BEST AI) <input id="pg_pv" inputmode="numeric" value="${pv||''}" placeholder="0" style="width:110px;padding:5px;border:1px solid #ccc;border-radius:6px"></div></div>
+ <table style="margin-top:8px"><tr><th>구분</th><th>${esc(one.m)} 1품목</th><th>담은 ${cur.length}품목</th></tr>
+ <tr><td class="k">선납금</td><td>-</td><td>${won(P)}</td></tr>
+ <tr><td class="k">월 구독료(카드 후)</td><td>${won(oneM)}</td><td><b style="color:#A50034">${won(B)}</b></td></tr>
+ <tr><td class="k">72개월 납부</td><td>${won(oneM*72)}</td><td>${won(B*72)}</td></tr>
+ <tr><td class="k">최종가</td><td>${won(oneM*72)}</td><td><b>${won(fin)}</b>${pv?` <small>(지불가치 −${won(pv)})</small>`:''}</td></tr>
+ ${lump?`<tr><td class="k">일시불이면</td><td colspan="2">매장 체감가 합 ${won(lump)} → 구독 최종가와 ${fin<=lump?'<b>'+won(lump-fin)+'원 유리</b>':won(fin-lump)+'원 차이'}</td></tr>`:''}</table>
+ <div class="calc">${S.pre==='two'?`<b>두필구 멘트</b><br>"선납 ${won(P)}원만 넣으시면 ${cur.map(x=>esc(x.g)).join('+')} ${cur.length}개를 지금 ${esc(one.g)} 하나 값(월 ${won(oneM)}원)으로 쓰실 수 있어요."`:S.pre==='chun'?(over?`<b>천필구까지 ${won(P0-cap)}원 남았어요</b><br>지금 구성 6년 총액이 ${won(cap)}원이라 선납 1,000만 원을 다 못 넣어요. 품목을 더 담으면 천필구가 완성돼요.`:`<b>천필구 멘트</b><br>"선납 1,000만 원이면 ${cur.length}품목이 월 ${won(B)}원이에요.${lump?' 일시불 '+won(lump)+'원과 비교해 보세요.':''}"`):`선납을 넣으면 월 요금이 내려가요. <b>두필구</b>는 1품목 요금에 맞추는 선납금(${won(need)}원)을 자동으로 계산해요.`}</div>
+ <div class="foot" style="padding:6px 0 0">선납 후 월 = 구독료 − 선납금÷72(100원 올림) − 카드 할인. 선납 할인율·한도는 판촉 조건에 따라 달라요. 지불가치는 BEST AI 값을 넣어 주세요.</div></div>`;
+ return h}
 function addBlock(c,m,dot6){if(!P)return '';const r=promoOf(m),g=r?r.g:(LSPKEY[c.name]?c.name:c.name);
- const base={m,g,sub:(r&&r['최종구독월'])||dot6||0,list:(r&&r['결제가'])||0};if(!base.sub)return '';
+ const base={m,g,sub:(r&&r['최종구독월'])||dot6||0,list:(r&&r['결제가'])||0,row:r};if(!base.sub)return '';
  const cur=[base].concat(S.adds.map(it)),now=bundle(cur),have=new Set(cur.map(x=>x.g)),by={};
  prow().forEach(z=>{if(!z['최종구독월']||isOff(z)||have.has(z.g)||['소형','밥솥','틔운','아이어닝','제습기'].includes(z.g))return;(by[z.g]=by[z.g]||[]).push(z)});
  const C=Object.entries(by).map(([gg,list])=>{list.sort((a,b)=>((b['구독할인']||0)-(a['구독할인']||0))||(a['최종구독월']-b['최종구독월']));
@@ -217,6 +240,6 @@ function addBlock(c,m,dot6){if(!P)return '';const r=promoOf(m),g=r?r.g:(LSPKEY[c
   <div style="text-align:right;margin-top:6px"><button class="ab" data-add="${esc(x.g)}">담기</button></div></div>`).join('');
  if(S.adds.length){h+=`<table><tr><th>제품</th><th>판촉 월</th><th>할인</th><th>월</th></tr>${now.det.map(d=>`<tr><td class="k">${esc(d.g)}<br><span style="font-size:11px;color:#888">${esc(d.m)}</span></td><td>${won(d.sub)}</td><td>${d.dc?'-'+won(d.dc):'-'}</td><td><b>${won(d.month)}</b></td></tr>`).join('')}</table>
   <div class="foot" style="padding:6px 0 0">${now.bind?'결합 5% ':''}${now.lsp?'· 라스패 '+esc(now.lsp.n)+' '+now.lsp.rate+'% ':''}${now.fit?'· Fit&Max 동시 구독 30만 ':''}${now.pts?'· 금액대 포인트 '+won(now.pts)+'P(참고)':''} · 6년 총 ${won(now.month*72)}원 · 고객맞춤플래너 결과와 한 번 맞춰 보세요</div>`}
- h+=`</div>`+(S.adds.length?`<div class="tot"><span>${cur.length}개 구독 · 월</span><b>${won(now.month)}원</b></div>`:'');return h}
+ h+=`</div>`+(S.adds.length?pilgu(cur,now):'')+(S.adds.length?`<div class="tot"><span>${cur.length}개 구독 · 월</span><b>${won(now.month)}원</b></div>`:'');return h}
 load();
 </script></body></html>
